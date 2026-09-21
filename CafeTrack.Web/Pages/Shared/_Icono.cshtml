@@ -1,7 +1,10 @@
 @*
-    Iconos SVG de trazo simple, escritos en linea para no depender de ninguna
-    libreria. Uso: @await Html.PartialAsync("_Icono", "grano")  (o "grano:26" para 26 px)
-    El tamano se pasa como "nombre:24" cuando se necesita mas grande.
+    Iconos de Lucide (https://lucide.dev), paquete de codigo abierto con licencia ISC.
+    Los trazos se copian al proyecto y se escriben en linea: no dependen de una CDN
+    ni de JavaScript, y heredan el color del texto con currentColor.
+
+    Uso:  @await Html.PartialAsync("_Icono", "grano")      -> 18 px
+          @await Html.PartialAsync("_Icono", "grano:26")   -> 26 px
 *@
 @model string
 @{
@@ -10,110 +13,168 @@
     var tam = partes.Length > 1 && int.TryParse(partes[1], out var t) ? t : 18;
 }
 
-@switch (nombre)
-{
-    case "grano":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <ellipse cx="12" cy="12" rx="7" ry="9" transform="rotate(-25 12 12)" />
-            <path d="M8.6 5.2c2.8 3.4 3.4 10.1 1.1 14.1" />
-        </svg>
-        break;
+<svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+     aria-hidden="true" focusable="false">
+    @switch (nombre)
+    {
+        case "grano": // lucide: bean
+            <path d="M10.165 6.598C9.954 7.478 9.64 8.36 9 9c-.64.64-1.521.954-2.402 1.165A6 6 0 0 0 8 22c7.732 0 14-6.268 14-14a6 6 0 0 0-11.835-1.402Z" />
+            <path d="M5.341 10.62a4 4 0 1 0 5.279-5.28" />
+            break;
 
-    case "panel":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <rect x="3" y="3" width="8" height="8" rx="1" />
-            <rect x="13" y="3" width="8" height="5" rx="1" />
-            <rect x="3" y="13" width="8" height="8" rx="1" />
-            <rect x="13" y="10" width="8" height="11" rx="1" />
-        </svg>
-        break;
+        case "panel": // lucide: layout-dashboard
+            <rect width="7" height="9" x="3" y="3" rx="1" />
+            <rect width="7" height="5" x="14" y="3" rx="1" />
+            <rect width="7" height="9" x="14" y="12" rx="1" />
+            <rect width="7" height="5" x="3" y="16" rx="1" />
+            break;
 
-    case "productores":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <circle cx="9" cy="8" r="3.2" />
-            <path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5" />
-            <path d="M16 5.5a3 3 0 0 1 0 5.6" />
-            <path d="M17.2 14.8c2 .8 3.3 2.6 3.3 5.2" />
-        </svg>
-        break;
+        case "productores": // lucide: users
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <circle cx="9" cy="7" r="4" />
+            break;
 
-    case "hoja":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M20 4c0 8.3-4.7 13-12 13H4.6C4.6 8.7 9.3 4 17 4Z" />
-            <path d="M4 20c2.5-4.6 6-7.6 10.5-9.4" />
-        </svg>
-        break;
+        case "hoja": // lucide: leaf
+            <path d="M11 20a10 10 0 0 0 10-10 25.9 25.9 0 0 0-1.04-7.281 1 1 0 0 0-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0 0 11 20" />
+            <path d="M2 21a5 5 0 0 1 2.911-4.544C7.613 15.212 8.351 15.24 11 13" />
+            break;
 
-    case "costal":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M8 3h8l-1.5 3.2c2.6 1.7 4 4.4 4 8.1 0 4.2-2.2 6.7-6.5 6.7S5.5 18.5 5.5 14.3c0-3.7 1.4-6.4 4-8.1Z" />
-            <path d="M8.6 6.2h6.8" />
-        </svg>
-        break;
+        case "brote": // lucide: sprout
+            <path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" />
+            <path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" />
+            <path d="M5 21h14" />
+            break;
 
-    case "bascula":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M12 4.2v15.4" />
-            <path d="M4.5 20h15" />
-            <path d="M4.2 7.6h15.6" />
-            <path d="M7.4 7.6 4.2 14.2h6.4Z" />
-            <path d="M16.6 7.6l-3.2 6.6h6.4Z" />
-        </svg>
-        break;
+        case "costal": // lucide: package
+            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
+            <path d="M12 22V12" />
+            <polyline points="3.29 7 12 12 20.71 7" />
+            <path d="m7.5 4.27 9 5.15" />
+            break;
 
-    case "reloj":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="8.5" />
-            <path d="M12 7.2V12l3 2" />
-        </svg>
-        break;
+        case "bascula": // lucide: scale
+            <path d="M12 3v18" />
+            <path d="m19 8 3 8a5 5 0 0 1-6 0zV7" />
+            <path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1" />
+            <path d="m5 8 3 8a5 5 0 0 1-6 0zV7" />
+            <path d="M7 21h10" />
+            break;
 
-    case "taza":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M4 8h13v5.5A5.5 5.5 0 0 1 11.5 19h-2A5.5 5.5 0 0 1 4 13.5Z" />
-            <path d="M17 9.2h1.8a2.4 2.4 0 0 1 0 4.8H17" />
-            <path d="M8 3.2c-.6 1 -.6 1.8 0 2.6M12 3.2c-.6 1 -.6 1.8 0 2.6" />
-        </svg>
-        break;
+        case "bodega": // lucide: warehouse
+            <path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z" />
+            <path d="M6 13h12" />
+            <path d="M6 17h12" />
+            break;
 
-    case "camion":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M2.8 6.5h10.4v9.8H2.8Z" />
-            <path d="M13.2 9.8h3.6l2.6 3v3.5h-6.2Z" />
-            <circle cx="7" cy="18.3" r="1.8" />
-            <circle cx="16.4" cy="18.3" r="1.8" />
-        </svg>
-        break;
+        case "reloj": // lucide: clock
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+            break;
 
-    case "quetzal":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="8.5" />
-            <path d="M9.5 8.5h3.2a2.6 2.6 0 0 1 0 5.2H9.5V8.5m0 5.2v3.1m2.2-3.1 2.4 3.1" />
-        </svg>
-        break;
+        case "taza": // lucide: coffee
+            <path d="M10 2v2" />
+            <path d="M14 2v2" />
+            <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" />
+            <path d="M6 2v2" />
+            break;
 
-    case "buscar":
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <circle cx="10.5" cy="10.5" r="6.5" />
-            <path d="m15.4 15.4 4.3 4.3" />
-        </svg>
-        break;
+        case "camion": // lucide: truck
+            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+            <path d="M15 18H9" />
+            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+            <circle cx="17" cy="18" r="2" />
+            <circle cx="7" cy="18" r="2" />
+            break;
 
-    default:
-        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="8.5" />
-        </svg>
-        break;
-}
+        case "quetzal": // lucide: banknote
+            <rect width="20" height="12" x="2" y="6" rx="2" />
+            <circle cx="12" cy="12" r="2" />
+            <path d="M6 12h.01M18 12h.01" />
+            break;
+
+        case "pago": // lucide: hand-coins
+            <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
+            <path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
+            <path d="m2 16 6 6" />
+            <circle cx="16" cy="9" r="2.9" />
+            <circle cx="6" cy="5" r="3" />
+            break;
+
+        case "beneficio": // lucide: factory
+            <path d="M12 16h.01" />
+            <path d="M16 16h.01" />
+            <path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" />
+            <path d="M8 16h.01" />
+            break;
+
+        case "montana": // lucide: mountain
+            <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+            break;
+
+        case "gota": // lucide: droplets
+            <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" />
+            <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
+            break;
+
+        case "sol": // lucide: sun
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+            break;
+
+        case "cajas": // lucide: boxes
+            <path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" />
+            <path d="m7 16.5-4.74-2.85" />
+            <path d="m7 16.5 5-3" />
+            <path d="M7 16.5v5.17" />
+            <path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" />
+            <path d="m17 16.5-5-3" />
+            <path d="m17 16.5 4.74-2.85" />
+            <path d="M17 16.5v5.17" />
+            <path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" />
+            <path d="M12 8 7.26 5.15" />
+            <path d="m12 8 4.74-2.85" />
+            <path d="M12 13.5V8" />
+            break;
+
+        case "certificado": // lucide: badge-check
+            <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+            <path d="m16 9-5.5 5.5L8 12" />
+            break;
+
+        case "aprobado": // lucide: circle-check
+            <circle cx="12" cy="12" r="10" />
+            <path d="m16 9-5.5 5.5L8 12" />
+            break;
+
+        case "rechazado": // lucide: circle-x
+            <circle cx="12" cy="12" r="10" />
+            <path d="m15 9-6 6" />
+            <path d="m9 9 6 6" />
+            break;
+
+        case "buscar": // lucide: search
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+            break;
+
+        case "flecha": // lucide: arrow-right
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+            break;
+
+        default:
+            <circle cx="12" cy="12" r="10" />
+            break;
+    }
+</svg>

@@ -1,9 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" role="img"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 48" width="230" height="48" role="img"
      aria-label="CafeTrack">
-  <g fill="none" stroke="#C08A3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <ellipse cx="24" cy="24" rx="12" ry="16" transform="rotate(-25 24 24)" />
-    <path d="M18 9c5 6 6 18 2 25" />
+  <!-- grano: lucide "bean" (ISC) — https://lucide.dev -->
+  <g transform="translate(6 10) scale(1.16)" fill="none" stroke="#C08A3E" stroke-width="1.75"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.165 6.598C9.954 7.478 9.64 8.36 9 9c-.64.64-1.521.954-2.402 1.165A6 6 0 0 0 8 22c7.732 0 14-6.268 14-14a6 6 0 0 0-11.835-1.402Z" />
+    <path d="M5.341 10.62a4 4 0 1 0 5.279-5.28" />
   </g>
-  <text x="48" y="32" font-family="Fraunces, Georgia, serif" font-size="26" font-weight="600"
+  <text x="44" y="32" font-family="Fraunces, Georgia, serif" font-size="26" font-weight="600"
         fill="#3B2A20">CaféTrack</text>
 </svg>
