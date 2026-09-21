@@ -17,6 +17,7 @@ builder.Services.AddRazorPages();
 // Acceso a datos: una sola fabrica de conexiones, repositorios de solo lectura.
 builder.Services.AddSingleton<IDbConnectionFactory, MySqlConnectionFactory>();
 builder.Services.AddScoped<IPanelRepository, PanelRepository>();
+builder.Services.AddScoped<ICatalogoRepository, CatalogoRepository>();
 builder.Services.AddScoped<IProductorRepository, ProductorRepository>();
 builder.Services.AddScoped<IParcelaRepository, ParcelaRepository>();
 builder.Services.AddScoped<ILoteRepository, LoteRepository>();

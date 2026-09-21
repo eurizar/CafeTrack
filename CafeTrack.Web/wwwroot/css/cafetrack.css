@@ -739,3 +739,187 @@ a.boton { border-bottom: 1px solid transparent; display: inline-block; }
     body { background: #fff; }
     .contenido { padding: 0; }
 }
+
+/* ------------------------------------------------ catalogo de variedades */
+
+.rejilla-variedades {
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+
+.variedad h3 { margin: 0; }
+
+.variedad-encabezado {
+    display: flex;
+    align-items: flex-start;
+    gap: .7rem;
+    margin-bottom: .6rem;
+}
+
+.variedad-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background-color: rgba(111, 78, 55, .1);
+    color: var(--tostado);
+}
+
+.variedad-altitud {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    margin: .1rem 0 0;
+    font-size: .85rem;
+}
+
+.puntaje {
+    margin-left: auto;
+    align-self: center;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #35502D;
+    background-color: rgba(74, 103, 65, .12);
+    border: 1px solid rgba(74, 103, 65, .3);
+    border-radius: var(--radio-chico);
+    padding: .1rem .45rem;
+}
+
+.variedad-texto {
+    font-size: .92rem;
+    color: var(--texto);
+    margin-bottom: .8rem;
+}
+
+.mini-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
+    gap: .5rem .6rem;
+    margin: 0;
+    padding-top: .7rem;
+    border-top: 1px solid var(--borde);
+}
+
+.mini-datos dt {
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--texto-suave);
+    font-weight: 600;
+}
+
+.mini-datos dd {
+    margin: 0;
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--espresso);
+}
+
+.con-icono {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    color: var(--tostado);
+}
+
+.con-icono strong,
+.con-icono .etiqueta { color: var(--texto); }
+
+.con-icono .etiqueta.certificada { color: #35502D; }
+.con-icono .etiqueta.neutro { color: var(--texto-suave); }
+
+.leyenda {
+    list-style: none;
+    margin: .5rem 0 0;
+    padding: 0;
+    font-size: .92rem;
+}
+
+.leyenda li {
+    display: flex;
+    align-items: baseline;
+    gap: .6rem;
+    padding: .4rem 0;
+    border-bottom: 1px solid rgba(226, 214, 195, .7);
+}
+
+.leyenda li:last-child { border-bottom: 0; }
+.leyenda .etiqueta { flex: 0 0 auto; }
+
+/* --------------------------------------------------------- flujograma */
+
+.flujo-envoltura {
+    overflow-x: auto;
+    margin: 1.1rem 0 .25rem;
+    padding-bottom: .4rem;
+}
+
+.flujo {
+    display: block;
+    width: 100%;
+    min-width: 860px;
+    height: auto;
+}
+
+.flujo .caja {
+    fill: var(--crema);
+    stroke: var(--borde);
+    stroke-width: 1;
+}
+
+.flujo .caja.aviso-oro { stroke: var(--oro); stroke-dasharray: 4 3; }
+.flujo .caja.aviso-cereza { stroke: var(--cereza); stroke-dasharray: 4 3; }
+
+.flujo .tit {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 15px;
+    fill: var(--espresso);
+    text-anchor: middle;
+}
+
+.flujo .tit.chico { font-size: 13.5px; }
+
+.flujo .sub {
+    font-family: var(--sans);
+    font-size: 11px;
+    fill: var(--texto-suave);
+    text-anchor: middle;
+}
+
+.flujo .paso {
+    font-family: var(--mono);
+    font-size: 11px;
+    fill: var(--tostado);
+    font-weight: 600;
+}
+
+.flujo .tabla {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    fill: var(--texto-suave);
+    text-anchor: middle;
+}
+
+.flujo .nota {
+    font-family: var(--sans);
+    font-size: 10px;
+    fill: var(--texto-suave);
+    text-anchor: middle;
+}
+
+.flujo .nota.izq { text-anchor: start; }
+
+.flujo .via {
+    stroke: var(--tostado);
+    stroke-width: 1.4;
+    fill: none;
+}
+
+.flujo .via.punteada {
+    stroke: var(--texto-suave);
+    stroke-dasharray: 4 4;
+    stroke-width: 1.2;
+}

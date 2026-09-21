@@ -33,6 +33,8 @@ procedimientos almacenados.
   el esquema lo define únicamente el script SQL.
 - CSS propio en `wwwroot/css/cafetrack.css`. Sin Bootstrap, sin jQuery, sin frameworks JS.
 - Tipografías de Google Fonts: Fraunces, Source Sans 3, IBM Plex Mono.
+- Iconos de [Lucide](https://lucide.dev) (licencia ISC), copiados al proyecto y escritos
+  en línea; ver `CafeTrack.Web/wwwroot/img/ICONOS.md`.
 - Formato guatemalteco (`es-GT`): fechas `dd/MM/yyyy`, moneda `Q` con dos decimales.
 
 > **Versión del SDK.** El proyecto apunta a `net9.0`, que es el SDK instalado en el
@@ -60,7 +62,7 @@ CafeTrack/
     ├── Models/         POCOs de cada tabla + ViewModels
     ├── Data/           IDbConnectionFactory, MySqlConnectionFactory, repositorios Dapper
     ├── Helpers/        formato de ENUM, moneda, fechas
-    ├── Pages/          Index, Productores, Parcelas, Lotes, Lotes/Detalle, Existencias, Error
+    ├── Pages/          Index, Catalogo, Productores, Parcelas, Lotes, Lotes/Detalle, Existencias, Error
     └── wwwroot/        css/cafetrack.css e img/ (logo e iconos SVG)
 ```
 
@@ -136,6 +138,7 @@ CafeTrack/
 | Ruta | Pantalla |
 |---|---|
 | `/` | Panel: productores activos, lotes por estado, quintales en bodega y ocupación de cada bodega |
+| `/Catalogo` | Café y proceso: variedades, flujograma del proceso, etapas del beneficiado y certificaciones |
 | `/Productores` | Listado con búsqueda por nombre o comunidad |
 | `/Parcelas` | Productor, variedad, altitud, área y certificación |
 | `/Lotes` | Listado con filtros por estado y temporada |

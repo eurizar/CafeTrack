@@ -31,6 +31,11 @@
                     </a>
                 </li>
                 <li>
+                    <a class="@Activo("catalogo")" asp-page="/Catalogo">
+                        @await Html.PartialAsync("_Icono", "taza") <span>Café y proceso</span>
+                    </a>
+                </li>
+                <li>
                     <a class="@Activo("productores")" asp-page="/Productores">
                         @await Html.PartialAsync("_Icono", "productores") <span>Productores</span>
                     </a>

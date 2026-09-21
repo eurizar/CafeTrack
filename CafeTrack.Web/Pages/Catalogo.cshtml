@@ -1,0 +1,298 @@
+@page
+@model CatalogoModel
+@{
+    ViewData["Title"] = "Café y proceso";
+    ViewData["Pagina"] = "catalogo";
+    var cat = Model.Catalogo;
+
+    // Icono sugerido para cada etapa del beneficiado, por orden.
+    string IconoEtapa(int orden) => orden switch
+    {
+        1 => "beneficio",
+        2 => "reloj",
+        3 => "gota",
+        4 => "sol",
+        5 => "cajas",
+        6 => "bascula",
+        7 => "costal",
+        _ => "grano"
+    };
+}
+
+<header class="encabezado-pagina">
+    <h1>Café y proceso</h1>
+    <p>
+        Las variedades que cultiva la cooperativa, el camino que recorre cada lote
+        y las etapas del beneficiado con su duración esperada.
+    </p>
+</header>
+
+@* ================= Variedades ================= *@
+<section aria-labelledby="titulo-variedades">
+    <h2 id="titulo-variedades">Variedades cultivadas</h2>
+    <p class="resumen-filtro">
+        @cat.Variedades.Count variedades ·
+        @cat.Variedades.Sum(v => v.Parcelas) parcelas ·
+        @Formato.Numero(cat.Variedades.Sum(v => v.AreaManzanas)) manzanas
+    </p>
+
+    <div class="rejilla rejilla-variedades">
+        @foreach (var v in cat.Variedades)
+        {
+            <article class="tarjeta variedad">
+                <div class="variedad-encabezado">
+                    <span class="variedad-icono">@await Html.PartialAsync("_Icono", "grano:22")</span>
+                    <div>
+                        <h3>@v.Nombre</h3>
+                        <p class="suave variedad-altitud">
+                            @await Html.PartialAsync("_Icono", "montana:14") @v.RangoAltitud
+                        </p>
+                    </div>
+                    @if (v.ScaPromedio is not null)
+                    {
+                        <span class="puntaje mono" title="Puntaje SCA promedio de los lotes catados">
+                            @Formato.Numero(v.ScaPromedio)
+                        </span>
+                    }
+                </div>
+
+                <p class="variedad-texto">@Formato.Texto(v.Descripcion)</p>
+
+                <dl class="mini-datos">
+                    <div>
+                        <dt>Parcelas</dt>
+                        <dd class="mono">@v.Parcelas</dd>
+                    </div>
+                    <div>
+                        <dt>Productores</dt>
+                        <dd class="mono">@v.Productores</dd>
+                    </div>
+                    <div>
+                        <dt>Área</dt>
+                        <dd class="mono">@Formato.Numero(v.AreaManzanas) mz</dd>
+                    </div>
+                    <div>
+                        <dt>Lotes</dt>
+                        <dd class="mono">@v.Lotes</dd>
+                    </div>
+                    <div>
+                        <dt>Quintales</dt>
+                        <dd class="mono">@Formato.Quintales(v.Quintales)</dd>
+                    </div>
+                </dl>
+            </article>
+        }
+    </div>
+</section>
+
+@* ================= Flujograma ================= *@
+<section class="panel" aria-labelledby="titulo-flujo">
+    <h2 id="titulo-flujo">Del corte a la venta</h2>
+    <p class="suave">
+        Cada paso del proceso corresponde a una tabla de la base de datos.
+        Las flechas punteadas marcan las salidas del flujo normal.
+    </p>
+
+    <div class="flujo-envoltura">
+        <svg class="flujo" viewBox="0 0 1200 240" role="img" aria-labelledby="flujo-titulo flujo-desc">
+            <title id="flujo-titulo">Flujo del proceso del café</title>
+            <desc id="flujo-desc">
+                Cosecha, acopio, beneficiado, catación, bodega, venta y pago al productor.
+                Del acopio y del beneficiado se desprenden las mermas; de la catación,
+                los lotes rechazados que no ingresan a bodega.
+            </desc>
+
+            <defs>
+                <marker id="punta" viewBox="0 0 10 10" refX="8" refY="5"
+                        markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--tostado)" stroke="none" />
+                </marker>
+                <marker id="punta-suave" viewBox="0 0 10 10" refX="8" refY="5"
+                        markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--texto-suave)" stroke="none" />
+                </marker>
+            </defs>
+
+            @* --- Paso 1: Cosecha --- *@
+            <rect class="caja" x="20" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="31" y="44">1</text>
+            <text class="tit" x="90" y="64">Cosecha</text>
+            <text class="tabla" x="90" y="106">Cosechas</text>
+
+            @* --- Paso 2: Acopio --- *@
+            <rect class="caja" x="190" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="201" y="44">2</text>
+            <text class="tit" x="260" y="64">Acopio</text>
+            <text class="tabla" x="260" y="106">Acopios</text>
+
+            @* --- Paso 3: Beneficiado --- *@
+            <rect class="caja" x="360" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="371" y="44">3</text>
+            <text class="tit" x="430" y="60">Beneficiado</text>
+            <text class="sub" x="430" y="78">7 etapas</text>
+            <text class="tabla" x="430" y="106">Procesos</text>
+
+            @* --- Paso 4: Catación --- *@
+            <rect class="caja" x="530" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="541" y="44">4</text>
+            <text class="tit" x="600" y="64">Catación</text>
+            <text class="tabla" x="600" y="106">Calidad</text>
+
+            @* --- Paso 5: Bodega --- *@
+            <rect class="caja" x="700" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="711" y="44">5</text>
+            <text class="tit" x="770" y="64">Bodega</text>
+            <text class="tabla" x="770" y="106">MovimientosBodega</text>
+            <text class="nota" x="770" y="124">existencia = entradas − salidas</text>
+
+            @* --- Paso 6: Venta --- *@
+            <rect class="caja" x="870" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="881" y="44">6</text>
+            <text class="tit" x="940" y="64">Venta</text>
+            <text class="tabla" x="940" y="106">VentasLotes</text>
+
+            @* --- Paso 7: Pago --- *@
+            <rect class="caja" x="1040" y="26" width="140" height="64" rx="6" />
+            <text class="paso" x="1051" y="44">7</text>
+            <text class="tit" x="1110" y="64">Pago</text>
+            <text class="tabla" x="1110" y="106">Pagos</text>
+
+            @* --- Flechas del flujo principal --- *@
+            <line class="via" x1="166" y1="58" x2="184" y2="58" marker-end="url(#punta)" />
+            <line class="via" x1="336" y1="58" x2="354" y2="58" marker-end="url(#punta)" />
+            <line class="via" x1="506" y1="58" x2="524" y2="58" marker-end="url(#punta)" />
+            <line class="via" x1="676" y1="58" x2="694" y2="58" marker-end="url(#punta)" />
+            <line class="via" x1="846" y1="58" x2="864" y2="58" marker-end="url(#punta)" />
+            <line class="via" x1="1016" y1="58" x2="1034" y2="58" marker-end="url(#punta)" />
+
+            @* --- Salida: mermas --- *@
+            <rect class="caja aviso-oro" x="275" y="164" width="170" height="52" rx="6" />
+            <text class="tit chico" x="360" y="188">Merma</text>
+            <text class="tabla" x="360" y="206">Mermas</text>
+            <path class="via punteada" d="M 260 96 L 260 140 Q 260 152 290 160" marker-end="url(#punta-suave)" />
+            <path class="via punteada" d="M 430 96 L 430 140 Q 430 152 405 160" marker-end="url(#punta-suave)" />
+
+            @* --- Salida: lote rechazado --- *@
+            <rect class="caja aviso-cereza" x="530" y="164" width="140" height="52" rx="6" />
+            <text class="tit chico" x="600" y="188">Rechazado</text>
+            <text class="tabla" x="600" y="206">no entra a bodega</text>
+            <path class="via punteada" d="M 600 96 L 600 158" marker-end="url(#punta-suave)" />
+            <text class="nota izq" x="610" y="132">no aprobado</text>
+        </svg>
+    </div>
+
+    <ol class="oculto-visual">
+        <li>Cosecha en la parcela; se registra en la tabla Cosechas.</li>
+        <li>Acopio: recepción y pesaje en el centro de acopio (Acopios).</li>
+        <li>Beneficiado en siete etapas (Procesos).</li>
+        <li>Catación: si no aprueba, el lote queda rechazado y no entra a bodega (Calidad).</li>
+        <li>Bodega: entradas y salidas; la existencia se calcula (MovimientosBodega).</li>
+        <li>Venta al comprador (VentasLotes).</li>
+        <li>Pago al productor (Pagos).</li>
+    </ol>
+</section>
+
+@* ================= Etapas del beneficiado ================= *@
+<section aria-labelledby="titulo-etapas">
+    <h2 id="titulo-etapas">Etapas del beneficiado</h2>
+    <p class="resumen-filtro">
+        Duración esperada según el catálogo y duración promedio observada en los lotes cargados.
+    </p>
+
+    <div class="tabla-envoltura">
+        <table class="datos">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Etapa</th>
+                    <th scope="col">Qué ocurre</th>
+                    <th scope="col" class="num">Esperado</th>
+                    <th scope="col" class="num">Promedio real</th>
+                    <th scope="col" class="num">Registros</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in cat.Etapas)
+                {
+                    <tr>
+                        <td class="mono">@e.Orden</td>
+                        <td>
+                            <span class="con-icono">
+                                @await Html.PartialAsync("_Icono", IconoEtapa(e.Orden) + ":16")
+                                <strong>@Formato.Enum(e.Nombre)</strong>
+                            </span>
+                        </td>
+                        <td class="suave">@Formato.Texto(e.Descripcion)</td>
+                        <td class="num">@e.RangoEsperado</td>
+                        <td class="num">
+                            @(e.HorasPromedio is null ? "—" : Formato.Numero(e.HorasPromedio, 1) + " h")
+                        </td>
+                        <td class="num">@e.ProcesosRegistrados</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@* ================= Certificaciones y estados ================= *@
+<div class="dos-columnas" style="margin-top:1.5rem">
+    <section class="panel" aria-labelledby="titulo-cert">
+        <h2 id="titulo-cert">Certificaciones</h2>
+        <table class="datos" style="background:transparent">
+            <thead>
+                <tr>
+                    <th scope="col">Certificación</th>
+                    <th scope="col" class="num">Parcelas</th>
+                    <th scope="col" class="num">Área (mz)</th>
+                    <th scope="col" class="num">Lotes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in cat.Certificaciones)
+                {
+                    <tr>
+                        <td>
+                            <span class="con-icono">
+                                @await Html.PartialAsync("_Icono", (c.Certificacion == "Ninguna" ? "hoja" : "certificado") + ":16")
+                                <span class="etiqueta @Formato.ClaseCertificacion(c.Certificacion)">
+                                    @Formato.Enum(c.Certificacion)
+                                </span>
+                            </span>
+                        </td>
+                        <td class="num">@c.Parcelas</td>
+                        <td class="num">@Formato.Numero(c.AreaManzanas)</td>
+                        <td class="num">@c.Lotes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+
+    <section class="panel" aria-labelledby="titulo-estados-lote">
+        <h2 id="titulo-estados-lote">Estados del lote</h2>
+        <p class="suave">Cada lote pasa por estos estados; el color se repite en todas las pantallas.</p>
+        <ul class="leyenda">
+            <li>
+                <span class="etiqueta acopio">En acopio</span>
+                Recibido y pesado, todavía sin beneficiar.
+            </li>
+            <li>
+                <span class="etiqueta proceso">En proceso</span>
+                Avanzando por las etapas del beneficiado.
+            </li>
+            <li>
+                <span class="etiqueta bodega">En bodega</span>
+                Aprobado en catación y almacenado, disponible para la venta.
+            </li>
+            <li>
+                <span class="etiqueta vendido">Vendido</span>
+                Despachado al comprador; salió de bodega.
+            </li>
+            <li>
+                <span class="etiqueta rechazado">Rechazado</span>
+                No alcanzó el puntaje mínimo; no ingresa a bodega.
+            </li>
+        </ul>
+    </section>
+</div>
