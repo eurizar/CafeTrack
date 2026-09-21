@@ -19,7 +19,8 @@
     };
 }
 
-<header class="encabezado-pagina">
+<header class="encabezado-pagina encabezado-ilustrado">
+    <span class="marca-agua">@await Html.PartialAsync("_Planta", "6:150")</span>
     <h1>Café y proceso</h1>
     <p>
         Las variedades que cultiva la cooperativa, el camino que recorre cada lote
@@ -41,7 +42,7 @@
         {
             <article class="tarjeta variedad">
                 <div class="variedad-encabezado">
-                    <span class="variedad-icono">@await Html.PartialAsync("_Icono", "grano:22")</span>
+                    <span class="variedad-icono">@await Html.PartialAsync("_Planta", (v.IdVariedad % 5 + 2) + ":26")</span>
                     <div>
                         <h3>@v.Nombre</h3>
                         <p class="suave variedad-altitud">
@@ -166,18 +167,17 @@
             <line class="via" x1="1016" y1="58" x2="1034" y2="58" marker-end="url(#punta)" />
 
             @* --- Salida: mermas --- *@
-            <rect class="caja aviso-oro" x="275" y="164" width="170" height="52" rx="6" />
-            <text class="tit chico" x="360" y="188">Merma</text>
-            <text class="tabla" x="360" y="206">Mermas</text>
-            <path class="via punteada" d="M 260 96 L 260 140 Q 260 152 290 160" marker-end="url(#punta-suave)" />
-            <path class="via punteada" d="M 430 96 L 430 140 Q 430 152 405 160" marker-end="url(#punta-suave)" />
+            <rect class="caja aviso-oro" x="230" y="164" width="230" height="52" rx="6" />
+            <text class="tit chico" x="345" y="187">Merma</text>
+            <text class="tabla" x="345" y="205">Mermas</text>
+            <path class="via punteada" d="M 214 92 L 214 142 Q 214 160 246 161" marker-end="url(#punta-suave)" />
+            <path class="via punteada" d="M 476 92 L 476 142 Q 476 160 444 161" marker-end="url(#punta-suave)" />
 
             @* --- Salida: lote rechazado --- *@
             <rect class="caja aviso-cereza" x="530" y="164" width="140" height="52" rx="6" />
             <text class="tit chico" x="600" y="188">Rechazado</text>
             <text class="tabla" x="600" y="206">no entra a bodega</text>
-            <path class="via punteada" d="M 600 96 L 600 158" marker-end="url(#punta-suave)" />
-            <text class="nota izq" x="610" y="132">no aprobado</text>
+            <path class="via punteada" d="M 656 92 L 656 138 Q 656 160 626 161" marker-end="url(#punta-suave)" />
         </svg>
     </div>
 

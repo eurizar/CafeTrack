@@ -15,43 +15,58 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600&display=swap" />
     <link rel="stylesheet" href="~/css/cafetrack.css" asp-append-version="true" />
+    <script>
+        // Restaura el estado de la barra antes de pintar, para que no parpadee al navegar.
+        try {
+            if (localStorage.getItem('cafetrack-barra') === 'compacta') {
+                document.documentElement.classList.add('barra-compacta');
+            }
+        } catch (e) { /* almacenamiento no disponible: la barra queda expandida */ }
+    </script>
 </head>
 <body>
     <div class="armazon">
         <nav class="barra" aria-label="Navegación principal">
-            <a class="marca" asp-page="/Index">
-                @await Html.PartialAsync("_Icono", "grano:26")
-                <span>CaféTrack</span>
-            </a>
+            <div class="barra-cabecera">
+                <a class="marca" asp-page="/Index" title="CaféTrack">
+                    @await Html.PartialAsync("_Planta", "1:26")
+                    <span class="marca-texto">CaféTrack</span>
+                </a>
+                <button type="button" class="barra-boton" id="barra-boton"
+                        aria-expanded="true" aria-controls="menu-principal" title="Contraer la barra">
+                    @await Html.PartialAsync("_Icono", "contraer")
+                    <span class="oculto-visual">Contraer la barra</span>
+                </button>
+            </div>
 
-            <ul class="menu">
+            <ul class="menu" id="menu-principal">
                 <li>
-                    <a class="@Activo("panel")" asp-page="/Index">
+                    <a class="@Activo("panel")" asp-page="/Index" title="Panel">
                         @await Html.PartialAsync("_Icono", "panel") <span>Panel</span>
                     </a>
                 </li>
                 <li>
-                    <a class="@Activo("catalogo")" asp-page="/Catalogo">
+                    <a class="@Activo("catalogo")" asp-page="/Catalogo" title="Café y proceso">
                         @await Html.PartialAsync("_Icono", "taza") <span>Café y proceso</span>
                     </a>
                 </li>
                 <li>
-                    <a class="@Activo("productores")" asp-page="/Productores">
+                    <a class="@Activo("productores")" asp-page="/Productores" title="Productores">
                         @await Html.PartialAsync("_Icono", "productores") <span>Productores</span>
                     </a>
                 </li>
                 <li>
-                    <a class="@Activo("parcelas")" asp-page="/Parcelas">
+                    <a class="@Activo("parcelas")" asp-page="/Parcelas" title="Parcelas">
                         @await Html.PartialAsync("_Icono", "hoja") <span>Parcelas</span>
                     </a>
                 </li>
                 <li>
-                    <a class="@Activo("lotes")" asp-page="/Lotes/Index">
+                    <a class="@Activo("lotes")" asp-page="/Lotes/Index" title="Lotes">
                         @await Html.PartialAsync("_Icono", "costal") <span>Lotes</span>
                     </a>
                 </li>
                 <li>
-                    <a class="@Activo("existencias")" asp-page="/Existencias">
+                    <a class="@Activo("existencias")" asp-page="/Existencias" title="Existencias">
                         @await Html.PartialAsync("_Icono", "bascula") <span>Existencias</span>
                     </a>
                 </li>
@@ -73,6 +88,7 @@
         </main>
     </div>
 
+    <script src="~/js/barra.js" asp-append-version="true" defer></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

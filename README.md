@@ -32,6 +32,8 @@ procedimientos almacenados.
 - Acceso a datos con **Dapper + MySqlConnector**. Sin Entity Framework, sin migraciones:
   el esquema lo define únicamente el script SQL.
 - CSS propio en `wwwroot/css/cafetrack.css`. Sin Bootstrap, sin jQuery, sin frameworks JS.
+  El único JavaScript es `wwwroot/js/barra.js` (27 líneas, sin librerías): contrae la barra
+  lateral y recuerda la preferencia en `localStorage`.
 - Tipografías de Google Fonts: Fraunces, Source Sans 3, IBM Plex Mono.
 - Iconos de [Lucide](https://lucide.dev) (licencia ISC), copiados al proyecto y escritos
   en línea; ver `CafeTrack.Web/wwwroot/img/ICONOS.md`.

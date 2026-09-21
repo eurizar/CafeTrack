@@ -1,0 +1,18 @@
+@*
+    Ilustraciones de planta de café propias de la cooperativa
+    (wwwroot/img/plantas/planta1..6.svg).
+
+    Se pintan como máscara CSS y no como <img>, para que tomen el color del texto
+    con currentColor: el mismo archivo sirve sobre la barra oscura y sobre las
+    tarjetas claras.
+
+    Uso:  @await Html.PartialAsync("_Planta", "1")       -> 22 px
+          @await Html.PartialAsync("_Planta", "3:40")    -> 40 px
+*@
+@model string
+@{
+    var partes = (Model ?? "1").Split(':');
+    var numero = int.TryParse(partes[0], out var n) && n is >= 1 and <= 6 ? n : 1;
+    var tam = partes.Length > 1 && int.TryParse(partes[1], out var t) ? t : 22;
+}
+<span class="planta planta-@numero" style="width:@(tam)px;height:@(tam)px" aria-hidden="true"></span>
