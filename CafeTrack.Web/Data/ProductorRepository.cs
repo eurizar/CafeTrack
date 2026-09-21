@@ -27,18 +27,21 @@ public sealed class ProductorRepository : IProductorRepository
                p.comunidad                                   AS comunidad,
                p.fecha_ingreso_coop                          AS fecha_ingreso_coop,
                p.activo                                      AS activo,
-               COUNT(DISTINCT pa.id_parcela)                 AS total_parcelas,
-               COUNT(DISTINCT l.id_lote)                     AS total_lotes,
-               COALESCE(SUM(DISTINCT pa.area_manzanas), 0)   AS area_total_manzanas
+               (SELECT COUNT(*)
+                  FROM Parcelas pa
+                 WHERE pa.id_productor = p.id_productor)      AS total_parcelas,
+               (SELECT COALESCE(SUM(pa.area_manzanas), 0)
+                  FROM Parcelas pa
+                 WHERE pa.id_productor = p.id_productor)      AS area_total_manzanas,
+               (SELECT COUNT(*)
+                  FROM Lotes l
+                  JOIN Cosechas c  ON c.id_cosecha  = l.id_cosecha
+                  JOIN Parcelas pa ON pa.id_parcela = c.id_parcela
+                 WHERE pa.id_productor = p.id_productor)      AS total_lotes
           FROM Productores p
-          LEFT JOIN Parcelas pa ON pa.id_productor = p.id_productor
-          LEFT JOIN Cosechas c  ON c.id_parcela    = pa.id_parcela
-          LEFT JOIN Lotes    l  ON l.id_cosecha    = c.id_cosecha
          WHERE (@busqueda IS NULL
                 OR p.nombre    LIKE CONCAT('%', @busqueda, '%')
                 OR p.comunidad LIKE CONCAT('%', @busqueda, '%'))
-         GROUP BY p.id_productor, p.nombre, p.telefono, p.comunidad,
-                  p.fecha_ingreso_coop, p.activo
          ORDER BY p.nombre;
         """;
 
