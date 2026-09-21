@@ -1,0 +1,140 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Panel";
+    ViewData["Pagina"] = "panel";
+    var panel = Model.Panel;
+}
+
+<header class="encabezado-pagina">
+    <h1>Panel de la cooperativa</h1>
+    <p>
+        Resumen de existencias y trazabilidad
+        @if (panel.TemporadaEnCurso is not null)
+        {
+            <text>· temporada <strong>@panel.TemporadaEnCurso</strong> en curso</text>
+            @if (panel.PrecioBaseQuintal is not null)
+            {
+                <text> · precio base <span class="mono">@Formato.Moneda(panel.PrecioBaseQuintal)</span> por quintal</text>
+            }
+        }
+    </p>
+</header>
+
+<section class="rejilla" aria-label="Cifras generales">
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">@await Html.PartialAsync("_Icono", "productores:16") Productores activos</h2>
+        <p class="cifra">@panel.ProductoresActivos</p>
+        <p class="tarjeta-nota">@panel.ParcelasActivas parcelas en producción</p>
+    </article>
+
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">@await Html.PartialAsync("_Icono", "costal:16") Lotes registrados</h2>
+        <p class="cifra">@panel.TotalLotes</p>
+        <p class="tarjeta-nota">Trazabilidad completa por lote</p>
+    </article>
+
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">@await Html.PartialAsync("_Icono", "bascula:16") Quintales en bodega</h2>
+        <p class="cifra">@Formato.Quintales(panel.QuintalesEnBodega)<span class="cifra-unidad">qq</span></p>
+        <p class="tarjeta-nota">Calculado desde los movimientos de bodega</p>
+    </article>
+
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">@await Html.PartialAsync("_Icono", "quetzal:16") Ventas de la temporada</h2>
+        <p class="cifra">@Formato.Moneda(panel.ValorVentasTemporada)</p>
+        <p class="tarjeta-nota">Suma de las ventas de la temporada en curso</p>
+    </article>
+</section>
+
+<div class="dos-columnas">
+    <section class="panel" aria-labelledby="titulo-estados">
+        <h2 id="titulo-estados">Lotes por estado</h2>
+
+        @if (panel.LotesPorEstado.Count == 0)
+        {
+            <p class="sin-datos">Todavía no hay lotes registrados.</p>
+        }
+        else
+        {
+            <div class="tabla-envoltura" style="box-shadow:none;border:0;">
+                <table class="datos">
+                    <thead>
+                        <tr>
+                            <th scope="col">Estado</th>
+                            <th scope="col" class="num">Lotes</th>
+                            <th scope="col" class="num">Quintales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fila in panel.LotesPorEstado)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="etiqueta @Formato.ClaseEstadoLote(fila.EstadoLote)">@fila.EstadoLote</span>
+                                </td>
+                                <td class="num">@fila.Cantidad</td>
+                                <td class="num">@Formato.Quintales(fila.Quintales)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td class="num">@panel.LotesPorEstado.Sum(f => f.Cantidad)</td>
+                            <td class="num">@Formato.Quintales(panel.LotesPorEstado.Sum(f => f.Quintales))</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </section>
+
+    <section class="panel" aria-labelledby="titulo-bodegas">
+        <h2 id="titulo-bodegas">Ocupación de bodegas</h2>
+
+        @if (panel.Bodegas.Count == 0)
+        {
+            <p class="sin-datos">No hay bodegas activas.</p>
+        }
+        else
+        {
+            foreach (var bodega in panel.Bodegas)
+            {
+                var pct = bodega.PorcentajeOcupacion;
+                var clase = pct is null ? string.Empty
+                    : pct >= 90 ? "critico"
+                    : pct >= 75 ? "alerta"
+                    : string.Empty;
+
+                <div class="bodega">
+                    <div class="bodega-fila">
+                        <span class="bodega-nombre">@bodega.Nombre</span>
+                        <span class="num">
+                            @Formato.Quintales(bodega.ExistenciaQuintales)
+                            @if (bodega.CapacidadQuintales is not null)
+                            {
+                                <span class="suave"> / @Formato.Quintales(bodega.CapacidadQuintales) qq</span>
+                            }
+                        </span>
+                    </div>
+                    <div class="medidor" role="img"
+                         aria-label="Ocupación de @bodega.Nombre: @Formato.Porcentaje(pct)">
+                        <div class="medidor-relleno @clase" style="width:@(bodega.PorcentajeBarra.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div>
+                    </div>
+                    <p class="tarjeta-nota">
+                        @Formato.Porcentaje(pct) de la capacidad
+                        @if (!string.IsNullOrWhiteSpace(bodega.Ubicacion))
+                        {
+                            <text> · @bodega.Ubicacion</text>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(bodega.Responsable))
+                        {
+                            <text> · responsable: @bodega.Responsable</text>
+                        }
+                    </p>
+                </div>
+            }
+        }
+    </section>
+</div>

@@ -1,0 +1,119 @@
+@*
+    Iconos SVG de trazo simple, escritos en linea para no depender de ninguna
+    libreria. Uso: @await Html.PartialAsync("_Icono", "grano")  (o "grano:26" para 26 px)
+    El tamano se pasa como "nombre:24" cuando se necesita mas grande.
+*@
+@model string
+@{
+    var partes = (Model ?? string.Empty).Split(':');
+    var nombre = partes[0];
+    var tam = partes.Length > 1 && int.TryParse(partes[1], out var t) ? t : 18;
+}
+
+@switch (nombre)
+{
+    case "grano":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <ellipse cx="12" cy="12" rx="7" ry="9" transform="rotate(-25 12 12)" />
+            <path d="M8.6 5.2c2.8 3.4 3.4 10.1 1.1 14.1" />
+        </svg>
+        break;
+
+    case "panel":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <rect x="3" y="3" width="8" height="8" rx="1" />
+            <rect x="13" y="3" width="8" height="5" rx="1" />
+            <rect x="3" y="13" width="8" height="8" rx="1" />
+            <rect x="13" y="10" width="8" height="11" rx="1" />
+        </svg>
+        break;
+
+    case "productores":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="9" cy="8" r="3.2" />
+            <path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5" />
+            <path d="M16 5.5a3 3 0 0 1 0 5.6" />
+            <path d="M17.2 14.8c2 .8 3.3 2.6 3.3 5.2" />
+        </svg>
+        break;
+
+    case "hoja":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M20 4c0 8.3-4.7 13-12 13H4.6C4.6 8.7 9.3 4 17 4Z" />
+            <path d="M4 20c2.5-4.6 6-7.6 10.5-9.4" />
+        </svg>
+        break;
+
+    case "costal":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M8 3h8l-1.5 3.2c2.6 1.7 4 4.4 4 8.1 0 4.2-2.2 6.7-6.5 6.7S5.5 18.5 5.5 14.3c0-3.7 1.4-6.4 4-8.1Z" />
+            <path d="M8.6 6.2h6.8" />
+        </svg>
+        break;
+
+    case "bascula":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M12 4.2v15.4" />
+            <path d="M4.5 20h15" />
+            <path d="M4.2 7.6h15.6" />
+            <path d="M7.4 7.6 4.2 14.2h6.4Z" />
+            <path d="M16.6 7.6l-3.2 6.6h6.4Z" />
+        </svg>
+        break;
+
+    case "reloj":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="8.5" />
+            <path d="M12 7.2V12l3 2" />
+        </svg>
+        break;
+
+    case "taza":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M4 8h13v5.5A5.5 5.5 0 0 1 11.5 19h-2A5.5 5.5 0 0 1 4 13.5Z" />
+            <path d="M17 9.2h1.8a2.4 2.4 0 0 1 0 4.8H17" />
+            <path d="M8 3.2c-.6 1 -.6 1.8 0 2.6M12 3.2c-.6 1 -.6 1.8 0 2.6" />
+        </svg>
+        break;
+
+    case "camion":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M2.8 6.5h10.4v9.8H2.8Z" />
+            <path d="M13.2 9.8h3.6l2.6 3v3.5h-6.2Z" />
+            <circle cx="7" cy="18.3" r="1.8" />
+            <circle cx="16.4" cy="18.3" r="1.8" />
+        </svg>
+        break;
+
+    case "quetzal":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="8.5" />
+            <path d="M9.5 8.5h3.2a2.6 2.6 0 0 1 0 5.2H9.5V8.5m0 5.2v3.1m2.2-3.1 2.4 3.1" />
+        </svg>
+        break;
+
+    case "buscar":
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m15.4 15.4 4.3 4.3" />
+        </svg>
+        break;
+
+    default:
+        <svg width="@tam" height="@tam" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="8.5" />
+        </svg>
+        break;
+}

@@ -1,0 +1,409 @@
+@page "{codigo}"
+@model CafeTrack.Web.Pages.Lotes.DetalleModel
+@{
+    var d = Model.Detalle;
+    var lote = d.Lote;
+    ViewData["Title"] = $"Lote {lote.CodigoLote}";
+    ViewData["Pagina"] = "lotes";
+
+    var venta = d.Ventas.FirstOrDefault();
+    var pago = d.Pagos.FirstOrDefault();
+    var aprobado = d.Calidad?.AprobadoVenta == true;
+}
+
+<header class="encabezado-pagina">
+    <p class="resumen-filtro" style="margin-bottom:.35rem">
+        <a asp-page="/Lotes/Index">Lotes</a> · trazabilidad
+    </p>
+    <div class="titulo-lote">
+        <h1 class="codigo">@lote.CodigoLote</h1>
+        <span class="etiqueta @Formato.ClaseEstadoLote(lote.EstadoLote)">@lote.EstadoLote</span>
+        <span class="etiqueta @Formato.ClaseCertificacion(lote.CertificacionAplicable)">
+            @Formato.Enum(lote.CertificacionAplicable)
+        </span>
+    </div>
+    <p>
+        @lote.Productor · @Formato.Texto(lote.Comunidad) · parcela @lote.Parcela ·
+        variedad @lote.Variedad · temporada @lote.Anio
+    </p>
+</header>
+
+<section class="panel" aria-label="Ficha del lote">
+    <dl class="ficha">
+        <div>
+            <dt>Peso inicial</dt>
+            <dd class="mono">@Formato.Quintales(lote.PesoInicialQuintales) qq</dd>
+        </div>
+        <div>
+            <dt>Peso actual</dt>
+            <dd class="mono">@Formato.Quintales(lote.PesoActualQuintales) qq</dd>
+        </div>
+        <div>
+            <dt>Merma acumulada</dt>
+            <dd class="mono">@Formato.Quintales(d.MermaTotal) qq</dd>
+        </div>
+        <div>
+            <dt>Existencia en bodega</dt>
+            <dd class="mono">@Formato.Quintales(d.ExistenciaEnBodega) qq</dd>
+        </div>
+        <div>
+            <dt>Altitud de la parcela</dt>
+            <dd class="mono">@(lote.AltitudMetros is null ? "—" : lote.AltitudMetros + " m")</dd>
+        </div>
+        <div>
+            <dt>Precio base temporada</dt>
+            <dd class="mono">@Formato.Moneda(lote.PrecioBaseQuintal)</dd>
+        </div>
+    </dl>
+</section>
+
+<section class="panel" aria-labelledby="titulo-linea">
+    <h2 id="titulo-linea">Línea de tiempo</h2>
+    <p class="suave" style="margin-bottom:1.25rem">
+        Las etapas atenuadas todavía no se han registrado para este lote.
+    </p>
+
+    <ol class="linea">
+
+        @* 1. Cosecha ------------------------------------------------------ *@
+        <li class="hito cumplido">
+            <div class="hito-titulo">
+                @await Html.PartialAsync("_Icono", "hoja:18")
+                Cosecha
+                <span class="hito-fecha">@Formato.Fecha(lote.FechaRecoleccion)</span>
+            </div>
+            <div class="hito-cuerpo">
+                <dl>
+                    <dt>Parcela</dt>
+                    <dd>@lote.Parcela @(string.IsNullOrWhiteSpace(lote.UbicacionParcela) ? "" : $"· {lote.UbicacionParcela}")</dd>
+                    <dt>Peso bruto</dt>
+                    <dd class="mono">@Formato.Quintales(lote.PesoBrutoQuintales) qq · @Formato.Numero(lote.PesoBrutoKg) kg</dd>
+                    <dt>Humedad</dt>
+                    <dd class="mono">@Formato.Porcentaje(lote.HumedadPorcentaje)</dd>
+                    <dt>Recolector</dt>
+                    <dd>@Formato.Texto(lote.Recolector)</dd>
+                </dl>
+                @if (!string.IsNullOrWhiteSpace(lote.ObservacionesCosecha))
+                {
+                    <p class="suave" style="margin-top:.4rem">@lote.ObservacionesCosecha</p>
+                }
+            </div>
+        </li>
+
+        @* 2. Acopio ------------------------------------------------------- *@
+        @if (d.Acopio is { } acopio)
+        {
+            var mermaAcopio = lote.PesoBrutoQuintales - acopio.PesoRecibidoQuintales;
+            var pctAcopio = lote.PesoBrutoQuintales > 0
+                ? Math.Round(mermaAcopio / lote.PesoBrutoQuintales * 100m, 2)
+                : 0m;
+
+            <li class="hito @(pctAcopio > 5 ? "alerta" : "cumplido")">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "camion:18")
+                    Acopio
+                    <span class="hito-fecha">@Formato.FechaHora(acopio.FechaRecepcion)</span>
+                </div>
+                <div class="hito-cuerpo">
+                    <dl>
+                        <dt>Peso recibido</dt>
+                        <dd class="mono">@Formato.Quintales(acopio.PesoRecibidoQuintales) qq</dd>
+                        <dt>Merma de transporte</dt>
+                        <dd class="mono">@Formato.Quintales(mermaAcopio) qq · @Formato.Porcentaje(pctAcopio, 2)</dd>
+                        <dt>Condición</dt>
+                        <dd>@Formato.Enum(acopio.CondicionTransporte)</dd>
+                        <dt>Responsable</dt>
+                        <dd>@acopio.ResponsableRecepcion</dd>
+                    </dl>
+                    @if (!string.IsNullOrWhiteSpace(acopio.Observaciones))
+                    {
+                        <p class="suave" style="margin-top:.4rem">@acopio.Observaciones</p>
+                    }
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="hito pendiente">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "camion:18")
+                    Acopio
+                    <span class="hito-fecha">pendiente</span>
+                </div>
+                <div class="hito-cuerpo">El lote todavía no ha sido recibido en el centro de acopio.</div>
+            </li>
+        }
+
+        @* 3. Etapas del beneficiado --------------------------------------- *@
+        @foreach (var etapa in d.Etapas)
+        {
+            <li class="hito @(etapa.EnCurso ? "alerta" : etapa.Ocurrio ? "cumplido" : "pendiente")">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "reloj:18")
+                    @etapa.Orden. @Formato.Enum(etapa.Nombre)
+                    <span class="hito-fecha">
+                        @if (etapa.Ocurrio)
+                        {
+                            @Formato.FechaHora(etapa.FechaInicio)
+                            @(etapa.FechaFin is null ? " · en curso" : " → " + Formato.FechaHora(etapa.FechaFin))
+                        }
+                        else
+                        {
+                            <text>pendiente</text>
+                        }
+                    </span>
+                </div>
+                <div class="hito-cuerpo">
+                    @if (etapa.Ocurrio)
+                    {
+                        <dl>
+                            <dt>Peso entrada</dt>
+                            <dd class="mono">@Formato.Quintales(etapa.PesoEntradaQuintales) qq</dd>
+                            <dt>Peso salida</dt>
+                            <dd class="mono">
+                                @Formato.Quintales(etapa.PesoSalidaQuintales) qq
+                                @if (etapa.MermaEtapa is { } me && me > 0)
+                                {
+                                    <span class="suave">(−@Formato.Quintales(me) qq)</span>
+                                }
+                            </dd>
+                            <dt>Duración</dt>
+                            <dd class="mono">
+                                @(etapa.HorasReales is null ? "en curso" : Formato.Numero(etapa.HorasReales, 1) + " h")
+                                @if (etapa.DuracionMinHoras is not null || etapa.DuracionMaxHoras is not null)
+                                {
+                                    <span class="suave">
+                                        (rango @Formato.Numero(etapa.DuracionMinHoras, 0)–@Formato.Numero(etapa.DuracionMaxHoras, 0) h)
+                                    </span>
+                                }
+                            </dd>
+                            <dt>Responsable</dt>
+                            <dd>@Formato.Texto(etapa.Responsable)</dd>
+                        </dl>
+                    }
+                    else
+                    {
+                        <span>@Formato.Texto(etapa.Descripcion)</span>
+                    }
+                </div>
+            </li>
+        }
+
+        @* 4. Calidad ------------------------------------------------------ *@
+        @if (d.Calidad is { } calidad)
+        {
+            <li class="hito @(calidad.AprobadoVenta ? "exito" : "error")">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "taza:18")
+                    Evaluación de calidad
+                    <span class="hito-fecha">@Formato.FechaHora(calidad.FechaEvaluacion)</span>
+                    <span class="etiqueta @(calidad.AprobadoVenta ? "bodega" : "rechazado")">
+                        @(calidad.AprobadoVenta ? "Aprobado" : "Rechazado")
+                    </span>
+                </div>
+                <div class="hito-cuerpo">
+                    <dl>
+                        <dt>Puntaje SCA</dt>
+                        <dd class="mono">@Formato.Numero(calidad.PuntajeSca)</dd>
+                        <dt>Altura de taza</dt>
+                        <dd>@Formato.Texto(calidad.AlturaTaza)</dd>
+                        <dt>Catador</dt>
+                        <dd>@calidad.Evaluador</dd>
+                        <dt>Defectos</dt>
+                        <dd>@Formato.Texto(calidad.DefectosPrincipales)</dd>
+                    </dl>
+                    @if (!string.IsNullOrWhiteSpace(calidad.PerfilSensorial))
+                    {
+                        <p class="suave" style="margin-top:.4rem">@calidad.PerfilSensorial</p>
+                    }
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="hito pendiente">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "taza:18")
+                    Evaluación de calidad
+                    <span class="hito-fecha">pendiente</span>
+                </div>
+                <div class="hito-cuerpo">El lote aún no ha pasado por catación.</div>
+            </li>
+        }
+
+        @* 5. Bodega ------------------------------------------------------- *@
+        @if (d.Movimientos.Count > 0)
+        {
+            <li class="hito cumplido">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "bascula:18")
+                    Bodega
+                    <span class="hito-fecha">
+                        @Formato.FechaHora(d.Movimientos[0].FechaMovimiento) →
+                        @Formato.FechaHora(d.Movimientos[^1].FechaMovimiento)
+                    </span>
+                </div>
+                <div class="hito-cuerpo">
+                    <table class="datos" style="background:transparent">
+                        <thead>
+                            <tr>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Bodega</th>
+                                <th scope="col">Movimiento</th>
+                                <th scope="col" class="num">Cantidad</th>
+                                <th scope="col">Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in d.Movimientos)
+                            {
+                                <tr>
+                                    <td class="mono">@Formato.FechaHora(m.FechaMovimiento)</td>
+                                    <td>@m.Bodega</td>
+                                    <td>@Formato.Enum(m.TipoMovimiento)</td>
+                                    <td class="num">
+                                        @(m.EsEntrada ? "+" : "−")@Formato.Quintales(m.CantidadQuintales)
+                                    </td>
+                                    <td>@m.Responsable</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3">Existencia</td>
+                                <td class="num">@Formato.Quintales(d.ExistenciaEnBodega) qq</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="hito pendiente">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "bascula:18")
+                    Bodega
+                    <span class="hito-fecha">@(aprobado ? "pendiente" : "no aplica")</span>
+                </div>
+                <div class="hito-cuerpo">
+                    @(aprobado
+                        ? "El lote todavía no ha ingresado a bodega."
+                        : "Solo ingresan a bodega los lotes aprobados en catación.")
+                </div>
+            </li>
+        }
+
+        @* 6. Venta -------------------------------------------------------- *@
+        @if (venta is not null)
+        {
+            <li class="hito cumplido">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "costal:18")
+                    Venta
+                    <span class="hito-fecha">@Formato.FechaHora(venta.FechaVenta)</span>
+                    <span class="etiqueta @(venta.EstadoPago == "Pagado" ? "bodega" : "acopio")">@venta.EstadoPago</span>
+                </div>
+                <div class="hito-cuerpo">
+                    <dl>
+                        <dt>Comprador</dt>
+                        <dd>@venta.Comprador · @venta.TipoComprador @(string.IsNullOrWhiteSpace(venta.PaisDestino) ? "" : $"· {venta.PaisDestino}")</dd>
+                        <dt>Cantidad</dt>
+                        <dd class="mono">@Formato.Quintales(venta.PesoVendidoQuintales) qq</dd>
+                        <dt>Precio</dt>
+                        <dd class="mono">@Formato.Moneda(venta.PrecioQuintal) / qq</dd>
+                        <dt>Total</dt>
+                        <dd class="mono"><strong>@Formato.Moneda(venta.TotalVenta)</strong></dd>
+                        <dt>Forma de pago</dt>
+                        <dd>@Formato.Enum(venta.FormaPago)</dd>
+                    </dl>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="hito pendiente">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "costal:18")
+                    Venta
+                    <span class="hito-fecha">pendiente</span>
+                </div>
+                <div class="hito-cuerpo">El lote todavía no se ha vendido.</div>
+            </li>
+        }
+
+        @* 7. Pago al productor -------------------------------------------- *@
+        @if (pago is not null)
+        {
+            <li class="hito exito">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "quetzal:18")
+                    Pago al productor
+                    <span class="hito-fecha">@Formato.FechaHora(pago.FechaPago)</span>
+                </div>
+                <div class="hito-cuerpo">
+                    <dl>
+                        <dt>Productor</dt>
+                        <dd>@pago.Productor</dd>
+                        <dt>Precio pagado</dt>
+                        <dd class="mono">@Formato.Moneda(pago.PrecioPagadoQuintal) / qq</dd>
+                        <dt>Monto</dt>
+                        <dd class="mono">@Formato.Moneda(pago.MontoPagado)</dd>
+                        <dt>Deducciones</dt>
+                        <dd class="mono">@Formato.Moneda(pago.Deducciones)</dd>
+                        <dt>Neto</dt>
+                        <dd class="mono"><strong>@Formato.Moneda(pago.MontoNeto)</strong></dd>
+                        <dt>Método</dt>
+                        <dd>@pago.MetodoPago @(string.IsNullOrWhiteSpace(pago.Comprobante) ? "" : $"· {pago.Comprobante}")</dd>
+                    </dl>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="hito pendiente">
+                <div class="hito-titulo">
+                    @await Html.PartialAsync("_Icono", "quetzal:18")
+                    Pago al productor
+                    <span class="hito-fecha">pendiente</span>
+                </div>
+                <div class="hito-cuerpo">Aún no se ha liquidado el pago de este lote.</div>
+            </li>
+        }
+    </ol>
+</section>
+
+@if (d.Mermas.Count > 0)
+{
+    <section class="panel" aria-labelledby="titulo-mermas">
+        <h2 id="titulo-mermas">Mermas registradas</h2>
+        <table class="datos" style="background:transparent">
+            <thead>
+                <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Etapa</th>
+                    <th scope="col" class="num">Peso perdido</th>
+                    <th scope="col" class="num">%</th>
+                    <th scope="col">Responsable</th>
+                    <th scope="col">Justificación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in d.Mermas)
+                {
+                    <tr>
+                        <td class="mono">@Formato.FechaHora(m.FechaRegistro)</td>
+                        <td>@m.TipoMerma</td>
+                        <td>@m.EtapaOrigen</td>
+                        <td class="num">@Formato.Quintales(m.PesoPerdidoQuintales)</td>
+                        <td class="num">@Formato.Numero(m.PorcentajeMerma)</td>
+                        <td>@m.Responsable</td>
+                        <td>@Formato.Texto(m.Justificacion)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+}

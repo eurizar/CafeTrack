@@ -1,0 +1,114 @@
+@page
+@model CafeTrack.Web.Pages.Lotes.IndexModel
+@{
+    ViewData["Title"] = "Lotes";
+    ViewData["Pagina"] = "lotes";
+}
+
+<header class="encabezado-pagina">
+    <h1>Lotes</h1>
+    <p>Cada lote conserva su historia completa, del corte en la parcela hasta la venta.</p>
+</header>
+
+<form class="filtros" method="get">
+    <div class="campo">
+        <label for="q">Buscar</label>
+        <input type="search" id="q" name="q" value="@Model.Busqueda"
+               placeholder="Código de lote, productor o comunidad" autocomplete="off" />
+    </div>
+    <div class="campo">
+        <label for="estado">Estado</label>
+        <select id="estado" name="estado">
+            <option value="">Todos</option>
+            @foreach (var e in Model.Estados)
+            {
+                <option value="@e" selected="@(Model.Estado == e)">@e</option>
+            }
+        </select>
+    </div>
+    <div class="campo">
+        <label for="anio">Temporada</label>
+        <select id="anio" name="anio">
+            <option value="">Todas</option>
+            @foreach (var a in Model.Anios)
+            {
+                <option value="@a" selected="@(Model.Anio == a)">@a</option>
+            }
+        </select>
+    </div>
+    <button class="boton" type="submit">Filtrar</button>
+    @if (Model.HayFiltros)
+    {
+        <a class="boton secundario" asp-page="/Lotes/Index">Limpiar</a>
+    }
+</form>
+
+<p class="resumen-filtro">
+    @Model.Lotes.Count lote(s) ·
+    @Formato.Quintales(Model.Lotes.Sum(l => l.PesoActualQuintales)) qq de peso actual
+</p>
+
+<div class="tabla-envoltura">
+    @if (Model.Lotes.Count == 0)
+    {
+        <p class="sin-datos">No hay lotes que coincidan con el filtro.</p>
+    }
+    else
+    {
+        <table class="datos">
+            <thead>
+                <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Productor</th>
+                    <th scope="col">Variedad</th>
+                    <th scope="col" class="num">Temporada</th>
+                    <th scope="col" class="num">Peso inicial</th>
+                    <th scope="col" class="num">Peso actual</th>
+                    <th scope="col" class="num">Merma</th>
+                    <th scope="col">Certificación</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var l in Model.Lotes)
+                {
+                    <tr>
+                        <td>
+                            <a class="mono" asp-page="/Lotes/Detalle" asp-route-codigo="@l.CodigoLote">@l.CodigoLote</a>
+                            <br /><span class="suave">@Formato.Fecha(l.FechaRecoleccion)</span>
+                        </td>
+                        <td>
+                            @l.Productor
+                            @if (!string.IsNullOrWhiteSpace(l.Comunidad))
+                            {
+                                <br /><span class="suave">@l.Comunidad</span>
+                            }
+                        </td>
+                        <td>@l.Variedad</td>
+                        <td class="num">@l.Anio</td>
+                        <td class="num">@Formato.Quintales(l.PesoInicialQuintales)</td>
+                        <td class="num">@Formato.Quintales(l.PesoActualQuintales)</td>
+                        <td class="num">@Formato.Porcentaje(l.MermaPorcentaje, 2)</td>
+                        <td>
+                            <span class="etiqueta @Formato.ClaseCertificacion(l.CertificacionAplicable)">
+                                @Formato.Enum(l.CertificacionAplicable)
+                            </span>
+                        </td>
+                        <td>
+                            <span class="etiqueta @Formato.ClaseEstadoLote(l.EstadoLote)">@l.EstadoLote</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Total</td>
+                    <td class="num">@Formato.Quintales(Model.Lotes.Sum(l => l.PesoInicialQuintales))</td>
+                    <td class="num">@Formato.Quintales(Model.Lotes.Sum(l => l.PesoActualQuintales))</td>
+                    <td class="num">@Formato.Quintales(Model.Lotes.Sum(l => l.MermaAcumulada))</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+</div>

@@ -1,0 +1,31 @@
+@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="pagina-error">
+    <div class="grano">
+        @await Html.PartialAsync("_Icono", "grano:56")
+    </div>
+
+    <h1>@Model.Titulo</h1>
+    <p>@Model.Mensaje</p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Detalle))
+    {
+        <p class="suave mono">@Model.Detalle</p>
+    }
+
+    @if (Model.MostrarRequestId)
+    {
+        <p class="suave">
+            Referencia: <span class="mono">@Model.RequestId</span>
+        </p>
+    }
+
+    <div class="acciones">
+        <a class="boton" asp-page="/Index">Volver al panel</a>
+        <a class="boton secundario" asp-page="/Lotes/Index">Ver lotes</a>
+    </div>
+</div>

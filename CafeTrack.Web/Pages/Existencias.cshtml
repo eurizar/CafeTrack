@@ -1,0 +1,107 @@
+@page
+@model ExistenciasModel
+@{
+    ViewData["Title"] = "Existencias";
+    ViewData["Pagina"] = "existencias";
+    var porBodega = Model.Filas.GroupBy(f => new { f.IdBodega, f.Bodega }).ToList();
+}
+
+<header class="encabezado-pagina">
+    <h1>Existencias en bodega</h1>
+    <p>
+        Kardex resumido por bodega y lote. La existencia no se almacena en ninguna columna:
+        se calcula sumando las entradas y restando las salidas de <span class="mono">MovimientosBodega</span>.
+    </p>
+</header>
+
+<section class="rejilla" aria-label="Ocupación de bodegas">
+    @foreach (var b in Model.Bodegas)
+    {
+        var pct = b.PorcentajeOcupacion;
+        var clase = pct is null ? string.Empty : pct >= 90 ? "critico" : pct >= 75 ? "alerta" : string.Empty;
+
+        <article class="tarjeta">
+            <h2 class="tarjeta-titulo">@await Html.PartialAsync("_Icono", "bascula:16") @b.Nombre</h2>
+            <p class="cifra">@Formato.Quintales(b.ExistenciaQuintales)<span class="cifra-unidad">qq</span></p>
+            <div class="medidor" role="img" aria-label="Ocupación: @Formato.Porcentaje(pct)">
+                <div class="medidor-relleno @clase"
+                     style="width:@(b.PorcentajeBarra.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div>
+            </div>
+            <p class="tarjeta-nota">
+                @Formato.Porcentaje(pct) de @Formato.Quintales(b.CapacidadQuintales) qq
+            </p>
+        </article>
+    }
+</section>
+
+<form class="filtros" method="get">
+    <div class="campo">
+        <label for="bodega">Bodega</label>
+        <select id="bodega" name="bodega">
+            <option value="">Todas</option>
+            @foreach (var b in Model.Bodegas)
+            {
+                <option value="@b.IdBodega" selected="@(Model.IdBodega == b.IdBodega)">@b.Nombre</option>
+            }
+        </select>
+    </div>
+    <button class="boton" type="submit">Filtrar</button>
+    @if (Model.IdBodega is not null)
+    {
+        <a class="boton secundario" asp-page="/Existencias">Limpiar</a>
+    }
+</form>
+
+@if (porBodega.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">No hay movimientos de bodega registrados.</p>
+    </div>
+}
+else
+{
+    foreach (var grupo in porBodega)
+    {
+        <div class="tabla-envoltura" style="margin-bottom:1.5rem">
+            <table class="datos">
+                <caption><strong>@grupo.Key.Bodega</strong> — kardex por lote</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Lote</th>
+                        <th scope="col">Productor</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col" class="num">Entradas</th>
+                        <th scope="col" class="num">Salidas</th>
+                        <th scope="col" class="num">Existencia</th>
+                        <th scope="col">Último movimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var f in grupo.OrderBy(f => f.CodigoLote))
+                    {
+                        <tr>
+                            <td>
+                                <a class="mono" asp-page="/Lotes/Detalle" asp-route-codigo="@f.CodigoLote">@f.CodigoLote</a>
+                            </td>
+                            <td>@f.Productor</td>
+                            <td><span class="etiqueta @Formato.ClaseEstadoLote(f.EstadoLote)">@f.EstadoLote</span></td>
+                            <td class="num">@Formato.Quintales(f.Entradas)</td>
+                            <td class="num">@Formato.Quintales(f.Salidas)</td>
+                            <td class="num"><strong>@Formato.Quintales(f.Existencia)</strong></td>
+                            <td class="mono">@Formato.FechaHora(f.UltimoMovimiento)</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total en @grupo.Key.Bodega</td>
+                        <td class="num">@Formato.Quintales(grupo.Sum(f => f.Entradas))</td>
+                        <td class="num">@Formato.Quintales(grupo.Sum(f => f.Salidas))</td>
+                        <td class="num">@Formato.Quintales(grupo.Sum(f => f.Existencia))</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+}

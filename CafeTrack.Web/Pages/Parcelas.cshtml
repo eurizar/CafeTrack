@@ -1,0 +1,92 @@
+@page
+@model ParcelasModel
+@{
+    ViewData["Title"] = "Parcelas";
+    ViewData["Pagina"] = "parcelas";
+}
+
+<header class="encabezado-pagina">
+    <h1>Parcelas</h1>
+    <p>Terrenos en producción, con variedad sembrada, altitud y certificación vigente.</p>
+</header>
+
+<form class="filtros" method="get">
+    <div class="campo">
+        <label for="q">Buscar</label>
+        <input type="search" id="q" name="q" value="@Model.Busqueda"
+               placeholder="Parcela, productor, comunidad o variedad" autocomplete="off" />
+    </div>
+    <div class="campo">
+        <label for="cert">Certificación</label>
+        <select id="cert" name="cert">
+            <option value="">Todas</option>
+            @foreach (var c in Model.Certificaciones)
+            {
+                <option value="@c" selected="@(Model.Certificacion == c)">@Formato.Enum(c)</option>
+            }
+        </select>
+    </div>
+    <button class="boton" type="submit">Filtrar</button>
+    @if (!string.IsNullOrWhiteSpace(Model.Busqueda) || !string.IsNullOrWhiteSpace(Model.Certificacion))
+    {
+        <a class="boton secundario" asp-page="/Parcelas">Limpiar</a>
+    }
+</form>
+
+<p class="resumen-filtro">
+    @Model.Parcelas.Count parcela(s) ·
+    @Formato.Numero(Model.Parcelas.Sum(p => p.AreaManzanas ?? 0)) manzanas en total
+</p>
+
+<div class="tabla-envoltura">
+    @if (Model.Parcelas.Count == 0)
+    {
+        <p class="sin-datos">No hay parcelas que coincidan con el filtro.</p>
+    }
+    else
+    {
+        <table class="datos">
+            <thead>
+                <tr>
+                    <th scope="col">Parcela</th>
+                    <th scope="col">Productor</th>
+                    <th scope="col">Comunidad</th>
+                    <th scope="col">Variedad</th>
+                    <th scope="col" class="num">Altitud (m)</th>
+                    <th scope="col" class="num">Área (mz)</th>
+                    <th scope="col">Certificación</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Parcelas)
+                {
+                    <tr>
+                        <td>
+                            <strong>@p.Nombre</strong>
+                            @if (!string.IsNullOrWhiteSpace(p.Ubicacion))
+                            {
+                                <br /><span class="suave">@p.Ubicacion</span>
+                            }
+                        </td>
+                        <td>@p.Productor</td>
+                        <td>@Formato.Texto(p.Comunidad)</td>
+                        <td>@p.Variedad</td>
+                        <td class="num">@(p.AltitudMetros?.ToString() ?? "—")</td>
+                        <td class="num">@Formato.Numero(p.AreaManzanas)</td>
+                        <td>
+                            <span class="etiqueta @Formato.ClaseCertificacion(p.Certificacion)">
+                                @Formato.Enum(p.Certificacion)
+                            </span>
+                        </td>
+                        <td>
+                            <span class="etiqueta @(p.Activa ? "bodega" : "neutro")">
+                                @(p.Activa ? "Activa" : "Inactiva")
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

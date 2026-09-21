@@ -1,0 +1,22 @@
+{
+  "//": "ARCHIVO DE REFERENCIA. No copie credenciales reales a un archivo versionado.",
+  "//_uso": "La contrasena vive solo en User Secrets: dotnet user-secrets set \"ConnectionStrings:CafeTrack\" \"...\"",
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+
+  "ConnectionStrings": {
+    "CafeTrack": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_dev;Password=CAMBIAR;",
+
+    "//_fase3": "A partir de la Fase 3 cada rol usara su propio usuario de MySQL:",
+    "CafeTrack:admin": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_admin;Password=CAMBIAR;",
+    "CafeTrack:gerente": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_gerente;Password=CAMBIAR;",
+    "CafeTrack:acopiador": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_acopiador;Password=CAMBIAR;",
+    "CafeTrack:catador": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_catador;Password=CAMBIAR;",
+    "CafeTrack:auditor": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_auditor;Password=CAMBIAR;"
+  }
+}

@@ -1,0 +1,78 @@
+@page
+@model ProductoresModel
+@{
+    ViewData["Title"] = "Productores";
+    ViewData["Pagina"] = "productores";
+}
+
+<header class="encabezado-pagina">
+    <h1>Productores</h1>
+    <p>Socios de la cooperativa, sus parcelas y los lotes que han entregado.</p>
+</header>
+
+<form class="filtros" method="get">
+    <div class="campo">
+        <label for="q">Buscar por nombre o comunidad</label>
+        <input type="search" id="q" name="q" value="@Model.Busqueda"
+               placeholder="Ej.: Chamelco, Ba Caal" autocomplete="off" />
+    </div>
+    <button class="boton" type="submit">
+        Buscar
+    </button>
+    @if (!string.IsNullOrWhiteSpace(Model.Busqueda))
+    {
+        <a class="boton secundario" asp-page="/Productores">Limpiar</a>
+    }
+</form>
+
+<p class="resumen-filtro">
+    @Model.Productores.Count productor(es)
+    @if (!string.IsNullOrWhiteSpace(Model.Busqueda))
+    {
+        <text>que coinciden con «@Model.Busqueda»</text>
+    }
+</p>
+
+<div class="tabla-envoltura">
+    @if (Model.Productores.Count == 0)
+    {
+        <p class="sin-datos">No se encontraron productores con ese criterio.</p>
+    }
+    else
+    {
+        <table class="datos">
+            <caption>El documento de identidad no se consulta ni se muestra en el sistema.</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Productor</th>
+                    <th scope="col">Comunidad</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Ingreso</th>
+                    <th scope="col" class="num">Parcelas</th>
+                    <th scope="col" class="num">Área (mz)</th>
+                    <th scope="col" class="num">Lotes</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Productores)
+                {
+                    <tr>
+                        <td><strong>@p.Nombre</strong></td>
+                        <td>@Formato.Texto(p.Comunidad)</td>
+                        <td class="mono">@Formato.Texto(p.Telefono)</td>
+                        <td class="mono">@Formato.Fecha(p.FechaIngresoCoop)</td>
+                        <td class="num">@p.TotalParcelas</td>
+                        <td class="num">@Formato.Numero(p.AreaTotalManzanas)</td>
+                        <td class="num">@p.TotalLotes</td>
+                        <td>
+                            <span class="etiqueta @(p.Activo ? "bodega" : "neutro")">
+                                @(p.Activo ? "Activo" : "Inactivo")
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

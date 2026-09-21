@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" role="img"
+     aria-label="CafeTrack">
+  <g fill="none" stroke="#C08A3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="24" cy="24" rx="12" ry="16" transform="rotate(-25 24 24)" />
+    <path d="M18 9c5 6 6 18 2 25" />
+  </g>
+  <text x="48" y="32" font-family="Fraunces, Georgia, serif" font-size="26" font-weight="600"
+        fill="#3B2A20">CaféTrack</text>
+</svg>
