@@ -1,0 +1,106 @@
+@page
+@model CafeTrack.Web.Pages.Acopios.RegistrarModel
+@{
+    ViewData["Title"] = "Registrar acopio";
+    ViewData["Pagina"] = "acopios";
+}
+
+<header class="encabezado-pagina">
+    <h1>Registrar acopio</h1>
+    <p>
+        Recepción del lote en el centro de acopio. La diferencia contra el peso cosechado
+        se registra sola como merma de transporte.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    <div class="aviso exito" role="status">
+        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "aprobado:20")</span>
+        <div>@Model.Exito</div>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    <div class="aviso error" role="alert">
+        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "rechazado:20")</span>
+        <div>
+            <strong>La base rechazó la operación.</strong><br />
+            @Model.ErrorBase
+        </div>
+    </div>
+}
+
+@if (Model.Lotes.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">Todos los lotes registrados ya pasaron por el centro de acopio.</p>
+    </div>
+}
+else
+{
+    <form method="post" class="panel formulario">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.IdLote">Lote recibido</label>
+            <select asp-for="Datos.IdLote" id="lote">
+                <option value="">Seleccione un lote…</option>
+                @foreach (var l in Model.Lotes)
+                {
+                    <option value="@l.IdLote" data-peso="@l.PesoReferencia.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        @l.Etiqueta — cosechado: @Formato.Quintales(l.PesoReferencia) qq
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.PesoRecibido">Peso recibido (qq)</label>
+            <input asp-for="Datos.PesoRecibido" id="peso" type="number" step="0.01" min="0.01"
+                   inputmode="decimal" autocomplete="off" />
+            <span class="ayuda" id="ayuda-merma">No puede superar el peso cosechado.</span>
+            <span asp-validation-for="Datos.PesoRecibido" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Responsable">Recibe</label>
+            <input asp-for="Datos.Responsable" maxlength="100" autocomplete="off"
+                   placeholder="Nombre de quien recibe" />
+            <span asp-validation-for="Datos.Responsable" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Condicion">Condición del transporte</label>
+            <select asp-for="Datos.Condicion">
+                @foreach (var c in CafeTrack.Web.Pages.Acopios.RegistrarModel.Condiciones)
+                {
+                    <option value="@c">@c</option>
+                }
+            </select>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Observaciones">Observaciones</label>
+            <textarea asp-for="Datos.Observaciones" rows="2" maxlength="500"
+                      placeholder="Estado del grano, incidencias del traslado…"></textarea>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar acopio</button>
+            <a class="boton secundario" asp-page="/Lotes/Index">Cancelar</a>
+        </div>
+    </form>
+
+    <p class="resumen-filtro">
+        Las validaciones viven en <span class="mono">sp_registrar_acopio</span>:
+        el peso no puede superar lo cosechado, el lote no puede tener dos acopios
+        y el responsable es obligatorio.
+    </p>
+}
+
+@section Scripts {
+    <script src="~/js/acopio.js" asp-append-version="true" defer></script>
+}

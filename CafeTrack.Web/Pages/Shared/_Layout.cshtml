@@ -72,10 +72,24 @@
                 </li>
             </ul>
 
+            <p class="menu-titulo">Registro</p>
+            <ul class="menu">
+                <li>
+                    <a class="@Activo("acopios")" asp-page="/Acopios/Registrar" title="Registrar acopio">
+                        @await Html.PartialAsync("_Icono", "camion") <span>Registrar acopio</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="@Activo("ventas")" asp-page="/Ventas/Registrar" title="Registrar venta">
+                        @await Html.PartialAsync("_Icono", "pago") <span>Registrar venta</span>
+                    </a>
+                </li>
+            </ul>
+
             <div class="barra-pie">
                 Trazabilidad y control de existencias<br />
                 Cooperativa cafetalera · Alta Verapaz<br />
-                <strong>Fase 1 — solo consulta</strong>
+                <strong>Fase 2 — registro y consulta</strong>
             </div>
         </nav>
 

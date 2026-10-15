@@ -1054,3 +1054,111 @@ a.boton { border-bottom: 1px solid transparent; display: inline-block; }
 @media (max-width: 700px) {
     .encabezado-ilustrado .marca-agua { display: none; }
 }
+
+/* ------------------------------------------------- formularios (Fase 2) */
+
+.menu-titulo {
+    margin: 1.4rem 0 .4rem;
+    padding: 0 .65rem;
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: rgba(244, 238, 227, .45);
+    font-weight: 600;
+}
+
+html.barra-compacta .menu-titulo {
+    margin: 1rem 0 .4rem;
+    padding: 0;
+    text-align: center;
+    font-size: 0;
+}
+
+html.barra-compacta .menu-titulo::before {
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: rgba(244, 238, 227, .16);
+}
+
+.formulario {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem 1.25rem;
+    align-items: start;
+}
+
+.formulario .campo.ancho { grid-column: 1 / -1; }
+
+.formulario .campo input,
+.formulario .campo select,
+.formulario .campo textarea {
+    font-family: var(--sans);
+    font-size: .95rem;
+    color: var(--texto);
+    background-color: #fff;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-chico);
+    padding: .5rem .6rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.formulario .campo input:focus,
+.formulario .campo select:focus,
+.formulario .campo textarea:focus {
+    border-color: var(--tostado);
+    outline: 2px solid rgba(111, 78, 55, .2);
+}
+
+.formulario .campo textarea { resize: vertical; font-size: .93rem; }
+
+.formulario .campo input[type="number"] {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.ayuda {
+    font-size: .82rem;
+    color: var(--texto-suave);
+    line-height: 1.35;
+}
+
+.ayuda-alerta { color: var(--cereza); font-weight: 600; }
+
+.error-campo {
+    font-size: .82rem;
+    color: var(--cereza);
+    font-weight: 600;
+}
+
+.error-campo:empty { display: none; }
+
+.acciones-formulario {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    padding-top: .4rem;
+    border-top: 1px solid var(--borde);
+    margin-top: .25rem;
+}
+
+.aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: .7rem;
+}
+
+.aviso-icono { flex: 0 0 auto; line-height: 0; margin-top: .15rem; }
+.aviso.exito { border-left-color: var(--cafetal); }
+.aviso.exito .aviso-icono { color: var(--cafetal); }
+.aviso.error .aviso-icono { color: var(--cereza); }
+
+.aviso.error ul {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+.aviso.error:empty,
+.aviso.exito:empty { display: none; }

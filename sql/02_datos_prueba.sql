@@ -16,6 +16,12 @@
 
 USE trazabilidad_cafe;
 
+-- Los pesos y estados de este archivo ya vienen calculados. Esta bandera le
+-- avisa a los triggers de la Fase 2 (sql/04_rutinas.sql) que no vuelvan a
+-- descontar ni a recalcular nada mientras dura la carga; asi el script se
+-- puede volver a ejecutar aunque las rutinas ya esten creadas.
+SET @cafetrack_carga = 1;
+
 -- El script es re-ejecutable: vacia las tablas respetando las FK.
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE Pagos;
@@ -379,6 +385,10 @@ INSERT INTO Pagos
  (1, 1, 1, '2025-01-20 11:00:00', 44275.00, 1150.00, 1200.00, 'Transferencia', 'TRF-2025-0012', 'gerente1'),
  (2, 4, 2, '2025-03-28 10:30:00', 60060.00, 1300.00, 1500.00, 'Cheque',        'CHQ-2025-0087', 'gerente1'),
  (3, 1, 3, '2026-03-14 11:15:00', 52704.00, 1220.00,  900.00, 'Transferencia', 'TRF-2026-0034', 'gerente1');
+
+
+-- Fin de la carga: los triggers vuelven a actuar con normalidad.
+SET @cafetrack_carga = NULL;
 
 
 -- =====================================================================

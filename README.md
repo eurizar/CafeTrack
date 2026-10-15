@@ -14,14 +14,15 @@ cosecha → acopio → beneficiado → catación → bodega → venta → pago.
 | Fase | Contenido | Estado |
 |---|---|---|
 | 0 | Entorno: SDK de .NET, MySQL Server, Git, base cargada | Listo |
-| **1** | **Estructura, conexión, datos semilla y pantallas de consulta** | **En curso (rama `fase-1-estructura`)** |
-| 2 | Función `fn_existencia_lote`, 2 procedimientos y 4 triggers | Pendiente |
+| 1 | Estructura, conexión, datos semilla y pantallas de consulta | Listo |
+| **2** | **Función `fn_existencia_lote`, 2 procedimientos, 4 triggers y los formularios que los llaman** | **Listo** |
 | 3 | Login contra `Usuarios` (SHA2 + salt), un usuario MySQL por rol, bitácora | Pendiente |
 | 4 | Las 11 consultas como reportes; mensajes de `SIGNAL`, CHECK y ERROR 1142 | Pendiente |
 | 5 | Pulido, capturas y guion del video | Pendiente |
 
-La Fase 1 es **solo lectura**: no hay formularios de registro, login, triggers ni
-procedimientos almacenados.
+Desde la Fase 2 la aplicación **escribe** en la base, pero siempre a través de
+procedimientos almacenados: las reglas de negocio viven en MySQL, no en C#.
+El login y los permisos por rol llegan en la Fase 3.
 
 ---
 
@@ -56,7 +57,9 @@ CafeTrack/
 ├── sql/
 │   ├── 01_estructura.sql        18 tablas (script original, sin cambios)
 │   ├── 02_datos_prueba.sql      datos ficticios de Alta Verapaz
-│   └── 03_usuario_app.sql       CREATE USER + GRANT para cafetrack_dev
+│   ├── 03_usuario_app.sql       CREATE USER + GRANT para cafetrack_dev
+│   ├── 04_rutinas.sql           función, 2 procedimientos y 4 triggers
+│   └── 05_datos_demo.sql        (opcional) un lote sin acopio para la demo
 └── CafeTrack.Web/
     ├── Program.cs
     ├── appsettings.json                     sin credenciales
@@ -86,10 +89,18 @@ CafeTrack/
    ```bash
    mysql -u root -p < sql/01_estructura.sql
    mysql -u root -p < sql/02_datos_prueba.sql
+   mysql -u root -p < sql/04_rutinas.sql
+   mysql -u root -p < sql/05_datos_demo.sql   # opcional, para la demostración
    ```
 
-   El primer script crea la base con sus **18 tablas** (incluye `DROP DATABASE IF EXISTS`).
+   El primero crea la base con sus **18 tablas** (incluye `DROP DATABASE IF EXISTS`).
    El segundo carga los datos de prueba y termina mostrando el conteo de cada tabla.
+   El tercero crea la función, los procedimientos y los triggers; el esquema no cambia.
+   El cuarto es opcional: agrega un lote recién cosechado para poder mostrar en vivo
+   el formulario de acopio.
+
+   > Si MySQL responde `ERROR 1418` al crear la función, ejecute una sola vez como root:
+   > `SET GLOBAL log_bin_trust_function_creators = 1;`
 
 4. **Crear el usuario de la aplicación.** Edite la contraseña dentro de
    `sql/03_usuario_app.sql` y ejecútelo como `root`:
@@ -146,6 +157,8 @@ CafeTrack/
 | `/Lotes` | Listado con filtros por estado y temporada |
 | `/Lotes/Detalle/{codigo}` | Trazabilidad completa del lote, por ejemplo `/Lotes/Detalle/CAF-2026-001` |
 | `/Existencias` | Kardex resumido por bodega y lote |
+| `/Acopios/Registrar` | Formulario de recepción en acopio; llama a `sp_registrar_acopio` |
+| `/Ventas/Registrar` | Formulario de venta; llama a `sp_registrar_venta` |
 
 ---
 
@@ -168,6 +181,38 @@ CafeTrack/
 
 ---
 
+## Lógica en la base de datos (Fase 2)
+
+`sql/04_rutinas.sql` crea, sin tocar el esquema:
+
+**Función**
+
+- `fn_existencia_lote(id_lote)` — quintales en bodega: suma las `'Entrada'` y resta el resto.
+
+**Procedimientos**
+
+- `sp_registrar_acopio` — valida el peso contra lo cosechado, inserta el acopio, registra
+  sola la merma de transporte, actualiza el peso del lote y deja rastro en la bitácora.
+- `sp_registrar_venta` — comprueba la existencia con `fn_existencia_lote`, exige catación
+  aprobada, inserta la venta y genera la salida de bodega, todo en una transacción.
+
+**Triggers**
+
+| Trigger | Momento | Qué hace |
+|---|---|---|
+| `trg_movimientos_validar` | BEFORE INSERT en `MovimientosBodega` | Impide sacar más de lo que hay, que entre un lote sin catación aprobada y que se exceda la capacidad de la bodega |
+| `trg_movimientos_estado` | AFTER INSERT en `MovimientosBodega` | Pone el lote en `'En bodega'` o `'Vendido'` y escribe en la bitácora |
+| `trg_mermas_descuento` | AFTER INSERT en `Mermas` | Descuenta el peso del lote y registra `ALERTA_MERMA_ALTA` si supera el 15 % |
+| `trg_ventas_precio` | AFTER INSERT en `VentasLotes` | Registra `ALERTA_PRECIO_BAJO` si el precio queda bajo el precio base de la temporada |
+
+Los errores se levantan con `SIGNAL SQLSTATE '45000'` y llegan a la pantalla como un
+aviso en español; `Helpers/ErroresMySql.cs` traduce además las violaciones de `CHECK`
+y el `ERROR 1142` de permisos.
+
+**Recarga de datos.** `02_datos_prueba.sql` trae los pesos y estados ya calculados, así
+que levanta la bandera `@cafetrack_carga` mientras inserta y los triggers se saltan el
+cuerpo. Por eso los scripts se pueden volver a ejecutar en cualquier orden.
+
 ## Datos de prueba
 
 Todos los datos de `sql/02_datos_prueba.sql` son **ficticios**. Los nombres, teléfonos y
@@ -179,8 +224,9 @@ Contiene 5 variedades, 7 etapas de beneficiado, 2 temporadas, 8 productores, 10 
 por una volcadura), procesos con tiempos realistas, 7 evaluaciones de calidad (una
 rechazada), 10 movimientos de bodega, 3 ventas y 3 pagos.
 
-Como los triggers se crean hasta la Fase 2, `peso_actual_quintales` y `estado_lote` vienen
-cargados a mano y coherentes con cada caso. La tabla `Usuarios` se llena en la Fase 3.
+`peso_actual_quintales` y `estado_lote` vienen cargados a mano y coherentes con cada caso:
+son el punto de partida sobre el que después trabajan los triggers. La tabla `Usuarios`
+se llena en la Fase 3.
 
 ---
 

@@ -22,6 +22,10 @@ builder.Services.AddScoped<IProductorRepository, ProductorRepository>();
 builder.Services.AddScoped<IParcelaRepository, ParcelaRepository>();
 builder.Services.AddScoped<ILoteRepository, LoteRepository>();
 builder.Services.AddScoped<IExistenciaRepository, ExistenciaRepository>();
+builder.Services.AddScoped<IOperacionesRepository, OperacionesRepository>();
+
+// Identidad con la que se escribe en la base. En la Fase 3 la reemplaza la sesion.
+builder.Services.AddScoped<IUsuarioActual, UsuarioFijo>();
 
 var app = builder.Build();
 

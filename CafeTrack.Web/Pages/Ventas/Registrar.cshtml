@@ -1,0 +1,138 @@
+@page
+@model CafeTrack.Web.Pages.Ventas.RegistrarModel
+@{
+    ViewData["Title"] = "Registrar venta";
+    ViewData["Pagina"] = "ventas";
+}
+
+<header class="encabezado-pagina">
+    <h1>Registrar venta</h1>
+    <p>
+        Solo se listan los lotes aprobados en catación y con existencia en bodega.
+        La salida de bodega se genera sola.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    <div class="aviso exito" role="status">
+        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "aprobado:20")</span>
+        <div>@Model.Exito</div>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    <div class="aviso error" role="alert">
+        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "rechazado:20")</span>
+        <div>
+            <strong>La base rechazó la operación.</strong><br />
+            @Model.ErrorBase
+        </div>
+    </div>
+}
+
+@if (Model.Lotes.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">
+            No hay lotes disponibles para vender: ninguno tiene catación aprobada
+            con existencia en bodega.
+        </p>
+    </div>
+}
+else
+{
+    <form method="post" class="panel formulario">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.IdLote">Lote</label>
+            <select asp-for="Datos.IdLote" id="lote">
+                <option value="">Seleccione un lote…</option>
+                @foreach (var l in Model.Lotes)
+                {
+                    <option value="@l.IdLote"
+                            data-peso="@l.PesoReferencia.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                            data-bodega="@l.IdBodega">
+                        @l.Etiqueta — disponible: @Formato.Quintales(l.PesoReferencia) qq
+                        @(string.IsNullOrWhiteSpace(l.Bodega) ? "" : $"({l.Bodega})")
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.IdComprador">Comprador</label>
+            <select asp-for="Datos.IdComprador">
+                <option value="">Seleccione…</option>
+                @foreach (var c in Model.Compradores)
+                {
+                    <option value="@c.IdComprador">@c.Nombre · @c.Tipo</option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdComprador" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.IdBodega">Sale de la bodega</label>
+            <select asp-for="Datos.IdBodega" id="bodega">
+                <option value="">Seleccione…</option>
+                @foreach (var b in Model.Bodegas)
+                {
+                    <option value="@b.IdBodega">@b.Nombre</option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdBodega" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Peso">Cantidad (qq)</label>
+            <input asp-for="Datos.Peso" id="peso" type="number" step="0.01" min="0.01"
+                   inputmode="decimal" autocomplete="off" />
+            <span class="ayuda" id="ayuda-peso">No puede superar la existencia del lote.</span>
+            <span asp-validation-for="Datos.Peso" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Precio">Precio por quintal (Q)</label>
+            <input asp-for="Datos.Precio" type="number" step="0.01" min="0.01"
+                   inputmode="decimal" autocomplete="off" />
+            <span asp-validation-for="Datos.Precio" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.FormaPago">Forma de pago</label>
+            <select asp-for="Datos.FormaPago">
+                @foreach (var f in CafeTrack.Web.Pages.Ventas.RegistrarModel.FormasPago)
+                {
+                    <option value="@f">@Formato.Enum(f)</option>
+                }
+            </select>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Responsable">Despacha</label>
+            <input asp-for="Datos.Responsable" maxlength="100" autocomplete="off"
+                   placeholder="Nombre de quien despacha" />
+            <span asp-validation-for="Datos.Responsable" class="error-campo"></span>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar venta</button>
+            <a class="boton secundario" asp-page="/Existencias">Cancelar</a>
+        </div>
+    </form>
+
+    <p class="resumen-filtro">
+        <span class="mono">sp_registrar_venta</span> comprueba la existencia con
+        <span class="mono">fn_existencia_lote</span>, exige catación aprobada y deja el lote
+        en <em>Vendido</em> cuando la bodega queda en cero. Si el precio baja del precio base
+        de la temporada, el trigger escribe una alerta en la bitácora.
+    </p>
+}
+
+@section Scripts {
+    <script src="~/js/venta.js" asp-append-version="true" defer></script>
+}
