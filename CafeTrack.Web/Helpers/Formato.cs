@@ -70,6 +70,37 @@ public static class Formato
         _ => "neutro"
     };
 
+    /// <summary>
+    /// Convierte el JSON de la bitacora en texto legible:
+    /// {"evento":"inicio de sesion"} -> "evento: inicio de sesion".
+    /// </summary>
+    public static string Json(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return "—";
+        }
+
+        try
+        {
+            using var documento = System.Text.Json.JsonDocument.Parse(json);
+            if (documento.RootElement.ValueKind != System.Text.Json.JsonValueKind.Object)
+            {
+                return json;
+            }
+
+            var partes = documento.RootElement.EnumerateObject()
+                .Select(p => $"{p.Name.Replace('_', ' ')}: {p.Value}");
+
+            return string.Join("  ·  ", partes);
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            // Si no es JSON valido se muestra tal cual vino de la base.
+            return json;
+        }
+    }
+
     /// <summary>Sufijo de clase CSS para la etiqueta de certificacion.</summary>
     public static string ClaseCertificacion(string? certificacion) =>
         certificacion is null or "Ninguna" ? "neutro" : "certificada";

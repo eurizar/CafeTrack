@@ -1,0 +1,42 @@
+@*
+    Plantilla sin barra lateral: se usa en las pantallas que no requieren
+    sesion iniciada (ingreso y cierre de sesion).
+
+    El fondo es una foto del cafetal con desenfoque suave. Mientras la foto
+    carga se ve una miniatura borrosa incrustada aqui mismo, de modo que no
+    hay salto ni pantalla en blanco.
+*@
+<!DOCTYPE html>
+<html lang="es-GT">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · CaféTrack</title>
+    <link rel="icon" type="image/svg+xml" href="~/img/grano.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@400;600&family=Source+Sans+3:wght@400;600&display=swap" />
+    <link rel="stylesheet" href="~/css/cafetrack.css" asp-append-version="true" />
+    <style>
+        /* Miniatura de 24 px incrustada: se pinta de inmediato y sostiene el
+           color mientras llega la foto completa. */
+        .fondo { background-image: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABMNDhEODBMRDxEVFBMXHTAfHRoaHToqLCMwRT1JR0Q9Q0FMVm1dTFFoUkFDX4JgaHF1e3x7SlyGkIV3j214e3b/2wBDARQVFR0ZHTgfHzh2T0NPdnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnb/wAARCAANABgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCppWoywgddvetGS9aYbt3HpWLLIYHKpjAp8cpcAHvWPM1oJqyuXJZQeSaKo7sbh1oo5mTc/9k="); }
+    </style>
+</head>
+<body class="sin-barra">
+    <div class="fondo" aria-hidden="true">
+        <img class="fondo-foto"
+             src="~/img/fondo-cafetal.jpg"
+             @* srcset no pasa por el tag helper: las rutas van absolutas. *@
+             srcset="/img/fondo-cafetal-chico.jpg 1100w, /img/fondo-cafetal.jpg 1920w"
+             sizes="100vw" alt="" decoding="async" fetchpriority="high" />
+    </div>
+
+    <main class="contenido-limpio">
+        @RenderBody()
+    </main>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

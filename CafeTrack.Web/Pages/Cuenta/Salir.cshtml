@@ -1,0 +1,17 @@
+@page
+@model CafeTrack.Web.Pages.Cuenta.SalirModel
+@{
+    ViewData["Title"] = "Salir";
+    Layout = "_LayoutLimpio";
+}
+
+<div class="ingreso">
+    <div class="ingreso-marca">
+        @await Html.PartialAsync("_Planta", "1:44")
+        <h1>Sesión cerrada</h1>
+        <p class="suave">Gracias por usar CaféTrack.</p>
+    </div>
+    <div class="panel ingreso-caja">
+        <a class="boton ancho-total" asp-page="/Cuenta/Ingresar">Volver a ingresar</a>
+    </div>
+</div>

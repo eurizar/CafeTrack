@@ -1,26 +1,49 @@
+using System.Security.Claims;
+
 namespace CafeTrack.Web.Helpers;
 
 /// <summary>
-/// Identidad con la que la aplicacion escribe en la base (columnas
-/// <c>usuario_registro</c> y la bitacora).
+/// Identidad con la que la aplicacion trabaja contra la base: decide que se
+/// escribe en <c>usuario_registro</c> y en la bitacora, y con que usuario de
+/// MySQL se abre la conexion.
 /// </summary>
-/// <remarks>
-/// En la Fase 2 todavia no hay login: devuelve un usuario fijo. En la Fase 3
-/// esta misma interfaz pasa a leer la sesion autenticada y el rol decide con
-/// que usuario de MySQL se abre la conexion.
-/// </remarks>
 public interface IUsuarioActual
 {
-    /// <summary>Nombre que queda registrado en la base.</summary>
+    /// <summary>Usuario de la tabla <c>Usuarios</c>, o "invitado" si no hay sesion.</summary>
     string Nombre { get; }
 
-    /// <summary>Rol de la aplicacion: admin, gerente, acopiador, catador o auditor.</summary>
+    /// <summary>Nombre completo para mostrar en pantalla.</summary>
+    string NombreCompleto { get; }
+
+    /// <summary>Rol: admin, gerente, acopiador, catador o auditor. Vacio si no hay sesion.</summary>
     string Rol { get; }
+
+    /// <summary>Indica si hay una sesion iniciada.</summary>
+    bool Autenticado { get; }
 }
 
-/// <summary>Implementacion temporal de la Fase 2, sin autenticacion.</summary>
-public sealed class UsuarioFijo : IUsuarioActual
+/// <summary>Lee la identidad de la cookie de sesion.</summary>
+public sealed class UsuarioDeSesion : IUsuarioActual
 {
-    public string Nombre => "sistema";
-    public string Rol => "admin";
+    /// <summary>Claim con el nombre completo del usuario.</summary>
+    public const string ClaimNombreCompleto = "cafetrack:nombre_completo";
+
+    private readonly IHttpContextAccessor _contexto;
+
+    public UsuarioDeSesion(IHttpContextAccessor contexto) => _contexto = contexto;
+
+    private ClaimsPrincipal? Principal => _contexto.HttpContext?.User;
+
+    public bool Autenticado => Principal?.Identity?.IsAuthenticated == true;
+
+    public string Nombre => Autenticado ? Principal!.Identity!.Name ?? "invitado" : "invitado";
+
+    public string NombreCompleto =>
+        Principal?.FindFirstValue(ClaimNombreCompleto) ?? Nombre;
+
+    /// <summary>
+    /// Rol de la sesion. Sin sesion devuelve vacio, con lo que la fabrica de
+    /// conexiones usa la cadena por omision (la que valida el login).
+    /// </summary>
+    public string Rol => Autenticado ? Principal!.FindFirstValue(ClaimTypes.Role) ?? "" : "";
 }

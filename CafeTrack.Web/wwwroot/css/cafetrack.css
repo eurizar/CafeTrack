@@ -1162,3 +1162,272 @@ html.barra-compacta .menu-titulo::before {
 
 .aviso.error:empty,
 .aviso.exito:empty { display: none; }
+
+/* ------------------------------------------------- sesion (Fase 3) */
+
+.barra-sesion {
+    margin-top: 1.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(244, 238, 227, .16);
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-wrap: wrap;
+}
+
+.sesion-datos {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    font-size: .88rem;
+    line-height: 1.25;
+    color: var(--pergamino);
+}
+
+.sesion-datos strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sesion-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background-color: rgba(244, 238, 227, .12);
+    color: var(--oro);
+}
+
+.sesion-rol {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: rgba(244, 238, 227, .6);
+}
+
+.boton-salir {
+    padding: .3rem .7rem;
+    font-size: .82rem;
+    color: rgba(244, 238, 227, .8);
+    border-color: rgba(244, 238, 227, .25);
+}
+
+.boton-salir:hover {
+    color: #fff;
+    border-color: rgba(244, 238, 227, .5);
+    background-color: rgba(244, 238, 227, .1);
+}
+
+html.barra-compacta .barra-sesion { justify-content: center; }
+html.barra-compacta .sesion-datos div,
+html.barra-compacta .boton-salir { display: none; }
+html.barra-compacta .sesion-datos { flex: 0 0 auto; }
+
+/* ---------------------------------------------- pantalla de ingreso */
+
+body.sin-barra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.contenido-limpio {
+    width: 100%;
+    padding: 2rem 1rem;
+}
+
+.ingreso {
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.ingreso-marca {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--tostado);
+}
+
+.ingreso-marca h1 {
+    margin: .5rem 0 .2rem;
+    font-size: 2rem;
+}
+
+.ingreso-marca p { font-size: .9rem; margin: 0; }
+
+.ingreso-caja {
+    display: grid;
+    gap: 1rem;
+}
+
+.ingreso-caja .campo input {
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--texto);
+    background-color: #fff;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-chico);
+    padding: .55rem .65rem;
+    width: 100%;
+}
+
+.ingreso-caja .campo input:focus {
+    border-color: var(--tostado);
+    outline: 2px solid rgba(111, 78, 55, .2);
+}
+
+.boton.ancho-total {
+    width: 100%;
+    text-align: center;
+    padding: .6rem 1rem;
+    font-size: 1rem;
+}
+
+.ingreso-nota {
+    margin: 0;
+    text-align: center;
+    border-top: 1px solid var(--borde);
+    padding-top: .9rem;
+}
+
+/* ------------------------------------------------------- bitacora */
+
+td.json {
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--texto-suave);
+    max-width: 420px;
+    overflow-wrap: anywhere;
+}
+
+tr.fila-alerta td { background-color: rgba(192, 138, 62, .09); }
+tr.fila-alerta:hover td { background-color: rgba(192, 138, 62, .15); }
+
+/* ------------------------------------ fondo de la pantalla de ingreso */
+
+.fondo {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--espresso);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.fondo-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* El desenfoque deja la foto como ambiente y no como protagonista;
+       la escala evita que se vean los bordes difuminados. */
+    filter: blur(5px) saturate(1.05);
+    transform: scale(1.08);
+    animation: fondo-aparece 1.1s ease-out both;
+}
+
+@keyframes fondo-aparece {
+    from { opacity: 0; transform: scale(1.14); }
+    to   { opacity: 1; transform: scale(1.08); }
+}
+
+/* Velo cálido: sube el contraste del texto sin apagar la foto. */
+.fondo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 38%, rgba(59, 42, 32, .20) 0%, rgba(59, 42, 32, .62) 100%),
+        linear-gradient(180deg, rgba(42, 31, 24, .25) 0%, rgba(42, 31, 24, .55) 100%);
+}
+
+body.sin-barra { background-image: none; }
+
+.ingreso-marca {
+    color: var(--pergamino);
+    text-shadow: 0 1px 12px rgba(42, 31, 24, .55);
+}
+
+.ingreso-marca h1 { color: #fff; }
+.ingreso-marca p { color: rgba(244, 238, 227, .88); }
+.ingreso-marca .planta { color: var(--oro); }
+
+.ingreso-caja {
+    background-color: rgba(255, 251, 245, .97);
+    box-shadow: 0 10px 40px rgba(42, 31, 24, .32), 0 2px 6px rgba(42, 31, 24, .18);
+    animation: caja-aparece .7s ease-out .15s both;
+}
+
+@keyframes caja-aparece {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------- campo de contraseña */
+
+.caja-clave { position: relative; }
+
+.caja-clave input { padding-right: 2.75rem !important; }
+
+.ojo-clave {
+    position: absolute;
+    top: 50%;
+    right: .3rem;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    cursor: pointer;
+    color: var(--texto-suave);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radio-chico);
+}
+
+.ojo-clave:hover { color: var(--tostado); background-color: rgba(111, 78, 55, .08); }
+.ojo-clave[hidden] { display: none; }
+
+/* El icono cambia segun el estado del boton. */
+.ojo-clave .ojo-ocultar { display: none; }
+.ojo-clave[aria-pressed="true"] .ojo-ver { display: none; }
+.ojo-clave[aria-pressed="true"] .ojo-ocultar { display: inline-flex; }
+.ojo-clave[aria-pressed="true"] { color: var(--tostado); }
+
+@media (max-width: 480px) {
+    .contenido-limpio { padding: 1.5rem .9rem; }
+    .ingreso-marca h1 { font-size: 1.7rem; }
+    .fondo-foto { filter: blur(4px) saturate(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fondo-foto,
+    .ingreso-caja { animation: none; }
+    .fondo-foto { transform: scale(1.08); opacity: 1; }
+}
+
+/* Seguros de la pantalla de ingreso en pantallas angostas: el <main> es un
+   item flexible, asi que se le permite encoger, y la tarjeta se centra sola. */
+.contenido-limpio {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.ingreso {
+    width: 100%;
+    max-width: 380px;
+    margin-inline: auto;
+}
+
+.ingreso-marca p { overflow-wrap: anywhere; }
+
+body.sin-barra { overflow-x: hidden; }

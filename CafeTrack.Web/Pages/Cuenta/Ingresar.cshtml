@@ -1,0 +1,65 @@
+@page
+@model CafeTrack.Web.Pages.Cuenta.IngresarModel
+@{
+    ViewData["Title"] = "Ingresar";
+    Layout = "_LayoutLimpio";
+}
+
+<div class="ingreso">
+    <div class="ingreso-marca">
+        @await Html.PartialAsync("_Planta", "1:44")
+        <h1>CaféTrack</h1>
+        <p class="suave">Trazabilidad y control de existencias · Alta Verapaz</p>
+    </div>
+
+    <form method="post" class="panel ingreso-caja">
+        @if (!string.IsNullOrWhiteSpace(Model.Error))
+        {
+            <div class="aviso error" role="alert">
+                <span class="aviso-icono">@await Html.PartialAsync("_Icono", "rechazado:20")</span>
+                <div>@Model.Error</div>
+            </div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo">
+            <label asp-for="Datos.Usuario">Usuario</label>
+            <input asp-for="Datos.Usuario" autocomplete="username" autofocus
+                   placeholder="acopiador" />
+            <span asp-validation-for="Datos.Usuario" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Clave">Contraseña</label>
+            <div class="caja-clave">
+                <input asp-for="Datos.Clave" id="clave" type="password"
+                       autocomplete="current-password" />
+                @* hidden hasta que el script lo habilite: sin JavaScript el
+                   campo sigue siendo un password normal. *@
+                <button type="button" class="ojo-clave" id="ojo-clave" hidden
+                        aria-controls="clave" aria-pressed="false"
+                        title="Mostrar contraseña">
+                    <span class="ojo-ver">@await Html.PartialAsync("_Icono", "ojo:18")</span>
+                    <span class="ojo-ocultar">@await Html.PartialAsync("_Icono", "ojo-cerrado:18")</span>
+                    <span class="oculto-visual">Mostrar contraseña</span>
+                </button>
+            </div>
+            <span asp-validation-for="Datos.Clave" class="error-campo"></span>
+        </div>
+
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <button class="boton ancho-total" type="submit">Ingresar</button>
+
+        <p class="ayuda ingreso-nota">
+            La contraseña se compara dentro de MySQL con
+            <span class="mono">SHA2</span> y un <em>salt</em> distinto por usuario.
+            El rol decide con qué usuario de la base trabaja el sistema.
+        </p>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/clave.js" asp-append-version="true" defer></script>
+}

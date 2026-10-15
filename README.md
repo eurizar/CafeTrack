@@ -15,14 +15,15 @@ cosecha → acopio → beneficiado → catación → bodega → venta → pago.
 |---|---|---|
 | 0 | Entorno: SDK de .NET, MySQL Server, Git, base cargada | Listo |
 | 1 | Estructura, conexión, datos semilla y pantallas de consulta | Listo |
-| **2** | **Función `fn_existencia_lote`, 2 procedimientos, 4 triggers y los formularios que los llaman** | **Listo** |
-| 3 | Login contra `Usuarios` (SHA2 + salt), un usuario MySQL por rol, bitácora | Pendiente |
+| 2 | Función `fn_existencia_lote`, 2 procedimientos, 4 triggers y los formularios que los llaman | Listo |
+| **3** | **Login contra `Usuarios` (SHA2 + salt), un usuario MySQL por rol, bitácora** | **Listo** |
 | 4 | Las 11 consultas como reportes; mensajes de `SIGNAL`, CHECK y ERROR 1142 | Pendiente |
 | 5 | Pulido, capturas y guion del video | Pendiente |
 
-Desde la Fase 2 la aplicación **escribe** en la base, pero siempre a través de
-procedimientos almacenados: las reglas de negocio viven en MySQL, no en C#.
-El login y los permisos por rol llegan en la Fase 3.
+La aplicación **escribe** siempre a través de procedimientos almacenados: las reglas
+de negocio viven en MySQL, no en C#. Desde la Fase 3 el acceso exige sesión y cada rol
+se conecta con su propio usuario de MySQL, así que los permisos los hace cumplir el
+motor y no solo la interfaz.
 
 ---
 
@@ -59,7 +60,8 @@ CafeTrack/
 │   ├── 02_datos_prueba.sql      datos ficticios de Alta Verapaz
 │   ├── 03_usuario_app.sql       CREATE USER + GRANT para cafetrack_dev
 │   ├── 04_rutinas.sql           función, 2 procedimientos y 4 triggers
-│   └── 05_datos_demo.sql        (opcional) un lote sin acopio para la demo
+│   ├── 05_datos_demo.sql        (opcional) un lote sin acopio para la demo
+│   └── 06_seguridad.sql         usuarios de la app, sp_login y un usuario MySQL por rol
 └── CafeTrack.Web/
     ├── Program.cs
     ├── appsettings.json                     sin credenciales
@@ -91,6 +93,7 @@ CafeTrack/
    mysql -u root -p < sql/02_datos_prueba.sql
    mysql -u root -p < sql/04_rutinas.sql
    mysql -u root -p < sql/05_datos_demo.sql   # opcional, para la demostración
+   mysql -u root -p < sql/06_seguridad.sql
    ```
 
    El primero crea la base con sus **18 tablas** (incluye `DROP DATABASE IF EXISTS`).
@@ -159,6 +162,8 @@ CafeTrack/
 | `/Existencias` | Kardex resumido por bodega y lote |
 | `/Acopios/Registrar` | Formulario de recepción en acopio; llama a `sp_registrar_acopio` |
 | `/Ventas/Registrar` | Formulario de venta; llama a `sp_registrar_venta` |
+| `/Bitacora` | Auditoría: lo que escriben los triggers y los procedimientos |
+| `/Cuenta/Ingresar` | Inicio de sesión |
 
 ---
 
@@ -174,8 +179,9 @@ CafeTrack/
   esa columna, y el POCO `Productor` ni siquiera la mapea.
 - **Valores ENUM sin tildes.** La base conserva `'Organico'` y `'Credito 30 dias'` tal
   como los define el script. La tilde se agrega solo al mostrarlos, con `Helpers/Formato.Enum`.
-- **Una fábrica de conexiones.** `IDbConnectionFactory` ya acepta un rol, para que en la
-  Fase 3 cada rol (admin, gerente, acopiador, catador, auditor) use un usuario MySQL distinto.
+- **Una fábrica de conexiones por rol.** `IDbConnectionFactory` abre la conexión con el
+  usuario de MySQL que corresponde al rol de la sesión (admin, gerente, acopiador,
+  catador o auditor).
 - **Errores amables.** Si MySQL no responde, la aplicación muestra una página explicativa,
   nunca la excepción cruda ni la cadena de conexión.
 
@@ -213,6 +219,43 @@ y el `ERROR 1142` de permisos.
 que levanta la bandera `@cafetrack_carga` mientras inserta y los triggers se saltan el
 cuerpo. Por eso los scripts se pueden volver a ejecutar en cualquier orden.
 
+## Seguridad (Fase 3)
+
+**Contraseñas.** La tabla `Usuarios` no tiene columna de salt, así que el salt viaja
+dentro de `password_hash` con el formato `<salt>:SHA2(salt + contraseña, 256)`. El salt
+es distinto por usuario y se genera con `RANDOM_BYTES(16)`. La comparación ocurre dentro
+de `sp_login`: la contraseña en claro nunca sale de la base ni se guarda en ningún lado.
+`sp_cambiar_password` genera un salt nuevo en cada cambio.
+
+**Usuarios de prueba.** Los crea `sql/06_seguridad.sql`, todos con la contraseña
+`Cafe2026!` (cámbiela antes de cualquier uso real):
+
+| Usuario | Rol | Qué puede hacer |
+|---|---|---|
+| `admin` | admin | Todo |
+| `gerente` | gerente | Consultar todo y registrar ventas |
+| `acopiador` | acopiador | Consultar todo y registrar acopios |
+| `catador` | catador | Consultar todo; en la base, escribir en `Calidad` |
+| `auditor` | auditor | Solo lectura, incluida la bitácora |
+
+**Un usuario de MySQL por rol.** Al iniciar sesión, la aplicación busca la cadena
+`ConnectionStrings:CafeTrack:<rol>` en User Secrets y abre la conexión con
+`cafetrack_<rol>`, cada uno con sus propios `GRANT`. Si una cadena no está configurada,
+cae a la de desarrollo. El login mismo usa la cadena por omisión, porque todavía no se
+conoce el rol.
+
+```bash
+dotnet user-secrets set "ConnectionStrings:CafeTrack:acopiador" "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_acopiador;Password=...;"
+```
+
+Así la restricción es doble: la interfaz esconde lo que no corresponde al rol y, si
+alguien llega igual, MySQL responde `ERROR 1142` y la aplicación lo muestra como mensaje.
+
+**Bitácora.** `BitacoraAuditoria` se llena sola desde los triggers y los procedimientos:
+ingresos y salidas de bodega, ventas, acopios, inicios de sesión y los intentos fallidos.
+La aplicación no inserta ahí por su cuenta. La pantalla `/Bitacora` la ven `admin` y
+`auditor`.
+
 ## Datos de prueba
 
 Todos los datos de `sql/02_datos_prueba.sql` son **ficticios**. Los nombres, teléfonos y
@@ -226,7 +269,7 @@ rechazada), 10 movimientos de bodega, 3 ventas y 3 pagos.
 
 `peso_actual_quintales` y `estado_lote` vienen cargados a mano y coherentes con cada caso:
 son el punto de partida sobre el que después trabajan los triggers. La tabla `Usuarios`
-se llena en la Fase 3.
+la llena `06_seguridad.sql`.
 
 ---
 

@@ -1,0 +1,109 @@
+@page
+@model BitacoraModel
+@{
+    ViewData["Title"] = "Bitácora";
+    ViewData["Pagina"] = "bitacora";
+}
+
+<header class="encabezado-pagina">
+    <h1>Bitácora de auditoría</h1>
+    <p>
+        Lo que escriben los triggers y los procedimientos: ingresos y salidas de bodega,
+        ventas, sesiones y alertas. La aplicación no inserta aquí nada por su cuenta.
+    </p>
+</header>
+
+<form class="filtros" method="get">
+    <div class="campo">
+        <label for="q">Usuario</label>
+        <input type="search" id="q" name="q" value="@Model.Usuario"
+               placeholder="acopiador, gerente…" autocomplete="off" />
+    </div>
+    <div class="campo">
+        <label for="op">Operación</label>
+        <select id="op" name="op">
+            <option value="">Todas</option>
+            @foreach (var o in Model.Operaciones)
+            {
+                <option value="@o" selected="@(Model.Operacion == o)">@o</option>
+            }
+        </select>
+    </div>
+    <div class="campo">
+        <label for="tabla">Tabla</label>
+        <select id="tabla" name="tabla">
+            <option value="">Todas</option>
+            @foreach (var t in Model.Tablas)
+            {
+                <option value="@t" selected="@(Model.Tabla == t)">@t</option>
+            }
+        </select>
+    </div>
+    <div class="campo">
+        <label for="limite">Mostrar</label>
+        <select id="limite" name="limite">
+            @foreach (var n in new[] { 50, 100, 250, 500 })
+            {
+                <option value="@n" selected="@(Model.Limite == n)">@n filas</option>
+            }
+        </select>
+    </div>
+    <button class="boton" type="submit">Filtrar</button>
+    @if (Model.HayFiltros)
+    {
+        <a class="boton secundario" asp-page="/Bitacora">Limpiar</a>
+    }
+</form>
+
+<p class="resumen-filtro">
+    @Model.Filas.Count registro(s)
+    @if (Model.Alertas > 0)
+    {
+        <text>· <strong>@Model.Alertas alerta(s)</strong> en el listado</text>
+    }
+</p>
+
+<div class="tabla-envoltura">
+    @if (Model.Filas.Count == 0)
+    {
+        <p class="sin-datos">
+            No hay movimientos registrados todavía. La bitácora se llena sola conforme
+            se registran acopios, ventas y sesiones.
+        </p>
+    }
+    else
+    {
+        <table class="datos">
+            <thead>
+                <tr>
+                    <th scope="col">Fecha y hora</th>
+                    <th scope="col">Operación</th>
+                    <th scope="col">Tabla</th>
+                    <th scope="col" class="num">Registro</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Filas)
+                {
+                    <tr class="@(f.EsAlerta ? "fila-alerta" : "")">
+                        <td class="mono">@Formato.FechaHora(f.FechaHora)</td>
+                        <td><span class="etiqueta @f.ClaseOperacion">@f.Operacion</span></td>
+                        <td class="mono">@f.TablaAfectada</td>
+                        <td class="num">@(f.IdRegistroAfectado?.ToString() ?? "—")</td>
+                        <td>@f.Usuario</td>
+                        <td class="json">@Formato.Json(f.DatosNuevos ?? f.DatosAnteriores)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<p class="resumen-filtro">
+    Las alertas <span class="mono">ALERTA_MERMA_ALTA</span> y
+    <span class="mono">ALERTA_PRECIO_BAJO</span> las generan los triggers
+    <span class="mono">trg_mermas_descuento</span> y
+    <span class="mono">trg_ventas_precio</span>.
+</p>

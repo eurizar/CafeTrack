@@ -1,0 +1,22 @@
+@page
+@model CafeTrack.Web.Pages.Cuenta.SinPermisoModel
+@{
+    ViewData["Title"] = "Sin permiso";
+    ViewData["Pagina"] = "";
+}
+
+<div class="pagina-error">
+    <div class="grano">@await Html.PartialAsync("_Icono", "rechazado:56")</div>
+    <h1>Esta pantalla no le corresponde</h1>
+    <p>
+        Su rol (<strong>@Model.Rol</strong>) no tiene acceso a esta sección.
+        Si necesita entrar, pida al administrador que revise sus permisos.
+    </p>
+    <p class="suave">
+        El sistema también lo impide en la base: su usuario de MySQL no tiene
+        los privilegios necesarios sobre esas tablas.
+    </p>
+    <div class="acciones">
+        <a class="boton" asp-page="/Index">Volver al panel</a>
+    </div>
+</div>
