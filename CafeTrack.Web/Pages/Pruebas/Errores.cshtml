@@ -1,0 +1,102 @@
+@page
+@model CafeTrack.Web.Pages.Pruebas.ErroresModel
+@{
+    ViewData["Title"] = "Errores de la base";
+    ViewData["Pagina"] = "pruebas";
+}
+
+<header class="encabezado-pagina">
+    <h1>Qué pasa cuando la base dice que no</h1>
+    <p>
+        Las reglas viven en MySQL, no en la interfaz. Aquí se provocan los tres rechazos
+        a propósito para ver el error real y cómo lo traduce el sistema.
+        Todo corre dentro de una transacción que siempre se deshace: <strong>no queda
+        nada escrito</strong>. Su sesión es de rol <strong>@Model.Rol</strong>.
+    </p>
+</header>
+
+@if (Model.Resultado is { } r)
+{
+    <div class="aviso @(r.Fallo ? "error" : "exito")" role="alert">
+        <span class="aviso-icono">
+            @await Html.PartialAsync("_Icono", (r.Fallo ? "rechazado" : "aprobado") + ":20")
+        </span>
+        <div>
+            @if (r.Fallo)
+            {
+                <strong>La base rechazó la operación.</strong>
+                <p style="margin:.35rem 0 0">@r.MensajeAmable</p>
+                <p class="suave mono" style="margin:.35rem 0 0">
+                    MySQL error @r.Numero · SQLSTATE @r.SqlState
+                </p>
+                <p class="suave" style="margin:.2rem 0 0">
+                    Mensaje crudo del motor: <span class="mono">@r.MensajeCrudo</span>
+                </p>
+            }
+            else
+            {
+                <strong>La base permitió la operación.</strong>
+                <p style="margin:.35rem 0 0">@r.MensajeAmable</p>
+            }
+        </div>
+    </div>
+}
+
+<div class="dos-columnas">
+    <section class="panel">
+        <h2>1 · Regla de negocio (SIGNAL)</h2>
+        <p class="suave">
+            Intenta vender <span class="mono">CAF-2025-005</span>, que fue rechazado en
+            catación. <span class="mono">sp_registrar_venta</span> lo corta antes de
+            tocar ninguna tabla y devuelve <span class="mono">ERROR 1644</span>.
+        </p>
+        <p class="suave">
+            Con un rol que no tiene <span class="mono">EXECUTE</span> sobre ese
+            procedimiento —auditor o catador— la base ni siquiera llega a la regla:
+            responde antes con <span class="mono">ERROR 1370</span>.
+        </p>
+        <form method="post">
+            <button class="boton secundario" type="submit" name="caso" value="signal">
+                Provocar el SIGNAL
+            </button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>2 · Restricción CHECK</h2>
+        <p class="suave">
+            Intenta registrar un acopio de <span class="mono">-5 qq</span> saltándose el
+            procedimiento. La restricción <span class="mono">chk_aco_peso</span> lo impide
+            con <span class="mono">ERROR 3819</span>.
+        </p>
+        <form method="post">
+            <button class="boton secundario" type="submit" name="caso" value="check">
+                Provocar el CHECK
+            </button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>3 · Permisos del rol (ERROR 1142)</h2>
+        <p class="suave">
+            Intenta insertar un comprador con el usuario de MySQL de su rol.
+            Con <strong>auditor</strong>, <strong>catador</strong> o
+            <strong>acopiador</strong> el motor responde
+            <span class="mono">ERROR 1142</span>; con <strong>admin</strong> lo permite,
+            y la prueba lo deshace igual.
+        </p>
+        <form method="post">
+            <button class="boton secundario" type="submit" name="caso" value="permiso">
+                Probar los permisos
+            </button>
+        </form>
+    </section>
+</div>
+
+@if (Model.Resultado is { } r2)
+{
+    <section class="panel">
+        <h2>Lo que se ejecutó</h2>
+        <pre class="codigo">@r2.Sql</pre>
+    </section>
+}

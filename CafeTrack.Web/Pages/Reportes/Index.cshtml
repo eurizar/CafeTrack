@@ -1,0 +1,28 @@
+@page
+@using CafeTrack.Web.Helpers
+@model CafeTrack.Web.Pages.Reportes.IndexModel
+@{
+    ViewData["Title"] = "Reportes";
+    ViewData["Pagina"] = "reportes";
+}
+
+<header class="encabezado-pagina">
+    <h1>Reportes</h1>
+    <p>
+        Las once consultas del proyecto. Cada una es una <strong>vista</strong> en MySQL
+        (<span class="mono">sql/07_vistas.sql</span>): el SQL vive en la base y la
+        aplicación solo hace <span class="mono">SELECT</span> sobre ella.
+    </p>
+</header>
+
+<div class="rejilla rejilla-reportes">
+    @foreach (var r in Model.Reportes)
+    {
+        <a class="tarjeta reporte" asp-page="/Reportes/Ver" asp-route-clave="@r.Clave">
+            <span class="reporte-icono">@await Html.PartialAsync("_Icono", r.Icono + ":20")</span>
+            <h2>@r.Titulo</h2>
+            <p class="reporte-pregunta">@r.Pregunta</p>
+            <span class="mono reporte-vista">@r.Vista</span>
+        </a>
+    }
+</div>

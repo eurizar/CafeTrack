@@ -101,6 +101,109 @@ public static class Formato
         }
     }
 
+    /// <summary>
+    /// Encabezado legible para una columna de un reporte:
+    /// peso_bruto_quintales -> "Peso bruto quintales".
+    /// </summary>
+    public static string Encabezado(string columna)
+    {
+        if (string.IsNullOrWhiteSpace(columna))
+        {
+            return string.Empty;
+        }
+
+        var texto = columna.Replace('_', ' ').Trim();
+        texto = char.ToUpper(texto[0], CulturaGt) + texto[1..];
+
+        // Siglas y unidades que no deben quedar en minuscula.
+        return texto
+            .Replace(" sca", " SCA", StringComparison.OrdinalIgnoreCase)
+            .Replace("Sca ", "SCA ", StringComparison.Ordinal)
+            .Replace(" quintales", " (qq)", StringComparison.OrdinalIgnoreCase)
+            .Replace("Porcentaje", "%", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Da formato al valor de una celda de reporte segun su tipo y el nombre
+    /// de la columna, que es lo unico que se conoce de una vista generica.
+    /// </summary>
+    public static string Celda(string columna, object? valor)
+    {
+        if (valor is null or DBNull)
+        {
+            return "—";
+        }
+
+        var nombre = columna.ToLowerInvariant();
+
+        return valor switch
+        {
+            bool b => b ? "Sí" : "No",
+            DateTime f => f.TimeOfDay == TimeSpan.Zero ? Fecha(f) : FechaHora(f),
+            DateOnly d => Fecha(d),
+            decimal n when EsMoneda(nombre) => Moneda(n),
+            decimal n when nombre.Contains("porcentaje") => Porcentaje(n, 2),
+            decimal n => Numero(n),
+            double n => Numero((decimal)n),
+            float n => Numero((decimal)n),
+            // Los anios se escriben enteros: 2026, no 2,026.
+            long e when EsAnio(nombre) => e.ToString(CulturaGt),
+            int e when EsAnio(nombre) => e.ToString(CulturaGt),
+            long e => e.ToString("N0", CulturaGt),
+            int e => e.ToString("N0", CulturaGt),
+            _ => Enum(valor.ToString())
+        };
+    }
+
+    /// <summary>Columnas que llevan un ano y no deben llevar separador de miles.</summary>
+    private static bool EsAnio(string nombre) =>
+        nombre is "temporada" or "anio" or "ano" || nombre.EndsWith("_anio");
+
+    /// <summary>Columnas que se muestran como quetzales.</summary>
+    private static bool EsMoneda(string nombre) =>
+        nombre.Contains("precio") || nombre.Contains("total") || nombre.Contains("monto") ||
+        nombre.Contains("ingreso") || nombre.Contains("pagado") || nombre.Contains("deduccion") ||
+        nombre.Contains("diferencia_vs_base");
+
+    /// <summary>Indica si la celda se alinea a la derecha.</summary>
+    public static bool EsNumerica(object? valor) =>
+        valor is decimal or double or float or int or long or short;
+
+    /// <summary>Columnas que se pintan como etiqueta de color.</summary>
+    public static string? ClaseCelda(string columna, object? valor)
+    {
+        if (valor is null)
+        {
+            return null;
+        }
+
+        var texto = valor.ToString();
+        return columna.ToLowerInvariant() switch
+        {
+            "estado_lote" => ClaseEstadoLote(texto),
+            "resultado" or "resultado_catacion" =>
+                texto == "Aprobado" ? "bodega" : "rechazado",
+            "clasificacion" => texto switch
+            {
+                "Alta" => "rechazado",
+                "Media" => "acopio",
+                _ => "bodega"
+            },
+            "cumplimiento" => texto switch
+            {
+                "Dentro del rango" => "bodega",
+                "En curso" => "acopio",
+                _ => "rechazado"
+            },
+            "categoria" => texto == "Bajo el minimo" ? "rechazado" : "bodega",
+            "alerta" => texto == "ALERTA_MERMA_ALTA" ? "acopio" : "rechazado",
+            "estado" => texto == "Activo" ? "bodega" : "neutro",
+            "estado_pago" => texto == "Pagado" ? "bodega" : "acopio",
+            "certificacion" => ClaseCertificacion(texto),
+            _ => null
+        };
+    }
+
     /// <summary>Sufijo de clase CSS para la etiqueta de certificacion.</summary>
     public static string ClaseCertificacion(string? certificacion) =>
         certificacion is null or "Ninguna" ? "neutro" : "certificada";

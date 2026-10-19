@@ -1,0 +1,83 @@
+@page "{clave}"
+@using CafeTrack.Web.Helpers
+@model CafeTrack.Web.Pages.Reportes.VerModel
+@{
+    var r = Model.Reporte!;
+    ViewData["Title"] = r.Titulo;
+    ViewData["Pagina"] = "reportes";
+}
+
+<header class="encabezado-pagina">
+    <p class="resumen-filtro" style="margin-bottom:.35rem">
+        <a asp-page="/Reportes/Index">Reportes</a> · consulta @(CatalogoReportes.Todos.ToList().IndexOf(r) + 1) de 11
+    </p>
+    <h1>@r.Titulo</h1>
+    <p>@r.Pregunta</p>
+</header>
+
+<p class="resumen-filtro">
+    @Model.Datos.Filas.Count fila(s) ·
+    origen: <span class="mono">@r.Vista</span>
+    @if (Model.Datos.Truncado)
+    {
+        <text>· <strong>mostrando las primeras 500</strong></text>
+    }
+</p>
+
+<div class="tabla-envoltura">
+    @if (Model.Datos.Filas.Count == 0)
+    {
+        <p class="sin-datos">
+            La vista no devolvió filas todavía. Registre movimientos en el sistema
+            y vuelva a consultarla.
+        </p>
+    }
+    else
+    {
+        <table class="datos tabla-reporte">
+            <thead>
+                <tr>
+                    @foreach (var columna in Model.Datos.Columnas)
+                    {
+                        <th scope="col">@Formato.Encabezado(columna)</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fila in Model.Datos.Filas)
+                {
+                    <tr>
+                        @foreach (var columna in Model.Datos.Columnas)
+                        {
+                            var valor = fila.TryGetValue(columna, out var v) ? v : null;
+                            var etiqueta = Formato.ClaseCelda(columna, valor);
+                            <td class="@(Formato.EsNumerica(valor) ? "num" : "")">
+                                @if (etiqueta is not null)
+                                {
+                                    <span class="etiqueta @etiqueta">@Formato.Celda(columna, valor)</span>
+                                }
+                                else
+                                {
+                                    @Formato.Celda(columna, valor)
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<section class="panel" style="margin-top:1.5rem">
+    <h2>Otras consultas</h2>
+    <ul class="lista-reportes">
+        @foreach (var otro in Model.Otros)
+        {
+            <li>
+                <a asp-page="/Reportes/Ver" asp-route-clave="@otro.Clave">@otro.Titulo</a>
+                <span class="suave">@otro.Pregunta</span>
+            </li>
+        }
+    </ul>
+</section>

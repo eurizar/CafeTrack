@@ -19,6 +19,9 @@ public static class ErroresMySql
     /// <summary>El usuario de MySQL no tiene permiso sobre la tabla (ERROR 1142).</summary>
     public const int PermisoDenegado = 1142;
 
+    /// <summary>El usuario de MySQL no puede ejecutar la rutina (ERROR 1370).</summary>
+    public const int EjecucionDenegada = 1370;
+
     /// <summary>Devuelve el mensaje que se muestra en pantalla.</summary>
     public static string Traducir(MySqlException ex) => ex.Number switch
     {
@@ -30,6 +33,9 @@ public static class ErroresMySql
 
         PermisoDenegado =>
             "Su usuario no tiene permiso para realizar esta operacion sobre esa tabla.",
+
+        EjecucionDenegada =>
+            "Su rol no tiene permiso para ejecutar ese procedimiento de la base.",
 
         1062 => "Ya existe un registro con ese valor unico (por ejemplo, el codigo de lote).",
         1451 or 1452 => "El dato referenciado no existe o esta en uso por otro registro.",

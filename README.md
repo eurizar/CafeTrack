@@ -61,7 +61,8 @@ CafeTrack/
 │   ├── 03_usuario_app.sql       CREATE USER + GRANT para cafetrack_dev
 │   ├── 04_rutinas.sql           función, 2 procedimientos y 4 triggers
 │   ├── 05_datos_demo.sql        (opcional) un lote sin acopio para la demo
-│   └── 06_seguridad.sql         usuarios de la app, sp_login y un usuario MySQL por rol
+│   ├── 06_seguridad.sql         usuarios de la app, sp_login y un usuario MySQL por rol
+│   └── 07_vistas.sql            las 11 consultas del proyecto, como vistas
 └── CafeTrack.Web/
     ├── Program.cs
     ├── appsettings.json                     sin credenciales
@@ -94,6 +95,7 @@ CafeTrack/
    mysql -u root -p < sql/04_rutinas.sql
    mysql -u root -p < sql/05_datos_demo.sql   # opcional, para la demostración
    mysql -u root -p < sql/06_seguridad.sql
+   mysql -u root -p < sql/07_vistas.sql
    ```
 
    El primero crea la base con sus **18 tablas** (incluye `DROP DATABASE IF EXISTS`).
@@ -162,7 +164,9 @@ CafeTrack/
 | `/Existencias` | Kardex resumido por bodega y lote |
 | `/Acopios/Registrar` | Formulario de recepción en acopio; llama a `sp_registrar_acopio` |
 | `/Ventas/Registrar` | Formulario de venta; llama a `sp_registrar_venta` |
+| `/Reportes` | Las 11 consultas del proyecto, una por vista |
 | `/Bitacora` | Auditoría: lo que escriben los triggers y los procedimientos |
+| `/Pruebas/Errores` | Demuestra `SIGNAL`, `CHECK` y `ERROR 1142` en vivo |
 | `/Cuenta/Ingresar` | Inicio de sesión |
 
 ---
@@ -218,6 +222,42 @@ y el `ERROR 1142` de permisos.
 **Recarga de datos.** `02_datos_prueba.sql` trae los pesos y estados ya calculados, así
 que levanta la bandera `@cafetrack_carga` mientras inserta y los triggers se saltan el
 cuerpo. Por eso los scripts se pueden volver a ejecutar en cualquier orden.
+
+## Reportes y errores (Fase 4)
+
+**Las 11 consultas son vistas.** `sql/07_vistas.sql` las crea; el SQL vive en la base y
+la aplicación solo hace `SELECT` sobre ellas. La base sigue teniendo **18 tablas**: una
+vista no es una tabla y el motor las cuenta aparte.
+
+| Vista | Responde |
+|---|---|
+| `vw_existencias_bodega` | ¿Cuánto café hay hoy en cada bodega, lote por lote? |
+| `vw_trazabilidad_lote` | La historia completa de cada lote, de la parcela al estado actual |
+| `vw_produccion_productor` | ¿Cuánto entregó cada socio y cuánto se le ha pagado? |
+| `vw_mermas_lote` | ¿Dónde se está perdiendo el café y cuánto? |
+| `vw_calidad_lotes` | Puntajes SCA, altura de taza y resultado de cada catación |
+| `vw_ventas_detalle` | Cada venta con su comprador y cómo quedó frente al precio base |
+| `vw_ventas_temporada` | ¿Cómo le fue a la cooperativa en cada ciclo? |
+| `vw_pagos_productor` | Cuánto recibió cada socio y qué parte del ingreso representa |
+| `vw_rendimiento_variedad` | ¿Qué variedad rinde mejor y cuál se cotiza más alto? |
+| `vw_tiempos_beneficiado` | ¿Cada etapa se cumplió dentro del rango esperado? |
+| `vw_alertas_auditoria` | Las alertas que levantan los triggers, con el JSON desplegado |
+
+La pantalla `/Reportes` las lista y `/Reportes/Ver/{clave}` muestra cada una. El nombre
+de la vista **nunca** llega desde la URL: viaja solo la clave y se resuelve contra el
+catálogo de `Helpers/CatalogoReportes.cs`.
+
+**Los errores de la base, como mensajes.** `/Pruebas/Errores` provoca los tres rechazos
+a propósito, dentro de una transacción que siempre se deshace:
+
+| Caso | Qué responde MySQL |
+|---|---|
+| Vender un lote rechazado en catación | `ERROR 1644` con el texto del `SIGNAL` |
+| Registrar un acopio de −5 qq saltándose el procedimiento | `ERROR 3819`, restricción `chk_aco_peso` |
+| Insertar un comprador con el usuario del rol | `ERROR 1142` con auditor, catador o acopiador; permitido con admin |
+
+Con un rol que no tiene `EXECUTE` sobre el procedimiento, el primer caso responde antes
+con `ERROR 1370`. `Helpers/ErroresMySql.cs` traduce los cuatro a lenguaje llano.
 
 ## Seguridad (Fase 3)
 

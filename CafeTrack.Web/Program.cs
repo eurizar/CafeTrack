@@ -61,6 +61,8 @@ builder.Services.AddScoped<ILoteRepository, LoteRepository>();
 builder.Services.AddScoped<IExistenciaRepository, ExistenciaRepository>();
 builder.Services.AddScoped<IOperacionesRepository, OperacionesRepository>();
 builder.Services.AddScoped<ISeguridadRepository, SeguridadRepository>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+builder.Services.AddScoped<IPruebasRepository, PruebasRepository>();
 
 var app = builder.Build();
 

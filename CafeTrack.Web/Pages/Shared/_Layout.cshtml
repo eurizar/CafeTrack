@@ -78,6 +78,11 @@
                         @await Html.PartialAsync("_Icono", "bascula") <span>Existencias</span>
                     </a>
                 </li>
+                <li>
+                    <a class="@Activo("reportes")" asp-page="/Reportes/Index" title="Reportes">
+                        @await Html.PartialAsync("_Icono", "reportes") <span>Reportes</span>
+                    </a>
+                </li>
             </ul>
 
             @if (registra)
@@ -110,6 +115,11 @@
                     <li>
                         <a class="@Activo("bitacora")" asp-page="/Bitacora" title="Bitácora">
                             @await Html.PartialAsync("_Icono", "certificado") <span>Bitácora</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="@Activo("pruebas")" asp-page="/Pruebas/Errores" title="Errores de la base">
+                            @await Html.PartialAsync("_Icono", "rechazado") <span>Errores de la base</span>
                         </a>
                     </li>
                 </ul>
