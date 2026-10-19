@@ -1,0 +1,130 @@
+@page "{id:int}"
+@model CafeTrack.Web.Pages.Bitacora.DetalleModel
+@{
+    var r = Model.Registro;
+    ViewData["Title"] = $"Registro {r.IdBitacora}";
+    ViewData["Pagina"] = "bitacora";
+
+    var antes = Formato.JsonPares(r.DatosAnteriores);
+    var despues = Formato.JsonPares(r.DatosNuevos);
+}
+
+<header class="encabezado-pagina">
+    <p class="resumen-filtro" style="margin-bottom:.35rem">
+        <a asp-page="/Bitacora/Index">Bitácora</a> · registro @r.IdBitacora
+    </p>
+    <div class="titulo-lote">
+        <h1>@Formato.Enum(r.TablaAfectada)</h1>
+        <span class="etiqueta @r.ClaseOperacion">@r.Operacion</span>
+    </div>
+    <p>
+        @Formato.FechaHora(r.FechaHora) · registrado por <strong>@r.Usuario</strong>
+    </p>
+</header>
+
+<section class="panel">
+    <dl class="ficha">
+        <div>
+            <dt>Fecha y hora</dt>
+            <dd class="mono">@r.FechaHora.ToString("dd/MM/yyyy HH:mm:ss", Formato.CulturaGt)</dd>
+        </div>
+        <div>
+            <dt>Operación</dt>
+            <dd>@r.Operacion</dd>
+        </div>
+        <div>
+            <dt>Tabla afectada</dt>
+            <dd class="mono">@r.TablaAfectada</dd>
+        </div>
+        <div>
+            <dt>Registro afectado</dt>
+            <dd class="mono">@(r.IdRegistroAfectado?.ToString() ?? "—")</dd>
+        </div>
+        <div>
+            <dt>Usuario</dt>
+            <dd>@r.Usuario</dd>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.CodigoLote))
+        {
+            <div>
+                <dt>Lote</dt>
+                <dd>
+                    <a class="mono" asp-page="/Lotes/Detalle" asp-route-codigo="@Model.CodigoLote">
+                        @Model.CodigoLote
+                    </a>
+                </dd>
+            </div>
+        }
+    </dl>
+</section>
+
+<div class="dos-columnas">
+    <section class="panel">
+        <h2>Antes</h2>
+        @if (antes.Count == 0)
+        {
+            <p class="suave">
+                El registro no guarda un estado anterior. Pasa con los INSERT y con las
+                alertas: antes no existía nada que comparar.
+            </p>
+        }
+        else
+        {
+            <table class="datos" style="background:transparent">
+                <tbody>
+                    @foreach (var (clave, valor) in antes)
+                    {
+                        <tr>
+                            <th scope="row" class="clave-json">@clave</th>
+                            <td>@valor</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    <section class="panel">
+        <h2>Después</h2>
+        @if (despues.Count == 0)
+        {
+            <p class="suave">El registro no guarda datos nuevos.</p>
+        }
+        else
+        {
+            <table class="datos" style="background:transparent">
+                <tbody>
+                    @foreach (var (clave, valor) in despues)
+                    {
+                        <tr>
+                            <th scope="row" class="clave-json">@clave</th>
+                            <td>@valor</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+</div>
+
+<section class="panel">
+    <h2>JSON tal como lo guardó la base</h2>
+    <p class="suave">
+        Es lo que escribieron el trigger o el procedimiento en las columnas
+        <span class="mono">datos_anteriores</span> y <span class="mono">datos_nuevos</span>.
+    </p>
+
+    <details class="json-crudo">
+        <summary>datos_anteriores</summary>
+        <pre class="codigo">@(string.IsNullOrWhiteSpace(r.DatosAnteriores) ? "NULL" : r.DatosAnteriores)</pre>
+    </details>
+
+    <details class="json-crudo" open>
+        <summary>datos_nuevos</summary>
+        <pre class="codigo">@(string.IsNullOrWhiteSpace(r.DatosNuevos) ? "NULL" : r.DatosNuevos)</pre>
+    </details>
+</section>
+
+<p class="resumen-filtro">
+    <a asp-page="/Bitacora/Index">Volver a la bitácora</a>
+</p>

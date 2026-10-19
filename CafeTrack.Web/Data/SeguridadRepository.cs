@@ -42,6 +42,9 @@ public interface ISeguridadRepository
     Task<IReadOnlyList<BitacoraFila>> ListarBitacoraAsync(
         string? operacion, string? tabla, string? usuario, int limite, CancellationToken ct = default);
 
+    /// <summary>Un registro de la bitacora por su id; null si no existe.</summary>
+    Task<BitacoraFila?> ObtenerBitacoraAsync(int id, CancellationToken ct = default);
+
     /// <summary>Valores distintos de tabla y operacion presentes en la bitacora.</summary>
     Task<(IReadOnlyList<string> Tablas, IReadOnlyList<string> Operaciones)>
         ListarFiltrosBitacoraAsync(CancellationToken ct = default);
@@ -168,6 +171,20 @@ public sealed class SeguridadRepository : ISeguridadRepository
         var filas = await conexion.QueryAsync<BitacoraFila>(
             new CommandDefinition(SqlBitacora, parametros, cancellationToken: ct));
         return filas.AsList();
+    }
+
+    public async Task<BitacoraFila?> ObtenerBitacoraAsync(int id, CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT b.id_bitacora, b.tabla_afectada, b.operacion, b.id_registro_afectado,
+                   b.usuario, b.fecha_hora, b.datos_anteriores, b.datos_nuevos
+              FROM BitacoraAuditoria b
+             WHERE b.id_bitacora = @id;
+            """;
+
+        await using var conexion = await _fabrica.CrearConexionAsync(ct);
+        return await conexion.QuerySingleOrDefaultAsync<BitacoraFila>(
+            new CommandDefinition(sql, new { id }, cancellationToken: ct));
     }
 
     public async Task<(IReadOnlyList<string> Tablas, IReadOnlyList<string> Operaciones)>

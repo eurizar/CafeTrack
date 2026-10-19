@@ -169,6 +169,7 @@ CafeTrack/
 | `/Ventas/Registrar` | Formulario de venta; llama a `sp_registrar_venta` |
 | `/Reportes` | Las 11 consultas del proyecto, una por vista |
 | `/Bitacora` | Auditoría: lo que escriben los triggers y los procedimientos |
+| `/Bitacora/Detalle/{id}` | Desglose de un registro: estado anterior, nuevo y el JSON crudo |
 | `/Pruebas/Errores` | Demuestra `SIGNAL`, `CHECK` y `ERROR 1142` en vivo |
 | `/Usuarios` | Gestión de usuarios y roles (solo `admin`) |
 | `/Cuenta/CambiarClave` | Cambio de contraseña del propio usuario |
@@ -306,7 +307,9 @@ alguien llega igual, MySQL responde `ERROR 1142` y la aplicación lo muestra com
 **Bitácora.** `BitacoraAuditoria` se llena sola desde los triggers y los procedimientos:
 ingresos y salidas de bodega, ventas, acopios, inicios de sesión y los intentos fallidos.
 La aplicación no inserta ahí por su cuenta. La pantalla `/Bitacora` la ven `admin` y
-`auditor`.
+`auditor`; cada fila abre su **desglose completo**, donde se comparan `datos_anteriores`
+y `datos_nuevos` lado a lado y se puede ver el JSON tal como lo guardó la base. Cuando el
+registro menciona un lote, el desglose enlaza a su trazabilidad.
 
 ## Gestión de usuarios
 

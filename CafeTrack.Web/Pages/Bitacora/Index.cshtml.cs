@@ -3,17 +3,17 @@ using CafeTrack.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CafeTrack.Web.Pages;
+namespace CafeTrack.Web.Pages.Bitacora;
 
 /// <summary>
 /// Bitacora de auditoria: lo que escriben los triggers y los procedimientos.
 /// Solo la ven los roles admin y auditor.
 /// </summary>
-public class BitacoraModel : PageModel
+public class IndexModel : PageModel
 {
     private readonly ISeguridadRepository _repositorio;
 
-    public BitacoraModel(ISeguridadRepository repositorio) => _repositorio = repositorio;
+    public IndexModel(ISeguridadRepository repositorio) => _repositorio = repositorio;
 
     [BindProperty(SupportsGet = true, Name = "op")]
     public string? Operacion { get; set; }

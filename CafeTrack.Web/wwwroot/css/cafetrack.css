@@ -1825,3 +1825,39 @@ html.barra-compacta .sesion-clave { display: none; }
     color: var(--oro);
     background-color: rgba(192, 138, 62, .14);
 }
+
+/* Detalle de un registro de bitacora: tabla de clave/valor. */
+.clave-json {
+    width: 40%;
+    text-align: left;
+    font-weight: 600;
+    color: var(--texto-suave);
+    font-size: .82rem;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+}
+
+.json-crudo { margin-top: .75rem; }
+
+.json-crudo summary {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: .85rem;
+    color: var(--tostado);
+    font-weight: 600;
+    padding: .3rem 0;
+}
+
+.json-crudo pre.codigo { margin-top: .4rem; }
+
+td.json .etiqueta {
+    margin-left: .4rem;
+    font-size: .7rem;
+}
+
+/* La ilustracion de la pagina de error se centra como bloque. */
+.pagina-error .grano {
+    display: flex;
+    justify-content: center;
+}

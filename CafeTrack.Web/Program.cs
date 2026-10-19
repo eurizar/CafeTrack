@@ -49,7 +49,7 @@ builder.Services.AddRazorPages(opciones =>
 
     opciones.Conventions.AuthorizeFolder("/Acopios", "RegistraAcopios");
     opciones.Conventions.AuthorizeFolder("/Ventas", "RegistraVentas");
-    opciones.Conventions.AuthorizePage("/Bitacora", "VeBitacora");
+    opciones.Conventions.AuthorizeFolder("/Bitacora", "VeBitacora");
     opciones.Conventions.AuthorizeFolder("/Usuarios", "GestionaUsuarios");
 });
 

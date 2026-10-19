@@ -156,6 +156,49 @@ public static class Formato
     }
 
     /// <summary>
+    /// Desarma el JSON de la bitacora en pares clave/valor, ya con la clave
+    /// legible y el valor con formato. Si no es un objeto JSON, devuelve una
+    /// sola pareja con el texto tal cual vino.
+    /// </summary>
+    public static IReadOnlyList<(string Clave, string Valor)> JsonPares(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return [];
+        }
+
+        try
+        {
+            using var documento = System.Text.Json.JsonDocument.Parse(json);
+
+            if (documento.RootElement.ValueKind != System.Text.Json.JsonValueKind.Object)
+            {
+                return [("valor", json)];
+            }
+
+            return documento.RootElement.EnumerateObject()
+                .Select(p => (Encabezado(p.Name), ValorJson(p.Name, p.Value)))
+                .ToList();
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return [("valor", json)];
+        }
+    }
+
+    /// <summary>Da formato al valor de una propiedad del JSON.</summary>
+    private static string ValorJson(string clave, System.Text.Json.JsonElement valor) =>
+        valor.ValueKind switch
+        {
+            System.Text.Json.JsonValueKind.Number when valor.TryGetDecimal(out var n) =>
+                Celda(clave, n),
+            System.Text.Json.JsonValueKind.True => "Sí",
+            System.Text.Json.JsonValueKind.False => "No",
+            System.Text.Json.JsonValueKind.Null => "—",
+            _ => Enum(valor.ToString())
+        };
+
+    /// <summary>
     /// Columnas cuyo total tiene sentido: pesos y dinero. Un precio, un
     /// porcentaje o una altitud no se suman, se promedian, asi que quedan fuera.
     /// </summary>
