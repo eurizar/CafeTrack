@@ -1,0 +1,202 @@
+@page
+@model CafeTrack.Web.Pages.Usuarios.IndexModel
+@{
+    ViewData["Title"] = "Usuarios";
+    ViewData["Pagina"] = "usuarios";
+}
+
+<header class="encabezado-pagina">
+    <h1>Usuarios y permisos</h1>
+    <p>
+        El rol decide dos cosas: qué pantallas ve la persona y
+        <strong>con qué usuario de MySQL trabaja el sistema</strong>. Por eso un cambio de
+        rol también cambia lo que la base le deja hacer, y toma efecto en su próximo ingreso.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.ClaveGenerada))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Tipo = "exito",
+        Titulo = "Contraseña temporal",
+        Mensaje = $"Entréguesela a {Model.ClaveDe}. Al entrar, el sistema le va a exigir " +
+                  "que registre la suya; esta clave deja de servir en ese momento.",
+        Detalle = Model.ClaveGenerada
+    })
+}
+else if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    <div class="aviso exito" role="status">
+        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "aprobado:20")</span>
+        <div>@Model.Exito</div>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó el cambio",
+        Mensaje = Model.ErrorBase,
+        Detalle = "Las reglas viven en los procedimientos de sql/08_usuarios.sql."
+    })
+}
+
+<div class="tabla-envoltura">
+    <table class="datos">
+        <thead>
+            <tr>
+                <th scope="col">Usuario</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Rol</th>
+                <th scope="col">Contraseña</th>
+                <th scope="col">Último acceso</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model.Usuarios)
+            {
+                <tr>
+                    <td class="mono"><strong>@u.Username</strong></td>
+                    <td>@u.NombreCompleto</td>
+                    <td>
+                        <form method="post" asp-page-handler="Rol" class="linea-form">
+                            <input type="hidden" name="username" value="@u.Username" />
+                            <select name="rol" aria-label="Rol de @u.Username">
+                                @foreach (var (clave, _) in CafeTrack.Web.Pages.Usuarios.IndexModel.Roles)
+                                {
+                                    <option value="@clave" selected="@(u.Rol == clave)">@clave</option>
+                                }
+                            </select>
+                            <button class="boton secundario chico" type="submit">Cambiar</button>
+                        </form>
+                    </td>
+                    <td>
+                        <span class="etiqueta @(u.EsTemporal ? "acopio" : "bodega")">
+                            @(u.EsTemporal ? "Temporal" : "Propia")
+                        </span>
+                    </td>
+                    <td class="mono">@Formato.FechaHora(u.UltimoAcceso)</td>
+                    <td>
+                        <span class="etiqueta @(u.Activo ? "bodega" : "neutro")">
+                            @(u.Activo ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                    <td>
+                        <div class="acciones-fila">
+                            @if (u.Username == Model.Yo)
+                            {
+                                @* Un administrador no se reinicia a si mismo: si pierde la
+                                   clave temporal se queda fuera del sistema. Cambia la suya
+                                   conociendo la actual. *@
+                                <a class="boton secundario chico" asp-page="/Cuenta/CambiarClave">
+                                    Cambiar mi clave
+                                </a>
+                                <span class="ayuda">Es su propia cuenta</span>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Reiniciar"
+                                      data-confirmar="La contraseña actual de @u.Username dejará de servir. El sistema mostrará la temporal una sola vez: anótela antes de cerrar el aviso.">
+                                    <input type="hidden" name="username" value="@u.Username" />
+                                    <button class="boton secundario chico" type="submit"
+                                            title="Generar una contraseña temporal">
+                                        Reiniciar clave
+                                    </button>
+                                </form>
+                                <form method="post" asp-page-handler="Estado"
+                                      data-confirmar="@(u.Activo ? $"{u.Username} no podrá volver a entrar hasta que lo active de nuevo." : $"{u.Username} podrá entrar otra vez con su contraseña.")">
+                                    <input type="hidden" name="username" value="@u.Username" />
+                                    <input type="hidden" name="activo" value="@((!u.Activo).ToString().ToLower())" />
+                                    <button class="boton secundario chico" type="submit">
+                                        @(u.Activo ? "Desactivar" : "Activar")
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="dos-columnas" style="margin-top:1.5rem">
+    <section class="panel">
+        <h2>Agregar usuario</h2>
+        <p class="suave">
+            Se crea con una contraseña temporal que el sistema muestra una sola vez.
+        </p>
+
+        <form method="post" asp-page-handler="Crear" class="formulario">
+            <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+            <div class="campo ancho">
+                <label asp-for="Nuevo.Username">Usuario</label>
+                <input asp-for="Nuevo.Username" maxlength="50" autocomplete="off"
+                       placeholder="jrax" />
+                <span asp-validation-for="Nuevo.Username" class="error-campo"></span>
+            </div>
+
+            <div class="campo ancho">
+                <label asp-for="Nuevo.NombreCompleto">Nombre completo</label>
+                <input asp-for="Nuevo.NombreCompleto" maxlength="100" autocomplete="off"
+                       placeholder="Julio Rax Sierra" />
+                <span asp-validation-for="Nuevo.NombreCompleto" class="error-campo"></span>
+            </div>
+
+            <div class="campo ancho">
+                <label asp-for="Nuevo.Rol">Rol</label>
+                <select asp-for="Nuevo.Rol">
+                    @foreach (var (clave, descripcion) in CafeTrack.Web.Pages.Usuarios.IndexModel.Roles)
+                    {
+                        <option value="@clave">@clave — @descripcion</option>
+                    }
+                </select>
+                <span asp-validation-for="Nuevo.Rol" class="error-campo"></span>
+            </div>
+
+            <div class="acciones-formulario">
+                <button class="boton" type="submit">Crear usuario</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Qué puede hacer cada rol</h2>
+        <p class="suave">
+            Los permisos no son solo de pantalla: cada rol se conecta a MySQL con su propio
+            usuario y sus propios <span class="mono">GRANT</span>.
+        </p>
+        <ul class="leyenda">
+            @foreach (var (clave, descripcion) in CafeTrack.Web.Pages.Usuarios.IndexModel.Roles)
+            {
+                <li>
+                    <span class="etiqueta proceso">@clave</span>
+                    @descripcion
+                </li>
+            }
+        </ul>
+        <p class="ayuda" style="margin-top:.8rem">
+            Los cinco usuarios de MySQL los crea <span class="mono">sql/06_seguridad.sql</span>.
+            Desde aquí se asigna el rol; los privilegios de cada uno se definen allá.
+        </p>
+
+        @if (Model.UnicoAdmin)
+        {
+            <div class="aviso" style="margin-top:1rem">
+                <span class="aviso-icono">@await Html.PartialAsync("_Icono", "certificado:20")</span>
+                <div>
+                    <strong>Usted es el único administrador.</strong>
+                    Conviene crear un segundo con rol <span class="mono">admin</span>: si
+                    pierde su contraseña, esa otra cuenta puede devolvérsela desde aquí
+                    mismo. Si no, la recuperación se hace con
+                    <span class="mono">sql/09_recuperar_acceso.sql</span> desde MySQL.
+                </div>
+            </div>
+        }
+    </section>
+</div>

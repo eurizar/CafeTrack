@@ -17,29 +17,14 @@
 
 @if (Model.Resultado is { } r)
 {
-    <div class="aviso @(r.Fallo ? "error" : "exito")" role="alert">
-        <span class="aviso-icono">
-            @await Html.PartialAsync("_Icono", (r.Fallo ? "rechazado" : "aprobado") + ":20")
-        </span>
-        <div>
-            @if (r.Fallo)
-            {
-                <strong>La base rechazó la operación.</strong>
-                <p style="margin:.35rem 0 0">@r.MensajeAmable</p>
-                <p class="suave mono" style="margin:.35rem 0 0">
-                    MySQL error @r.Numero · SQLSTATE @r.SqlState
-                </p>
-                <p class="suave" style="margin:.2rem 0 0">
-                    Mensaje crudo del motor: <span class="mono">@r.MensajeCrudo</span>
-                </p>
-            }
-            else
-            {
-                <strong>La base permitió la operación.</strong>
-                <p style="margin:.35rem 0 0">@r.MensajeAmable</p>
-            }
-        </div>
-    </div>
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Tipo = r.Fallo ? "error" : "exito",
+        Titulo = r.Fallo ? "La base rechazó la operación" : "La base permitió la operación",
+        Mensaje = r.MensajeAmable,
+        Detalle = r.Fallo ? $"MySQL error {r.Numero} · SQLSTATE {r.SqlState}" : null,
+        Crudo = r.Fallo ? r.MensajeCrudo : null
+    })
 }
 
 <div class="dos-columnas">

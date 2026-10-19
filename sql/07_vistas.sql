@@ -20,8 +20,7 @@ USE trazabilidad_cafe;
 --    La existencia no se almacena: se calcula con los movimientos.
 -- ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW vw_existencias_bodega AS
-SELECT b.id_bodega                                           AS id_bodega,
-       b.nombre                                              AS bodega,
+SELECT b.nombre                                              AS bodega,
        b.capacidad_quintales                                 AS capacidad_quintales,
        l.codigo_lote                                         AS codigo_lote,
        p.nombre                                              AS productor,

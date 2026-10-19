@@ -14,6 +14,13 @@
 -- El salt es distinto por usuario, de modo que dos personas con la misma
 -- contrasena no comparten hash. La contrasena en claro nunca se guarda ni
 -- viaja a la aplicacion: la comparacion ocurre dentro de sp_login.
+--
+-- CONTRASENA TEMPORAL
+-- Cuando el administrador asigna una clave temporal, el hash se guarda con
+-- el prefijo 'TMP:'  ->  TMP:<salt>:<hash>
+-- Asi se marca "debe cambiarla" sin agregar ninguna columna: el esquema
+-- sigue intacto con sus 18 tablas. sp_login devuelve esa marca y la
+-- aplicacion obliga a cambiarla antes de dejar entrar a ningun lado.
 -- =====================================================================
 
 USE trazabilidad_cafe;
@@ -75,10 +82,11 @@ CREATE PROCEDURE sp_login(
     IN p_password VARCHAR(255)
 )
 BEGIN
-    DECLARE v_id     INT DEFAULT NULL;
-    DECLARE v_hash   VARCHAR(255);
-    DECLARE v_activo BOOLEAN;
-    DECLARE v_salt   VARCHAR(64);
+    DECLARE v_id       INT DEFAULT NULL;
+    DECLARE v_hash     VARCHAR(255);
+    DECLARE v_activo   BOOLEAN;
+    DECLARE v_salt     VARCHAR(64);
+    DECLARE v_temporal TINYINT DEFAULT 0;
 
     SELECT u.id_usuario, u.password_hash, u.activo
       INTO v_id, v_hash, v_activo
@@ -93,6 +101,12 @@ BEGIN
     IF NOT v_activo THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'El usuario esta inactivo. Consulte al administrador.';
+    END IF;
+
+    -- El prefijo TMP: marca una clave temporal puesta por el administrador.
+    IF LEFT(v_hash, 4) = 'TMP:' THEN
+        SET v_temporal = 1;
+        SET v_hash = SUBSTRING(v_hash, 5);
     END IF;
 
     SET v_salt = SUBSTRING_INDEX(v_hash, ':', 1);
@@ -115,7 +129,8 @@ BEGIN
     VALUES ('Usuarios', 'UPDATE', v_id, p_username,
             JSON_OBJECT('evento', 'inicio de sesion'));
 
-    SELECT u.id_usuario, u.username, u.nombre_completo, u.rol, u.activo, u.ultimo_acceso
+    SELECT u.id_usuario, u.username, u.nombre_completo, u.rol, u.activo, u.ultimo_acceso,
+           v_temporal AS debe_cambiar
       FROM Usuarios u
      WHERE u.id_usuario = v_id;
 END$$
@@ -144,10 +159,20 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El usuario no existe.';
     END IF;
 
+    -- Si la clave vigente es temporal, se le quita el prefijo para compararla.
+    IF LEFT(v_hash, 4) = 'TMP:' THEN
+        SET v_hash = SUBSTRING(v_hash, 5);
+    END IF;
+
     SET v_salt = SUBSTRING_INDEX(v_hash, ':', 1);
 
     IF SHA2(CONCAT(v_salt, p_password_act), 256) <> SUBSTRING_INDEX(v_hash, ':', -1) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La contrasena actual no es correcta.';
+    END IF;
+
+    IF p_password_new = p_password_act THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'La contrasena nueva debe ser distinta de la actual.';
     END IF;
 
     SET v_salt = HEX(RANDOM_BYTES(16));

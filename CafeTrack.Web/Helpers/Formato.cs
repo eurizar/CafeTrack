@@ -155,6 +155,30 @@ public static class Formato
         };
     }
 
+    /// <summary>
+    /// Columnas cuyo total tiene sentido: pesos y dinero. Un precio, un
+    /// porcentaje o una altitud no se suman, se promedian, asi que quedan fuera.
+    /// </summary>
+    public static bool EsSumable(string columna)
+    {
+        var nombre = columna.ToLowerInvariant();
+
+        if (nombre.Contains("precio") || nombre.Contains("porcentaje") ||
+            nombre.Contains("altitud") || nombre.Contains("promedio") ||
+            nombre.Contains("sca") || nombre.Contains("diferencia") ||
+            nombre.Contains("horas") || nombre.Contains("minimo") ||
+            nombre.Contains("maximo") || nombre.Contains("capacidad"))
+        {
+            return false;
+        }
+
+        return nombre.Contains("quintales") || nombre.Contains("total") ||
+               nombre.Contains("monto") || nombre.Contains("ingreso") ||
+               nombre.Contains("pagado") || nombre.Contains("deduccion") ||
+               nombre.Contains("area_manzanas") || nombre.Contains("entradas") ||
+               nombre.Contains("salidas");
+    }
+
     /// <summary>Columnas que llevan un ano y no deben llevar separador de miles.</summary>
     private static bool EsAnio(string nombre) =>
         nombre is "temporada" or "anio" or "ano" || nombre.EndsWith("_anio");

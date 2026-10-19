@@ -9,6 +9,7 @@
     var puedeAcopiar = User.IsInRole("admin") || User.IsInRole("acopiador");
     var puedeVender = User.IsInRole("admin") || User.IsInRole("gerente");
     var puedeAuditar = User.IsInRole("admin") || User.IsInRole("auditor");
+    var esAdmin = User.IsInRole("admin");
     var registra = puedeAcopiar || puedeVender;
 }
 <!DOCTYPE html>
@@ -122,6 +123,14 @@
                             @await Html.PartialAsync("_Icono", "rechazado") <span>Errores de la base</span>
                         </a>
                     </li>
+                    @if (esAdmin)
+                    {
+                        <li>
+                            <a class="@Activo("usuarios")" asp-page="/Usuarios/Index" title="Usuarios y permisos">
+                                @await Html.PartialAsync("_Icono", "productores") <span>Usuarios</span>
+                            </a>
+                        </li>
+                    }
                 </ul>
             }
 
@@ -133,6 +142,8 @@
                         <span class="sesion-rol">@Sesion.Rol</span>
                     </div>
                 </div>
+                <a class="sesion-clave" asp-page="/Cuenta/CambiarClave"
+                   title="Cambiar mi contraseña">Cambiar clave</a>
                 <form method="post" asp-page="/Cuenta/Salir">
                     <button class="boton secundario boton-salir" type="submit"
                             title="Cerrar sesión">Salir</button>
@@ -154,7 +165,24 @@
         </main>
     </div>
 
+    @* Ventana de confirmacion compartida; la usa cualquier formulario con
+       el atributo data-confirmar. *@
+    <dialog class="dialogo dialogo-error" id="dialogo-confirmar"
+            aria-labelledby="confirmar-titulo">
+        <div class="dialogo-cuerpo">
+            <span class="dialogo-icono">@await Html.PartialAsync("_Icono", "certificado:28")</span>
+            <h2 id="confirmar-titulo">¿Confirma la acción?</h2>
+            <p class="dialogo-mensaje" id="confirmar-mensaje"></p>
+        </div>
+        <div class="dialogo-acciones dialogo-acciones-dobles">
+            <button class="boton secundario" type="button" id="confirmar-no">Cancelar</button>
+            <button class="boton" type="button" id="confirmar-si">Continuar</button>
+        </div>
+    </dialog>
+
     <script src="~/js/barra.js" asp-append-version="true" defer></script>
+    <script src="~/js/confirmar.js" asp-append-version="true" defer></script>
+    <script src="~/js/dialogo.js" asp-append-version="true" defer></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

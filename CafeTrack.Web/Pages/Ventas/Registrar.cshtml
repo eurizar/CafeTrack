@@ -23,13 +23,12 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
 {
-    <div class="aviso error" role="alert">
-        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "rechazado:20")</span>
-        <div>
-            <strong>La base rechazó la operación.</strong><br />
-            @Model.ErrorBase
-        </div>
-    </div>
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó la venta",
+        Mensaje = Model.ErrorBase,
+        Detalle = "La regla vive en sp_registrar_venta, no en la pantalla."
+    })
 }
 
 @if (Model.Lotes.Count == 0)

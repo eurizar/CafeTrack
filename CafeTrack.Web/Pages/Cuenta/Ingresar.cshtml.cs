@@ -64,14 +64,22 @@ public class IngresarModel : PageModel
                 return Page();
             }
 
+            var datos = new List<Claim>
+            {
+                new(ClaimTypes.Name, usuario.Username),
+                new(ClaimTypes.Role, usuario.Rol),
+                new(UsuarioDeSesion.ClaimNombreCompleto, usuario.NombreCompleto),
+                new("cafetrack:id_usuario", usuario.IdUsuario.ToString())
+            };
+
+            // Con clave temporal, el sistema lo lleva a registrar la suya.
+            if (usuario.DebeCambiar)
+            {
+                datos.Add(new Claim(CambiarClaveModel.ClaimDebeCambiar, "1"));
+            }
+
             var identidad = new ClaimsIdentity(
-                [
-                    new Claim(ClaimTypes.Name, usuario.Username),
-                    new Claim(ClaimTypes.Role, usuario.Rol),
-                    new Claim(UsuarioDeSesion.ClaimNombreCompleto, usuario.NombreCompleto),
-                    new Claim("cafetrack:id_usuario", usuario.IdUsuario.ToString())
-                ],
-                CookieAuthenticationDefaults.AuthenticationScheme);
+                datos, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
@@ -80,6 +88,11 @@ public class IngresarModel : PageModel
 
             _log.LogInformation("Sesion iniciada por {Usuario} con rol {Rol}.",
                 usuario.Username, usuario.Rol);
+
+            if (usuario.DebeCambiar)
+            {
+                return RedirectToPage("/Cuenta/CambiarClave");
+            }
 
             return Url.IsLocalUrl(ReturnUrl) ? LocalRedirect(ReturnUrl) : RedirectToPage("/Index");
         }

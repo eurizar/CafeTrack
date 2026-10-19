@@ -32,4 +32,19 @@ public class VerModel : PageModel
         Datos = await _repositorio.EjecutarAsync(Reporte, ct);
         return Page();
     }
+
+    /// <summary>Descarga el mismo reporte como libro de Excel.</summary>
+    public async Task<IActionResult> OnGetDescargarAsync(string clave, CancellationToken ct)
+    {
+        var reporte = CatalogoReportes.Buscar(clave);
+        if (reporte is null)
+        {
+            return NotFound();
+        }
+
+        var datos = await _repositorio.EjecutarAsync(reporte, ct);
+        var libro = ExportadorExcel.Generar(reporte.Titulo, datos.Columnas, datos.Filas);
+
+        return File(libro, ExportadorExcel.TipoMime, ExportadorExcel.NombreArchivo(reporte.Clave));
+    }
 }

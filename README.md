@@ -62,7 +62,9 @@ CafeTrack/
 │   ├── 04_rutinas.sql           función, 2 procedimientos y 4 triggers
 │   ├── 05_datos_demo.sql        (opcional) un lote sin acopio para la demo
 │   ├── 06_seguridad.sql         usuarios de la app, sp_login y un usuario MySQL por rol
-│   └── 07_vistas.sql            las 11 consultas del proyecto, como vistas
+│   ├── 07_vistas.sql            las 11 consultas del proyecto, como vistas
+│   ├── 08_usuarios.sql          gestión de usuarios y contraseñas temporales
+│   └── 09_recuperar_acceso.sql  recuperación cuando nadie puede entrar
 └── CafeTrack.Web/
     ├── Program.cs
     ├── appsettings.json                     sin credenciales
@@ -96,6 +98,7 @@ CafeTrack/
    mysql -u root -p < sql/05_datos_demo.sql   # opcional, para la demostración
    mysql -u root -p < sql/06_seguridad.sql
    mysql -u root -p < sql/07_vistas.sql
+   mysql -u root -p < sql/08_usuarios.sql
    ```
 
    El primero crea la base con sus **18 tablas** (incluye `DROP DATABASE IF EXISTS`).
@@ -167,6 +170,8 @@ CafeTrack/
 | `/Reportes` | Las 11 consultas del proyecto, una por vista |
 | `/Bitacora` | Auditoría: lo que escriben los triggers y los procedimientos |
 | `/Pruebas/Errores` | Demuestra `SIGNAL`, `CHECK` y `ERROR 1142` en vivo |
+| `/Usuarios` | Gestión de usuarios y roles (solo `admin`) |
+| `/Cuenta/CambiarClave` | Cambio de contraseña del propio usuario |
 | `/Cuenta/Ingresar` | Inicio de sesión |
 
 ---
@@ -243,9 +248,16 @@ vista no es una tabla y el motor las cuenta aparte.
 | `vw_tiempos_beneficiado` | ¿Cada etapa se cumplió dentro del rango esperado? |
 | `vw_alertas_auditoria` | Las alertas que levantan los triggers, con el JSON desplegado |
 
-La pantalla `/Reportes` las lista y `/Reportes/Ver/{clave}` muestra cada una. El nombre
-de la vista **nunca** llega desde la URL: viaja solo la clave y se resuelve contra el
-catálogo de `Helpers/CatalogoReportes.cs`.
+La pantalla `/Reportes` las lista y `/Reportes/Ver/{clave}` muestra cada una, con
+encabezado fijo al desplazar, filtro en vivo, numeración de filas y una fila de totales
+para las columnas que tiene sentido sumar. El nombre de la vista **nunca** llega desde
+la URL: viaja solo la clave y se resuelve contra el catálogo de
+`Helpers/CatalogoReportes.cs`.
+
+**Descarga a Excel.** Cada reporte trae su botón: genera un `.xlsx` real, con los
+encabezados en negrita, las fechas como fechas y el dinero con formato de quetzales.
+`Helpers/ExportadorExcel.cs` arma el archivo a mano con `ZipArchive` —un `.xlsx` es un
+ZIP con unos XML adentro—, así que **no hace falta ninguna librería externa**.
 
 **Los errores de la base, como mensajes.** `/Pruebas/Errores` provoca los tres rechazos
 a propósito, dentro de una transacción que siempre se deshace:
@@ -295,6 +307,52 @@ alguien llega igual, MySQL responde `ERROR 1142` y la aplicación lo muestra com
 ingresos y salidas de bodega, ventas, acopios, inicios de sesión y los intentos fallidos.
 La aplicación no inserta ahí por su cuenta. La pantalla `/Bitacora` la ven `admin` y
 `auditor`.
+
+## Gestión de usuarios
+
+La pantalla `/Usuarios`, solo para `admin`, permite crear usuarios, cambiar su rol,
+activarlos o desactivarlos y entregarles una contraseña temporal. Todo pasa por los
+procedimientos de `sql/08_usuarios.sql`, que validan con `SIGNAL` y escriben en la
+bitácora. Dos reglas que hace cumplir la base: no se puede dejar al sistema sin
+administrador activo y no se puede repetir un nombre de usuario.
+
+**Contraseñas temporales sin tocar el esquema.** La tabla `Usuarios` no tiene una
+columna para marcar "debe cambiarla", y el esquema no se modifica. La marca viaja dentro
+del propio hash con un prefijo:
+
+```
+TMP:<salt>:<hash>      contraseña temporal, hay que cambiarla
+<salt>:<hash>          contraseña que el usuario eligió
+```
+
+`sp_login` detecta el prefijo y lo informa; mientras esté, la aplicación devuelve al
+usuario a `/Cuenta/CambiarClave` en cualquier ruta que intente abrir. Al registrar su
+contraseña, `sp_cambiar_password` genera un salt nuevo y guarda el hash sin prefijo.
+
+La clave temporal la genera el sistema en bloques legibles (`Cafe-7K3M-R9TX`, sin
+caracteres que se confundan) y se muestra **una sola vez**, para dictarla o entregarla.
+
+### Si nadie puede entrar
+
+La contraseña no se recupera: solo está guardado su hash. Lo que se hace es reemplazarla.
+
+1. **Lo normal:** otro usuario con rol `admin` entra a `/Usuarios` y le asigna una
+   contraseña temporal. Por eso conviene tener **dos administradores**; la propia
+   pantalla lo advierte cuando solo hay uno.
+2. **Si no queda ningún administrador con acceso:** se ejecuta
+   `sql/09_recuperar_acceso.sql` en MySQL con una cuenta con privilegios (normalmente
+   `root`). Edite el usuario y la clave temporal en el archivo y córralo:
+
+   ```bash
+   mysql -u root -p < sql/09_recuperar_acceso.sql
+   ```
+
+   Al entrar con esa clave, el sistema exige registrar una propia. El script también
+   sirve para reactivar un usuario o devolverle el rol `admin`, y todo queda en la bitácora.
+
+Para que el caso no se dé por accidente, un administrador **no puede reiniciarse a sí
+mismo** desde `/Usuarios`: en su propia fila la aplicación ofrece *Cambiar mi clave*, que
+exige conocer la actual. Reiniciar la de otro usuario o desactivarlo pide confirmación.
 
 ## Datos de prueba
 

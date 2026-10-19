@@ -1513,3 +1513,315 @@ pre.codigo {
     overflow-x: auto;
     white-space: pre-wrap;
 }
+
+/* --------------------------------------------- ventanas flotantes */
+
+.dialogo {
+    width: min(460px, calc(100vw - 2rem));
+    padding: 0;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background-color: var(--crema);
+    color: var(--texto);
+    box-shadow: 0 18px 50px rgba(42, 31, 24, .35), 0 2px 8px rgba(42, 31, 24, .2);
+}
+
+/* El fondo se oscurece y se desenfoca; la ventana se mantiene opaca. */
+.dialogo::backdrop {
+    background-color: rgba(42, 31, 24, .45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: fondo-dialogo .25s ease-out both;
+}
+
+.dialogo[open] {
+    animation: dialogo-entra .28s cubic-bezier(.2, .8, .3, 1) both;
+}
+
+@keyframes dialogo-entra {
+    from { opacity: 0; transform: translateY(10px) scale(.97); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes fondo-dialogo {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Sin JavaScript queda como tarjeta en el flujo de la pagina. */
+.dialogo:not(:modal) {
+    margin: 0 0 1.5rem;
+    box-shadow: var(--sombra-suave);
+}
+
+.dialogo-barra {
+    display: flex;
+    justify-content: flex-end;
+    padding: .5rem .5rem 0;
+}
+
+.dialogo-cerrar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    cursor: pointer;
+    color: var(--texto-suave);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radio-chico);
+}
+
+.dialogo-cerrar:hover { color: var(--espresso); background-color: rgba(111, 78, 55, .08); }
+
+.dialogo-cuerpo {
+    padding: 0 1.5rem .25rem;
+    text-align: center;
+}
+
+.dialogo-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    margin-bottom: .75rem;
+}
+
+.dialogo-error .dialogo-icono {
+    color: var(--cereza);
+    background-color: rgba(162, 59, 42, .12);
+}
+
+.dialogo-exito .dialogo-icono {
+    color: var(--cafetal);
+    background-color: rgba(74, 103, 65, .14);
+}
+
+.dialogo h2 { font-size: 1.2rem; margin-bottom: .4rem; }
+
+.dialogo-mensaje { margin-bottom: .6rem; }
+
+.dialogo-detalle {
+    font-size: .82rem;
+    color: var(--texto-suave);
+    margin-bottom: .5rem;
+}
+
+.dialogo-crudo {
+    text-align: left;
+    font-size: .82rem;
+    border-top: 1px solid var(--borde);
+    padding-top: .6rem;
+    margin-top: .8rem;
+}
+
+.dialogo-crudo summary {
+    cursor: pointer;
+    color: var(--tostado);
+    font-weight: 600;
+}
+
+.dialogo-crudo p {
+    margin: .5rem 0 0;
+    color: var(--texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.dialogo-acciones {
+    padding: 1rem 1.5rem 1.35rem;
+}
+
+.dialogo-acciones .boton { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+    .dialogo[open],
+    .dialogo::backdrop { animation: none; }
+}
+
+/* ------------------------------------- vista de reporte (Fase 4) */
+
+.titulo-reporte {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.titulo-reporte h1 { margin-bottom: .1rem; }
+.titulo-reporte p { margin: 0; color: var(--texto-suave); }
+
+.boton.boton-excel {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--cafetal);
+}
+
+.boton.boton-excel:hover { border-bottom-color: #3F5937; }
+
+.barra-reporte {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1.1rem 0 .75rem;
+}
+
+.campo-busqueda {
+    position: relative;
+    flex: 0 1 320px;
+}
+
+.campo-busqueda input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: .95rem;
+    color: var(--texto);
+    background-color: #fff;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-chico);
+    padding: .45rem .6rem .45rem 2.1rem;
+}
+
+.campo-busqueda input:focus {
+    border-color: var(--tostado);
+    outline: 2px solid rgba(111, 78, 55, .2);
+}
+
+.campo-busqueda .icono-dentro {
+    position: absolute;
+    left: .6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--texto-suave);
+    line-height: 0;
+    pointer-events: none;
+}
+
+/* La tabla se desplaza dentro de su caja y el encabezado queda fijo. */
+.tabla-alta {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.tabla-alta thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    /* El fondo debe ser opaco para que no se transparenten las filas. */
+    background-color: #F6EFE2;
+    box-shadow: inset 0 -1px 0 var(--borde);
+}
+
+.tabla-alta tfoot td {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background-color: #F6EFE2;
+    box-shadow: inset 0 1px 0 var(--borde);
+}
+
+table.tabla-reporte tbody tr:nth-child(even) td {
+    background-color: rgba(226, 214, 195, .14);
+}
+
+table.tabla-reporte tbody tr:hover td {
+    background-color: rgba(226, 214, 195, .34);
+}
+
+.col-indice {
+    width: 1%;
+    color: var(--texto-suave);
+    font-family: var(--mono);
+    font-size: .78rem;
+    text-align: right;
+    padding-right: .5rem !important;
+}
+
+table.sin-coincidencias::after {
+    content: "Ningún renglón coincide con el filtro.";
+    display: block;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--texto-suave);
+}
+
+@media (max-width: 700px) {
+    .titulo-reporte { align-items: flex-start; }
+    .boton.boton-excel { width: 100%; justify-content: center; }
+    .campo-busqueda { flex: 1 1 100%; }
+    .tabla-alta { max-height: none; }
+}
+
+/* ------------------------------------- gestion de usuarios */
+
+.boton.chico {
+    padding: .25rem .6rem;
+    font-size: .8rem;
+}
+
+.linea-form {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    flex-wrap: wrap;
+}
+
+.linea-form select {
+    font-family: var(--sans);
+    font-size: .85rem;
+    color: var(--texto);
+    background-color: #fff;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-chico);
+    padding: .25rem .4rem;
+}
+
+.acciones-fila {
+    display: flex;
+    gap: .35rem;
+    flex-wrap: wrap;
+}
+
+.sesion-clave {
+    font-size: .78rem;
+    color: rgba(244, 238, 227, .7);
+    border-bottom-color: rgba(244, 238, 227, .3);
+}
+
+.sesion-clave:hover { color: #fff; border-bottom-color: rgba(244, 238, 227, .6); }
+
+html.barra-compacta .sesion-clave { display: none; }
+
+/* La contrasena temporal se muestra grande para poder dictarla. */
+.dialogo-exito .dialogo-detalle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: var(--espresso);
+    background-color: rgba(74, 103, 65, .1);
+    border: 1px solid rgba(74, 103, 65, .3);
+    border-radius: var(--radio-chico);
+    padding: .5rem .75rem;
+    display: inline-block;
+}
+
+/* La ventana de confirmacion lleva dos botones del mismo ancho. */
+.dialogo-acciones-dobles {
+    display: flex;
+    gap: .6rem;
+}
+
+.dialogo-acciones-dobles .boton { flex: 1 1 0; }
+
+#dialogo-confirmar .dialogo-icono {
+    color: var(--oro);
+    background-color: rgba(192, 138, 62, .14);
+}

@@ -1,0 +1,46 @@
+@*
+    Ventana flotante para los mensajes que vienen de la base.
+
+    Se escribe con el elemento <dialog> del navegador, sin librerias.
+    Sale con el atributo "open" puesto, de modo que si el navegador no
+    ejecuta JavaScript el mensaje igual se lee: queda como una tarjeta
+    dentro de la pagina. Con JavaScript, dialogo.js la convierte en
+    ventana modal y el fondo se desenfoca.
+*@
+@model CafeTrack.Web.Models.ViewModels.Dialogo
+
+<dialog class="dialogo @(Model.EsError ? "dialogo-error" : "dialogo-exito")"
+        data-auto open aria-labelledby="dialogo-titulo">
+
+    <form method="dialog" class="dialogo-barra">
+        <button class="dialogo-cerrar" value="cerrar" aria-label="Cerrar aviso">
+            @await Html.PartialAsync("_Icono", "rechazado:18")
+        </button>
+    </form>
+
+    <div class="dialogo-cuerpo">
+        <span class="dialogo-icono">
+            @await Html.PartialAsync("_Icono", (Model.EsError ? "rechazado" : "aprobado") + ":28")
+        </span>
+
+        <h2 id="dialogo-titulo">@Model.Titulo</h2>
+        <p class="dialogo-mensaje">@Model.Mensaje</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Detalle))
+        {
+            <p class="dialogo-detalle mono">@Model.Detalle</p>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Crudo))
+        {
+            <details class="dialogo-crudo">
+                <summary>Ver la respuesta del motor</summary>
+                <p class="mono">@Model.Crudo</p>
+            </details>
+        }
+    </div>
+
+    <form method="dialog" class="dialogo-acciones">
+        <button class="boton" value="ok" autofocus>Entendido</button>
+    </form>
+</dialog>

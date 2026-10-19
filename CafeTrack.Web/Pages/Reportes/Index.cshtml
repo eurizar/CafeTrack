@@ -19,7 +19,17 @@
     @foreach (var r in Model.Reportes)
     {
         <a class="tarjeta reporte" asp-page="/Reportes/Ver" asp-route-clave="@r.Clave">
-            <span class="reporte-icono">@await Html.PartialAsync("_Icono", r.Icono + ":20")</span>
+            <span class="reporte-icono">
+                @if (r.Icono.StartsWith("planta"))
+                {
+                    @* Ilustracion propia de la cooperativa en vez de un icono generico. *@
+                    @await Html.PartialAsync("_Planta", r.Icono["planta".Length..] + ":20")
+                }
+                else
+                {
+                    @await Html.PartialAsync("_Icono", r.Icono + ":20")
+                }
+            </span>
             <h2>@r.Titulo</h2>
             <p class="reporte-pregunta">@r.Pregunta</p>
             <span class="mono reporte-vista">@r.Vista</span>

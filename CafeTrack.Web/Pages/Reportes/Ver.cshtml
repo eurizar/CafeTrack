@@ -5,26 +5,70 @@
     var r = Model.Reporte!;
     ViewData["Title"] = r.Titulo;
     ViewData["Pagina"] = "reportes";
+
+    var numero = CatalogoReportes.Todos.ToList().IndexOf(r) + 1;
+
+    // Totales de las columnas que tiene sentido sumar (pesos y dinero).
+    var sumas = new Dictionary<string, decimal>();
+    foreach (var columna in Model.Datos.Columnas.Where(Formato.EsSumable))
+    {
+        decimal total = 0;
+        var hubo = false;
+
+        foreach (var fila in Model.Datos.Filas)
+        {
+            if (fila.TryGetValue(columna, out var v) && v is decimal d)
+            {
+                total += d;
+                hubo = true;
+            }
+        }
+
+        if (hubo)
+        {
+            sumas[columna] = total;
+        }
+    }
 }
 
 <header class="encabezado-pagina">
     <p class="resumen-filtro" style="margin-bottom:.35rem">
-        <a asp-page="/Reportes/Index">Reportes</a> · consulta @(CatalogoReportes.Todos.ToList().IndexOf(r) + 1) de 11
+        <a asp-page="/Reportes/Index">Reportes</a> · consulta @numero de 11
     </p>
-    <h1>@r.Titulo</h1>
-    <p>@r.Pregunta</p>
+    <div class="titulo-reporte">
+        <div>
+            <h1>@r.Titulo</h1>
+            <p>@r.Pregunta</p>
+        </div>
+        <a class="boton boton-excel"
+           asp-page="/Reportes/Ver" asp-route-clave="@r.Clave" asp-page-handler="Descargar">
+            @await Html.PartialAsync("_Icono", "excel:18")
+            <span>Descargar Excel</span>
+        </a>
+    </div>
 </header>
 
-<p class="resumen-filtro">
-    @Model.Datos.Filas.Count fila(s) ·
-    origen: <span class="mono">@r.Vista</span>
-    @if (Model.Datos.Truncado)
-    {
-        <text>· <strong>mostrando las primeras 500</strong></text>
-    }
-</p>
+<div class="barra-reporte">
+    <div class="campo campo-busqueda">
+        <label for="filtro-tabla" class="oculto-visual">Filtrar filas</label>
+        <span class="icono-dentro">@await Html.PartialAsync("_Icono", "buscar:16")</span>
+        <input type="search" id="filtro-tabla" placeholder="Filtrar en la tabla…"
+               autocomplete="off" data-tabla="tabla-reporte" />
+    </div>
 
-<div class="tabla-envoltura">
+    <p class="resumen-filtro" style="margin:0">
+        <span id="contador-filas">@Model.Datos.Filas.Count</span> de
+        @Model.Datos.Filas.Count fila(s) ·
+        @Model.Datos.Columnas.Count columnas ·
+        origen <span class="mono">@r.Vista</span>
+        @if (Model.Datos.Truncado)
+        {
+            <text>· <strong>solo las primeras 500</strong></text>
+        }
+    </p>
+</div>
+
+<div class="tabla-envoltura tabla-alta">
     @if (Model.Datos.Filas.Count == 0)
     {
         <p class="sin-datos">
@@ -34,9 +78,10 @@
     }
     else
     {
-        <table class="datos tabla-reporte">
+        <table class="datos tabla-reporte" id="tabla-reporte">
             <thead>
                 <tr>
+                    <th scope="col" class="col-indice">#</th>
                     @foreach (var columna in Model.Datos.Columnas)
                     {
                         <th scope="col">@Formato.Encabezado(columna)</th>
@@ -44,9 +89,12 @@
                 </tr>
             </thead>
             <tbody>
+                @{ var indice = 0; }
                 @foreach (var fila in Model.Datos.Filas)
                 {
+                    indice++;
                     <tr>
+                        <td class="col-indice">@indice</td>
                         @foreach (var columna in Model.Datos.Columnas)
                         {
                             var valor = fila.TryGetValue(columna, out var v) ? v : null;
@@ -65,6 +113,25 @@
                     </tr>
                 }
             </tbody>
+            @if (sumas.Count > 0)
+            {
+                <tfoot>
+                    <tr>
+                        <td class="col-indice"></td>
+                        @foreach (var columna in Model.Datos.Columnas)
+                        {
+                            if (sumas.TryGetValue(columna, out var total))
+                            {
+                                <td class="num">@Formato.Celda(columna, total)</td>
+                            }
+                            else
+                            {
+                                <td>@(columna == Model.Datos.Columnas[0] ? "Total" : "")</td>
+                            }
+                        }
+                    </tr>
+                </tfoot>
+            }
         </table>
     }
 </div>
@@ -81,3 +148,7 @@
         }
     </ul>
 </section>
+
+@section Scripts {
+    <script src="~/js/tabla.js" asp-append-version="true" defer></script>
+}

@@ -1,0 +1,64 @@
+@page
+@model CafeTrack.Web.Pages.Cuenta.CambiarClaveModel
+@{
+    ViewData["Title"] = "Cambiar contraseña";
+    ViewData["Pagina"] = "";
+    Layout = Model.Obligatorio ? "_LayoutLimpio" : "_Layout";
+}
+
+<div class="@(Model.Obligatorio ? "ingreso" : "")">
+    @if (Model.Obligatorio)
+    {
+        <div class="ingreso-marca">
+            @await Html.PartialAsync("_Planta", "1:44")
+            <h1>Registre su contraseña</h1>
+            <p class="suave">
+                La clave que le dieron es temporal. Elija una propia para continuar.
+            </p>
+        </div>
+    }
+    else
+    {
+        <header class="encabezado-pagina">
+            <h1>Cambiar contraseña</h1>
+            <p>La comparación y el cambio ocurren dentro de MySQL, con un salt nuevo.</p>
+        </header>
+    }
+
+    <form method="post" class="panel @(Model.Obligatorio ? "ingreso-caja" : "formulario")">
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+        {
+            <div class="aviso error" role="alert">
+                <span class="aviso-icono">@await Html.PartialAsync("_Icono", "rechazado:20")</span>
+                <div>@Model.ErrorBase</div>
+            </div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Actual">Contraseña actual</label>
+            <input asp-for="Datos.Actual" type="password" autocomplete="current-password" autofocus />
+            <span asp-validation-for="Datos.Actual" class="error-campo"></span>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Nueva">Contraseña nueva</label>
+            <input asp-for="Datos.Nueva" type="password" autocomplete="new-password" />
+            <span class="ayuda">Al menos 8 caracteres y distinta de la actual.</span>
+            <span asp-validation-for="Datos.Nueva" class="error-campo"></span>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Repetir">Repita la nueva</label>
+            <input asp-for="Datos.Repetir" type="password" autocomplete="new-password" />
+            <span asp-validation-for="Datos.Repetir" class="error-campo"></span>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton @(Model.Obligatorio ? "ancho-total" : "")" type="submit">
+                Guardar contraseña
+            </button>
+        </div>
+    </form>
+</div>

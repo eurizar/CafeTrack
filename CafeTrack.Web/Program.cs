@@ -1,6 +1,7 @@
 using System.Globalization;
 using CafeTrack.Web.Data;
 using CafeTrack.Web.Helpers;
+using CafeTrack.Web.Pages.Cuenta;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 
@@ -36,7 +37,8 @@ builder.Services
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RegistraAcopios", p => p.RequireRole("admin", "acopiador"))
     .AddPolicy("RegistraVentas", p => p.RequireRole("admin", "gerente"))
-    .AddPolicy("VeBitacora", p => p.RequireRole("admin", "auditor"));
+    .AddPolicy("VeBitacora", p => p.RequireRole("admin", "auditor"))
+    .AddPolicy("GestionaUsuarios", p => p.RequireRole("admin"));
 
 builder.Services.AddRazorPages(opciones =>
 {
@@ -48,6 +50,7 @@ builder.Services.AddRazorPages(opciones =>
     opciones.Conventions.AuthorizeFolder("/Acopios", "RegistraAcopios");
     opciones.Conventions.AuthorizeFolder("/Ventas", "RegistraVentas");
     opciones.Conventions.AuthorizePage("/Bitacora", "VeBitacora");
+    opciones.Conventions.AuthorizeFolder("/Usuarios", "GestionaUsuarios");
 });
 
 // --- Acceso a datos -----------------------------------------------------
@@ -86,6 +89,28 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Con una contrasena temporal no se puede usar el sistema: primero hay que
+// registrar una propia. La marca viaja en la sesion, no en la base.
+app.Use(async (contexto, siguiente) =>
+{
+    if (contexto.User.HasClaim(CambiarClaveModel.ClaimDebeCambiar, "1"))
+    {
+        var ruta = contexto.Request.Path.Value ?? string.Empty;
+        var permitida =
+            ruta.StartsWith("/Cuenta/CambiarClave", StringComparison.OrdinalIgnoreCase) ||
+            ruta.StartsWith("/Cuenta/Salir", StringComparison.OrdinalIgnoreCase);
+
+        if (!permitida)
+        {
+            contexto.Response.Redirect("/Cuenta/CambiarClave");
+            return;
+        }
+    }
+
+    await siguiente();
+});
+
 app.MapRazorPages();
 
 app.Run();

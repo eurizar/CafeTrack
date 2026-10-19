@@ -54,7 +54,7 @@ public static class CatalogoReportes
 
         new("variedades", "Rendimiento por variedad",
             "¿Qué variedad rinde mejor y cuál se cotiza más alto?",
-            "vw_rendimiento_variedad", "grano"),
+            "vw_rendimiento_variedad", "planta3"),
 
         new("tiempos", "Tiempos del beneficiado",
             "¿Cada etapa se cumplió dentro del rango esperado?",
