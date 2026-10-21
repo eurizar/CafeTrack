@@ -1,0 +1,190 @@
+@page
+@model CafeTrack.Web.Pages.Procesos.RegistrarModel
+@{
+    ViewData["Title"] = "Beneficiado";
+    ViewData["Pagina"] = "procesos";
+}
+
+<header class="encabezado-pagina">
+    <h1>Registrar etapa del beneficiado</h1>
+    <p>
+        Cada lote avanza una etapa a la vez. La base no deja saltarse ninguna ni sacar
+        más café del que entró, y anota sola la merma de la etapa.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó la etapa",
+        Mensaje = Model.ErrorBase,
+        Detalle = "La regla vive en sp_registrar_proceso, no en la pantalla."
+    })
+}
+
+@if (Model.Lotes.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">
+            No hay lotes esperando beneficiado. Aparecen aquí los que ya fueron recibidos
+            en acopio y todavía no se han catado.
+        </p>
+    </div>
+}
+else
+{
+    <form method="post" class="panel formulario"
+          data-futuras="@(Model.PermiteFuturas ? "1" : "0")">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo">
+            <label asp-for="Datos.IdLote">Lote</label>
+            <select asp-for="Datos.IdLote" id="lote">
+                <option value="">Seleccione un lote…</option>
+                @foreach (var l in Model.Lotes)
+                {
+                    <option value="@l.IdLote"
+                            data-etapa="@l.IdEtapa"
+                            data-etapa-nombre="@l.Orden. @Formato.Enum(l.Etapa)"
+                            data-rango="@(l.DuracionMinHoras is null ? "" :
+                                 $"{Formato.Numero(l.DuracionMinHoras, 0)}–{Formato.Numero(l.DuracionMaxHoras, 0)} h")"
+                            data-peso="@l.PesoActual.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                            data-abierta="@(l.Abierta ? "1" : "0")"
+                            data-inicio="@(l.FechaInicio?.ToString("yyyy-MM-ddTHH:mm"))"
+                            selected="@(Model.Datos.IdLote == l.IdLote)">
+                        @l.CodigoLote · @l.Productor — @Formato.Quintales(l.PesoActual) qq
+                    </option>
+                }
+            </select>
+            <span class="ayuda">Solo aparecen los lotes que ya pasaron por acopio.</span>
+            <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label for="etapa-texto">Etapa que toca</label>
+            <input id="etapa-texto" type="text" readonly tabindex="-1"
+                   aria-describedby="ayuda-etapa" />
+            <span class="ayuda" id="ayuda-etapa"></span>
+            @* El id de la etapa lo decide la base, no el usuario. *@
+            <input type="hidden" asp-for="Datos.IdEtapa" id="etapa" />
+            <span asp-validation-for="Datos.IdEtapa" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.FechaInicio">Inicio</label>
+            <input asp-for="Datos.FechaInicio" id="inicio" type="datetime-local" />
+            <span asp-validation-for="Datos.FechaInicio" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.FechaFin">Cierre</label>
+            <input asp-for="Datos.FechaFin" type="datetime-local" />
+            <span class="ayuda">
+                Déjelo vacío si la etapa queda en curso: la cierra después, cuando termine.
+                @if (!Model.PermiteFuturas)
+                {
+                    <text>No se aceptan fechas futuras.</text>
+                }
+            </span>
+            <span asp-validation-for="Datos.FechaFin" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.PesoEntrada">Peso que entra (qq)</label>
+            <input asp-for="Datos.PesoEntrada" id="entrada" type="number" step="0.01" min="0.01" />
+            <span class="ayuda">Lo que el lote tiene ahora.</span>
+            <span asp-validation-for="Datos.PesoEntrada" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.PesoSalida">Peso que sale (qq)</label>
+            <input asp-for="Datos.PesoSalida" id="salida" type="number" step="0.01" min="0" />
+            <span class="ayuda" id="ayuda-merma">Vacío si la etapa sigue en curso.</span>
+            <span asp-validation-for="Datos.PesoSalida" class="error-campo"></span>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Responsable">Responsable</label>
+            <input asp-for="Datos.Responsable" maxlength="100" autocomplete="off"
+                   placeholder="Nombre de quien responde por la etapa" />
+            <span asp-validation-for="Datos.Responsable" class="error-campo"></span>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar etapa</button>
+            <a class="boton secundario" asp-page="/Lotes/Index">Cancelar</a>
+        </div>
+    </form>
+
+    <section class="panel">
+        <h2>En qué va cada lote</h2>
+        <p class="suave">
+            La etapa que toca no se elige: la calcula la base a partir de lo ya registrado.
+        </p>
+        <div class="tabla-envoltura" style="box-shadow:none;border:0">
+            <table class="datos">
+                <thead>
+                    <tr>
+                        <th scope="col">Lote</th>
+                        <th scope="col">Productor</th>
+                        <th scope="col" class="num">Peso actual</th>
+                        <th scope="col">Etapa que sigue</th>
+                        <th scope="col" class="num">Duración esperada</th>
+                        <th scope="col">Estado de la etapa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var l in Model.Lotes)
+                    {
+                        <tr>
+                            <td class="mono">@l.CodigoLote</td>
+                            <td>@l.Productor</td>
+                            <td class="num">@Formato.Quintales(l.PesoActual)</td>
+                            <td>@l.Orden. @Formato.Enum(l.Etapa)</td>
+                            <td class="num">
+                                @(l.DuracionMinHoras is null ? "—" :
+                                  $"{Formato.Numero(l.DuracionMinHoras, 0)}–{Formato.Numero(l.DuracionMaxHoras, 0)} h")
+                            </td>
+                            <td>
+                                <span class="etiqueta @(l.Abierta ? "acopio" : "neutro")">
+                                    @(l.Abierta ? "Abierta, falta cerrarla" : "Por iniciar")
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    @if (Model.PermiteFuturas)
+    {
+        <p class="resumen-filtro">
+            <strong>Modo demostración:</strong> este equipo acepta fechas futuras para poder
+            simular en minutos un beneficiado que dura días. El orden entre etapas se sigue
+            exigiendo. Se apaga quitando
+            <span class="mono">CafeTrack:PermitirFechasFuturas</span> de la configuración.
+        </p>
+    }
+
+    <p class="resumen-filtro">
+        <span class="mono">sp_registrar_proceso</span> exige que la etapa anterior esté
+        cerrada, que el peso de salida no supere al de entrada y que el lote ya haya pasado
+        por acopio. Si la etapa estaba abierta, esta misma pantalla la cierra.
+    </p>
+}
+
+@section Scripts {
+    <script src="~/js/proceso.js" asp-append-version="true" defer></script>
+}

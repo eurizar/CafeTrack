@@ -1,0 +1,275 @@
+@page
+@model CafeTrack.Web.Pages.Calidad.RegistrarModel
+@{
+    ViewData["Title"] = "Catación";
+    ViewData["Pagina"] = "calidad";
+
+    // Material de consulta del catador; vive en el modelo (ver Registrar.cshtml.cs).
+    var escalaSca = RegistrarModel.EscalaSca;
+    var atributos = RegistrarModel.AtributosSca;
+    var escalaAltura = RegistrarModel.EscalaAltura;
+}
+
+<header class="encabezado-pagina">
+    <h1>Registrar catación</h1>
+    <p>
+        Solo aparecen los lotes que terminaron las siete etapas del beneficiado.
+        Si el lote no aprueba, queda en estado <strong>Rechazado</strong> y ya no puede
+        entrar a bodega ni venderse.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó la catación",
+        Mensaje = Model.ErrorBase,
+        Detalle = "La regla vive en sp_registrar_calidad, no en la pantalla."
+    })
+}
+
+@if (Model.Lotes.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">
+            No hay lotes esperando catación. Aparecen aquí cuando el acopiador cierra
+            la última etapa del beneficiado.
+        </p>
+    </div>
+}
+else
+{
+    <form method="post" class="panel formulario" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.IdLote">Lote catado</label>
+            <select asp-for="Datos.IdLote">
+                <option value="">Seleccione un lote…</option>
+                @foreach (var l in Model.Lotes)
+                {
+                    <option value="@l.IdLote" data-altitud="@l.AltitudMetros">
+                        @l.Etiqueta — @Formato.Quintales(l.PesoActual) qq
+                        @(l.AltitudMetros is null ? "" : $"· {l.AltitudMetros} m")
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Puntaje">
+                Puntaje SCA
+                <button type="button" class="ayuda-enlace" data-abre="ayuda-sca"
+                        aria-label="Ver la escala SCA">¿qué es?</button>
+            </label>
+            <input asp-for="Datos.Puntaje" id="puntaje" type="number" step="0.25" min="0" max="100"
+                   placeholder="85.50" />
+            <span class="ayuda" id="ayuda-puntaje">Bajo 80 no se puede aprobar.</span>
+            <span asp-validation-for="Datos.Puntaje" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Altura">
+                Altura de taza
+                <button type="button" class="ayuda-enlace" data-abre="ayuda-altura"
+                        aria-label="Ver la clasificación por altura">¿qué es?</button>
+            </label>
+            <select asp-for="Datos.Altura" id="altura">
+                <option value="">Seleccione…</option>
+                @foreach (var a in CafeTrack.Web.Pages.Calidad.RegistrarModel.Alturas)
+                {
+                    <option value="@a">@a</option>
+                }
+            </select>
+            <span class="ayuda" id="ayuda-altura-campo">La sugiere la altitud de la parcela.</span>
+            <span asp-validation-for="Datos.Altura" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Evaluador">Catador</label>
+            <input asp-for="Datos.Evaluador" maxlength="100" autocomplete="off" />
+            <span asp-validation-for="Datos.Evaluador" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Aprobado">Resultado</label>
+            <select asp-for="Datos.Aprobado" id="resultado">
+                <option value="">Seleccione…</option>
+                <option value="true">Aprobado para venta</option>
+                <option value="false">Rechazado</option>
+            </select>
+            <span class="ayuda" id="ayuda-resultado">Lo propone el puntaje.</span>
+            <span asp-validation-for="Datos.Aprobado" class="error-campo"></span>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Defectos">Defectos principales</label>
+            <input asp-for="Datos.Defectos" maxlength="200" autocomplete="off"
+                   placeholder="Ninguno relevante" />
+            <span asp-validation-for="Datos.Defectos" class="error-campo"></span>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Perfil">Nota libre del catador</label>
+            <textarea asp-for="Datos.Perfil" id="perfil" rows="2" maxlength="500"
+                      placeholder="Lo que no cabe en las notas: cuerpo, retrogusto, textura…"></textarea>
+            <span class="ayuda">
+                Escriba a mano solo lo suyo; las notas del panel se guardan aparte.
+            </span>
+        </div>
+
+        @* El panel es la marca fija: no escribe en el texto de arriba. Al
+           guardar, el servidor arma el perfil con lo marcado y la nota. *@
+        <div class="campo ancho">
+            <label asp-for="Datos.Notas">Rueda de sabores</label>
+            <input type="hidden" asp-for="Datos.Notas" id="notas-marcadas" />
+            <div class="notas" id="notas">
+                @foreach (var grupo in CafeTrack.Web.Pages.Calidad.RegistrarModel.Notas)
+                {
+                    <div class="notas-grupo">
+                        <span class="notas-titulo">@grupo.Key</span>
+                        @foreach (var nota in grupo.Value)
+                        {
+                            <button type="button" class="nota" aria-pressed="false"
+                                    data-familia="@grupo.Key" data-nota="@nota">@nota</button>
+                        }
+                    </div>
+                }
+            </div>
+            <p class="vista-perfil" id="vista-perfil">
+                <span class="vista-titulo">Así se guardará</span>
+                <span class="vista-texto" id="vista-texto">
+                    Marque las notas que encontró en la taza.
+                </span>
+            </p>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar catación</button>
+            <a class="boton secundario" asp-page="/Lotes/Index">Cancelar</a>
+        </div>
+    </form>
+
+    <p class="resumen-filtro">
+        <span class="mono">sp_registrar_calidad</span> exige que el beneficiado esté
+        completo, no permite catar dos veces el mismo lote y bloquea aprobar con menos
+        de 80 puntos.
+    </p>
+
+    @* ---------------- Ventanas de consulta ---------------- *@
+
+    <dialog class="dialogo dialogo-ancho" id="ayuda-sca" aria-labelledby="titulo-sca">
+        <form method="dialog" class="dialogo-barra">
+            <button class="dialogo-cerrar" value="cerrar" aria-label="Cerrar">
+                @await Html.PartialAsync("_Icono", "rechazado:18")
+            </button>
+        </form>
+
+        <div class="dialogo-cuerpo dialogo-texto">
+            <h2 id="titulo-sca">La escala SCA</h2>
+            <p>
+                Es el puntaje de la <em>Specialty Coffee Association</em>. El catador prueba
+                la taza y califica diez atributos; la suma da un número sobre 100.
+            </p>
+
+            <table class="datos" style="background:transparent">
+                <thead>
+                    <tr>
+                        <th scope="col">Puntaje</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Qué significa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var (rango, nombre, significa) in escalaSca)
+                    {
+                        <tr>
+                            <td class="mono rango">@rango</td>
+                            <td><strong>@nombre</strong></td>
+                            <td class="suave">@significa</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <h3>Los diez atributos que se suman</h3>
+            <p class="suave">Cada uno se califica de 0 a 10 puntos.</p>
+            <div class="notas-grupo">
+                @foreach (var atributo in atributos)
+                {
+                    <span class="nota nota-fija">@atributo</span>
+                }
+            </div>
+
+            <p class="ayuda">
+                La cooperativa aprueba desde 80 puntos. Es el piso del café de especialidad,
+                y el sistema no deja aprobar por debajo.
+            </p>
+        </div>
+
+        <form method="dialog" class="dialogo-acciones">
+            <button class="boton" value="ok">Entendido</button>
+        </form>
+    </dialog>
+
+    <dialog class="dialogo dialogo-ancho" id="ayuda-altura" aria-labelledby="titulo-altura">
+        <form method="dialog" class="dialogo-barra">
+            <button class="dialogo-cerrar" value="cerrar" aria-label="Cerrar">
+                @await Html.PartialAsync("_Icono", "rechazado:18")
+            </button>
+        </form>
+
+        <div class="dialogo-cuerpo dialogo-texto">
+            <h2 id="titulo-altura">Altura de taza</h2>
+            <p>
+                Clasifica el grano por la altitud donde creció. Mientras más alto, más lento
+                madura la cereza y más denso queda el grano: eso se nota en la taza.
+            </p>
+
+            <table class="datos" style="background:transparent">
+                <thead>
+                    <tr>
+                        <th scope="col">Clasificación</th>
+                        <th scope="col">Altitud</th>
+                        <th scope="col">Cómo se comporta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var (clave, altitud, significa) in escalaAltura)
+                    {
+                        <tr>
+                            <td><strong>@clave</strong></td>
+                            <td class="mono rango">@altitud</td>
+                            <td class="suave">@significa</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <p class="ayuda">
+                Al elegir el lote, el sistema propone la clasificación según la altitud de la
+                parcela. Puede cambiarla si la catación dice otra cosa.
+            </p>
+        </div>
+
+        <form method="dialog" class="dialogo-acciones">
+            <button class="boton" value="ok">Entendido</button>
+        </form>
+    </dialog>
+}
+
+@section Scripts {
+    <script src="~/js/calidad.js" asp-append-version="true" defer></script>
+}

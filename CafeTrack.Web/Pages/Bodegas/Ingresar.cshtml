@@ -1,0 +1,110 @@
+@page
+@model CafeTrack.Web.Pages.Bodegas.IngresarModel
+@{
+    ViewData["Title"] = "Ingreso a bodega";
+    ViewData["Pagina"] = "bodega";
+}
+
+<header class="encabezado-pagina">
+    <h1>Ingresar lote a bodega</h1>
+    <p>
+        Solo entran los lotes aprobados en catación, y solo si la bodega tiene capacidad.
+        Las dos reglas las revisa la base en el trigger
+        <span class="mono">trg_movimientos_validar</span>.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó el ingreso",
+        Mensaje = Model.ErrorBase,
+        Detalle = "Lo validan sp_registrar_ingreso_bodega y trg_movimientos_validar."
+    })
+}
+
+@if (Model.Lotes.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">
+            No hay lotes pendientes de ingresar. Aparecen aquí los aprobados en catación
+            que todavía tienen café fuera de bodega.
+        </p>
+    </div>
+}
+else
+{
+    <form method="post" class="panel formulario">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.IdLote">Lote</label>
+            <select asp-for="Datos.IdLote" id="lote">
+                <option value="">Seleccione un lote…</option>
+                @foreach (var l in Model.Lotes)
+                {
+                    <option value="@l.IdLote"
+                            data-disponible="@l.Disponible.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                            selected="@(Model.Datos.IdLote == l.IdLote)">
+                        @l.Etiqueta — pendiente: @Formato.Quintales(l.Disponible) qq
+                        de @Formato.Quintales(l.PesoActual)
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.IdBodega">Bodega</label>
+            <select asp-for="Datos.IdBodega">
+                <option value="">Seleccione…</option>
+                @foreach (var b in Model.Bodegas)
+                {
+                    <option value="@b.IdBodega">
+                        @b.Nombre (capacidad @Formato.Quintales(b.CapacidadQuintales) qq)
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdBodega" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Cantidad">Cantidad (qq)</label>
+            <input asp-for="Datos.Cantidad" id="cantidad" type="number" step="0.01" min="0.01" />
+            <span class="ayuda" id="ayuda-cantidad">No puede superar lo pendiente del lote.</span>
+            <span asp-validation-for="Datos.Cantidad" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Responsable">Recibe en bodega</label>
+            <input asp-for="Datos.Responsable" maxlength="100" autocomplete="off"
+                   placeholder="Nombre de quien recibe" />
+            <span asp-validation-for="Datos.Responsable" class="error-campo"></span>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar ingreso</button>
+            <a class="boton secundario" asp-page="/Existencias">Cancelar</a>
+        </div>
+    </form>
+
+    <p class="resumen-filtro">
+        Al guardar, los triggers ponen el lote en <em>En bodega</em> y escriben el
+        movimiento en la bitácora. La existencia se recalcula sola.
+    </p>
+}
+
+@section Scripts {
+    <script src="~/js/bodega.js" asp-append-version="true" defer></script>
+}

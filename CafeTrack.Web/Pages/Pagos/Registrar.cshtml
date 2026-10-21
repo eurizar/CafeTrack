@@ -1,0 +1,116 @@
+@page
+@model CafeTrack.Web.Pages.Pagos.RegistrarModel
+@{
+    ViewData["Title"] = "Pago al productor";
+    ViewData["Pagina"] = "pagos";
+}
+
+<header class="encabezado-pagina">
+    <h1>Registrar pago al productor</h1>
+    <p>
+        Se paga una sola vez por venta. El monto lo calcula la base con el peso vendido;
+        aquí se indica el precio acordado con el productor y las deducciones.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó el pago",
+        Mensaje = Model.ErrorBase,
+        Detalle = "La regla vive en sp_registrar_pago, no en la pantalla."
+    })
+}
+
+@if (Model.Ventas.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">
+            No hay ventas pendientes de pago. Aparecen aquí apenas el gerente registra
+            una venta.
+        </p>
+    </div>
+}
+else
+{
+    <form method="post" class="panel formulario">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.IdVenta">Venta que se paga</label>
+            <select asp-for="Datos.IdVenta" id="venta">
+                <option value="">Seleccione una venta…</option>
+                @foreach (var v in Model.Ventas)
+                {
+                    <option value="@v.IdVenta"
+                            data-peso="@v.PesoVendido.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                            data-precio="@v.PrecioVenta.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                            selected="@(Model.Datos.IdVenta == v.IdVenta)">
+                        @v.Etiqueta — @Formato.Quintales(v.PesoVendido) qq ·
+                        vendido en @Formato.Moneda(v.TotalVenta)
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdVenta" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Precio">Precio pagado al productor (Q/qq)</label>
+            <input asp-for="Datos.Precio" id="precio" type="number" step="0.01" min="0.01" />
+            <span class="ayuda" id="ayuda-monto">El monto se calcula solo.</span>
+            <span asp-validation-for="Datos.Precio" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Deducciones">Deducciones (Q)</label>
+            <input asp-for="Datos.Deducciones" id="deducciones" type="number" step="0.01" min="0" />
+            <span class="ayuda">Insumos, anticipos, transporte. No pueden superar el monto.</span>
+            <span asp-validation-for="Datos.Deducciones" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Metodo">Método de pago</label>
+            <select asp-for="Datos.Metodo">
+                @foreach (var m in CafeTrack.Web.Pages.Pagos.RegistrarModel.Metodos)
+                {
+                    <option value="@m">@m</option>
+                }
+            </select>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Comprobante">Comprobante</label>
+            <input asp-for="Datos.Comprobante" maxlength="50" autocomplete="off"
+                   placeholder="TRF-2026-0001" />
+            <span asp-validation-for="Datos.Comprobante" class="error-campo"></span>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar pago</button>
+            <a class="boton secundario" asp-page="/Reportes/Ver" asp-route-clave="pagos">
+                Ver pagos
+            </a>
+        </div>
+    </form>
+
+    <p class="resumen-filtro">
+        <span class="mono">sp_registrar_pago</span> impide pagar dos veces la misma venta
+        y que las deducciones superen el monto. Al guardar, la venta queda marcada como
+        <em>Pagado</em>.
+    </p>
+}
+
+@section Scripts {
+    <script src="~/js/pago.js" asp-append-version="true" defer></script>
+}
