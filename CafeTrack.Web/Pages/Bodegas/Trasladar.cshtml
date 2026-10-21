@@ -1,0 +1,210 @@
+@page
+@model CafeTrack.Web.Pages.Bodegas.TrasladarModel
+@{
+    ViewData["Title"] = "Traslado entre bodegas";
+    ViewData["Pagina"] = "traslado";
+}
+
+<header class="encabezado-pagina">
+    <h1>Trasladar café entre bodegas</h1>
+    <p>
+        Mover café de una bodega a otra no cambia el total: lo que sale de una entra
+        en la otra, por la misma cantidad.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó el traslado",
+        Mensaje = Model.ErrorBase,
+        Detalle = "No se movió nada: revise las bodegas y la cantidad."
+    })
+}
+
+@if (Model.Existencias.Count == 0)
+{
+    <div class="tabla-envoltura">
+        <p class="sin-datos">
+            No hay café guardado en ninguna bodega, así que no hay nada que trasladar.
+        </p>
+    </div>
+}
+else
+{
+    @* Estado de cada bodega. El medidor se mueve mientras se llena el
+       formulario, para ver el traslado antes de guardarlo. *@
+    <div class="rejilla">
+        @foreach (var b in Model.Bodegas)
+        {
+            var pct = b.CapacidadQuintales is > 0
+                ? (double)(b.Guardado / b.CapacidadQuintales.Value) * 100
+                : (double?)null;
+            var clase = pct is null ? "" : pct >= 90 ? "critico" : pct >= 75 ? "alerta" : "";
+
+            <article class="tarjeta bodega-tarjeta" data-bodega="@b.IdBodega"
+                     data-guardado="@Formato.Invariante(b.Guardado)"
+                     data-capacidad="@(b.CapacidadQuintales is null ? "" : Formato.Invariante(b.CapacidadQuintales))">
+                <h2 class="tarjeta-titulo">
+                    @await Html.PartialAsync("_Icono", "bascula:16") @b.Nombre
+                </h2>
+
+                <p class="cifra">
+                    <span class="bodega-cifra">@Formato.Quintales(b.Guardado)</span><span class="cifra-unidad">qq</span>
+                    <span class="bodega-cambio" hidden></span>
+                </p>
+
+                <div class="medidor" role="img"
+                     aria-label="Ocupación: @(pct is null ? "sin capacidad declarada" : Formato.Porcentaje((decimal)pct))">
+                    <div class="medidor-relleno @clase"
+                         style="width:@((pct is null ? 0 : Math.Min(pct.Value, 100)).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></div>
+                    <div class="medidor-fantasma" hidden></div>
+                </div>
+
+                <p class="tarjeta-nota">
+                    @if (b.Libre is null)
+                    {
+                        <text>Sin capacidad declarada</text>
+                    }
+                    else
+                    {
+                        <text>
+                            <strong class="bodega-libre">@Formato.Quintales(b.Libre)</strong> qq libres
+                            de @Formato.Quintales(b.CapacidadQuintales) qq
+                        </text>
+                    }
+                </p>
+
+                @{
+                    var delLote = Model.Existencias.Where(e => e.IdBodega == b.IdBodega).ToList();
+                }
+                <p class="tarjeta-nota suave">
+                    @(delLote.Count == 0
+                        ? "Sin lotes guardados"
+                        : $"{delLote.Count} {(delLote.Count == 1 ? "lote" : "lotes")} guardados")
+                </p>
+            </article>
+        }
+    </div>
+
+    <form method="post" class="panel formulario" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.IdLote">Lote que se traslada</label>
+            <select asp-for="Datos.IdLote" id="lote">
+                <option value="">Seleccione un lote…</option>
+                @foreach (var grupo in Model.PorLote)
+                {
+                    var primero = grupo.First();
+                    var total = grupo.Sum(e => e.Cantidad);
+                    <option value="@grupo.Key">
+                        @primero.CodigoLote · @primero.Productor —
+                        @Formato.Quintales(total) qq en
+                        @grupo.Count() @(grupo.Count() == 1 ? "bodega" : "bodegas")
+                    </option>
+                }
+            </select>
+            <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        @* Origen: solo las bodegas que hoy tienen ese lote. *@
+        <div class="campo">
+            <label asp-for="Datos.Origen">Sale de</label>
+            <select asp-for="Datos.Origen" id="origen">
+                <option value="">Elija primero el lote…</option>
+                @foreach (var e in Model.Existencias)
+                {
+                    <option value="@e.IdBodega" data-lote="@e.IdLote"
+                            data-cantidad="@Formato.Invariante(e.Cantidad)">
+                        @e.Bodega — @Formato.Quintales(e.Cantidad) qq
+                    </option>
+                }
+            </select>
+            <span class="ayuda" id="ayuda-origen">Solo las bodegas que tienen ese lote.</span>
+            <span asp-validation-for="Datos.Origen" class="error-campo"></span>
+        </div>
+
+        @* Destino: cualquier bodega activa menos la de origen. *@
+        <div class="campo">
+            <label asp-for="Datos.Destino">Entra en</label>
+            <select asp-for="Datos.Destino" id="destino">
+                <option value="">Seleccione…</option>
+                @foreach (var b in Model.Bodegas)
+                {
+                    <option value="@b.IdBodega"
+                            data-libre="@(b.Libre is null ? "" : Formato.Invariante(b.Libre))">
+                        @b.Nombre@(b.Libre is null ? "" : $" — caben {Formato.Quintales(b.Libre)} qq")
+                    </option>
+                }
+            </select>
+            <span class="ayuda" id="ayuda-destino">No puede ser la misma de donde sale.</span>
+            <span asp-validation-for="Datos.Destino" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Cantidad">Cantidad (qq)</label>
+            <input asp-for="Datos.Cantidad" id="cantidad" type="number" step="0.01" min="0.01"
+                   inputmode="decimal" />
+            <span class="ayuda" id="ayuda-cantidad">No puede superar lo que hay en el origen.</span>
+            <span asp-validation-for="Datos.Cantidad" class="error-campo"></span>
+        </div>
+
+        <div class="campo">
+            <label asp-for="Datos.Responsable">Traslada</label>
+            <input asp-for="Datos.Responsable" maxlength="100"
+                   placeholder="Quien se hace cargo del café" />
+            <span asp-validation-for="Datos.Responsable" class="error-campo"></span>
+        </div>
+
+        <div class="campo ancho">
+            <label asp-for="Datos.Motivo">Motivo</label>
+            <input asp-for="Datos.Motivo" maxlength="200"
+                   placeholder="Falta de espacio, se despacha desde ahí, humedad…" />
+            <span class="ayuda">Queda en la observación de los dos movimientos.</span>
+            <span asp-validation-for="Datos.Motivo" class="error-campo"></span>
+        </div>
+
+        @* Cómo quedan las dos bodegas si se guarda así. *@
+        <div class="campo ancho">
+            <div class="cuenta-venta" id="cuenta">
+                <div class="cuenta-fila">
+                    <span class="cuenta-etiqueta" id="cuenta-origen-nombre">Bodega de origen</span>
+                    <span class="cuenta-cifra" id="cuenta-origen">—</span>
+                </div>
+                <div class="cuenta-fila">
+                    <span class="cuenta-etiqueta" id="cuenta-destino-nombre">Bodega de destino</span>
+                    <span class="cuenta-cifra" id="cuenta-destino">—</span>
+                </div>
+                <p class="cuenta-detalle" id="cuenta-detalle">
+                    Elija el lote, las dos bodegas y la cantidad.
+                </p>
+            </div>
+        </div>
+
+        <div class="acciones-formulario">
+            <button class="boton" type="submit">Registrar traslado</button>
+            <a class="boton secundario" asp-page="/Existencias">Cancelar</a>
+        </div>
+    </form>
+
+    <p class="resumen-filtro">
+        Si en la bodega de destino no cabe, el traslado no se registra: nunca queda la
+        salida sin su entrada. El movimiento se guarda con quien lo hizo y el motivo.
+    </p>
+}
+
+@section Scripts {
+    <script src="~/js/traslado.js" asp-append-version="true" defer></script>
+}

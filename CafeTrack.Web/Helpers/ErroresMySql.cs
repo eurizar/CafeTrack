@@ -41,6 +41,8 @@ public static class ErroresMySql
         1451 or 1452 => "El dato referenciado no existe o esta en uso por otro registro.",
         1264 => "Un valor numerico quedo fuera del rango permitido por la columna.",
         1406 => "Un texto excede el largo permitido por la columna.",
+        1265 => "Un valor no es de los que acepta esa columna; suele ser un ENUM " +
+                "con una opcion que no existe.",
         1216 or 1217 => "No se puede completar la operacion por una relacion con otra tabla.",
         1305 => "La rutina no existe en la base. Ejecute sql/04_rutinas.sql.",
         1045 => "Credenciales de MySQL incorrectas.",

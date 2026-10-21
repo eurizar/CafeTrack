@@ -8,9 +8,8 @@
 <header class="encabezado-pagina">
     <h1>Ingresar lote a bodega</h1>
     <p>
-        Solo entran los lotes aprobados en catación, y solo si la bodega tiene capacidad.
-        Las dos reglas las revisa la base en el trigger
-        <span class="mono">trg_movimientos_validar</span>.
+        Solo entran los lotes aprobados en catación, y únicamente si queda espacio
+        en la bodega.
     </p>
 </header>
 
@@ -30,7 +29,7 @@
     {
         Titulo = "La base rechazó el ingreso",
         Mensaje = Model.ErrorBase,
-        Detalle = "Lo validan sp_registrar_ingreso_bodega y trg_movimientos_validar."
+        Detalle = "Revise el lote, la bodega y la cantidad."
     })
 }
 
@@ -100,8 +99,7 @@ else
     </form>
 
     <p class="resumen-filtro">
-        Al guardar, los triggers ponen el lote en <em>En bodega</em> y escriben el
-        movimiento en la bitácora. La existencia se recalcula sola.
+        Al guardar, el lote queda <em>En bodega</em> y las existencias se actualizan solas.
     </p>
 }
 
