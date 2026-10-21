@@ -1861,3 +1861,333 @@ td.json .etiqueta {
     display: flex;
     justify-content: center;
 }
+
+/* Campo calculado por el sistema: se ve pero no se escribe. */
+.formulario .campo input[readonly] {
+    background-color: rgba(226, 214, 195, .3);
+    color: var(--espresso);
+    font-weight: 600;
+    cursor: default;
+}
+
+.formulario .campo input[readonly]:focus { outline: none; border-color: var(--borde); }
+
+/* ------------------------------------------- avisos de la esquina */
+
+.toast-zona {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    max-width: min(380px, calc(100vw - 2rem));
+    pointer-events: none;
+}
+
+.toast {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    padding: .8rem .9rem .9rem;
+    overflow: hidden;
+    pointer-events: auto;
+    background-color: var(--crema);
+    border: 1px solid var(--borde);
+    border-left: 3px solid var(--cafetal);
+    border-radius: var(--radio);
+    box-shadow: 0 10px 30px rgba(42, 31, 24, .22), 0 2px 6px rgba(42, 31, 24, .12);
+    animation: toast-entra .3s cubic-bezier(.2, .8, .3, 1) both;
+}
+
+.toast-error { border-left-color: var(--cereza); }
+
+.toast-sale { animation: toast-sale .3s ease-in both; }
+
+@keyframes toast-entra {
+    from { opacity: 0; transform: translateX(18px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes toast-sale {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateX(18px); }
+}
+
+.toast-icono { flex: 0 0 auto; line-height: 0; margin-top: .1rem; }
+.toast-exito .toast-icono { color: var(--cafetal); }
+.toast-error .toast-icono { color: var(--cereza); }
+
+.toast-cuerpo { flex: 1 1 auto; min-width: 0; }
+
+.toast-mensaje {
+    margin: 0;
+    font-size: .92rem;
+    line-height: 1.4;
+    color: var(--texto);
+}
+
+.toast-detalle {
+    margin: .35rem 0 0;
+    font-size: .82rem;
+    line-height: 1.4;
+    color: var(--texto-suave);
+}
+
+.toast-cerrar {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    cursor: pointer;
+    color: var(--texto-suave);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radio-chico);
+}
+
+.toast-cerrar:hover { color: var(--espresso); background-color: rgba(111, 78, 55, .08); }
+
+/* Barra de tiempo: muestra cuánto falta para que se vaya. */
+.toast-barra {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    transform-origin: left;
+    background-color: var(--cafetal);
+    opacity: .4;
+}
+
+.toast-error .toast-barra { background-color: var(--cereza); }
+
+.toast.con-barra .toast-barra {
+    animation: toast-tiempo linear both;
+    animation-play-state: paused;
+}
+
+@keyframes toast-tiempo {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+
+@media (max-width: 600px) {
+    .toast-zona {
+        top: auto;
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast, .toast-sale { animation: none; }
+    .toast.con-barra .toast-barra { animation: none; }
+}
+
+/* ------------------------------- colores de las etapas del beneficiado
+   Cada etapa toma un tono del cafetal que alude a lo que ocurre en ella.
+   Se declara como variable para que el punto, la onda y el icono la usen. */
+
+:root {
+    --agua: #4E7C8A;   /* azul pizarra apagado: lavado */
+    --sol:  #D9A441;   /* amarillo cálido: secado al patio */
+}
+
+.hito.etapa-1 { --etapa: var(--cereza); }   /* Despulpado: la cereza del café */
+.hito.etapa-2 { --etapa: var(--oro); }      /* Fermentación: el mucílago */
+.hito.etapa-3 { --etapa: var(--agua); }     /* Lavado: el canal de correteo */
+.hito.etapa-4 { --etapa: var(--sol); }      /* Secado: el patio al sol */
+.hito.etapa-5 { --etapa: var(--tostado); }  /* Trillado: el pergamino */
+.hito.etapa-6 { --etapa: var(--cafetal); }  /* Clasificación: el grano bueno */
+.hito.etapa-7 { --etapa: var(--espresso); } /* Empaque: el saco listo */
+
+.hito.cumplido[class*="etapa-"]::before {
+    background-color: var(--etapa, var(--tostado));
+    border-color: var(--etapa, var(--tostado));
+}
+
+.hito[class*="etapa-"] .hito-titulo svg { color: var(--etapa, var(--tostado)); }
+
+/* Etapa en curso: el punto late despacio y suelta una onda del mismo tono. */
+.hito.encurso::before {
+    background-color: var(--crema);
+    border-color: var(--etapa, var(--oro));
+    border-width: 3px;
+    animation: latido 2.6s ease-in-out infinite;
+}
+
+.hito.encurso::after {
+    content: "";
+    position: absolute;
+    left: -1.75rem;
+    top: .35rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--etapa, var(--oro));
+    animation: onda 2.6s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes latido {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.18); }
+}
+
+@keyframes onda {
+    0%   { transform: scale(1);   opacity: .55; }
+    80%  { transform: scale(2.4); opacity: 0; }
+    100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* La etapa en curso se destaca también en el texto. */
+.hito.encurso .hito-titulo { color: var(--etapa, var(--espresso)); }
+
+.hito.encurso .hito-fecha {
+    color: var(--etapa, var(--tostado));
+    font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hito.encurso::before { animation: none; }
+    .hito.encurso::after { animation: none; opacity: .4; }
+}
+
+/* --------------------------------- ayudas del formulario de catación */
+
+.ayuda-enlace {
+    margin-left: .4rem;
+    padding: 0;
+    font-family: var(--sans);
+    font-size: .72rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--tostado);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px dotted var(--tostado);
+    cursor: pointer;
+}
+
+.ayuda-enlace:hover { color: var(--espresso); border-bottom-color: var(--espresso); }
+
+/* Ventana de consulta: más ancha y con texto corrido. */
+.dialogo.dialogo-ancho { width: min(620px, calc(100vw - 2rem)); }
+
+.dialogo-texto { text-align: left; }
+.dialogo-texto h2 { margin-bottom: .5rem; }
+
+.dialogo-texto h3 {
+    margin: 1.1rem 0 .2rem;
+    font-size: .98rem;
+}
+
+.dialogo-texto p { font-size: .92rem; }
+.dialogo-texto table.datos { font-size: .86rem; margin-top: .6rem; }
+.dialogo-texto table.datos td { vertical-align: top; }
+
+/* --------------------------------------------- notas sensoriales */
+
+.notas {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin: .6rem 0 .4rem;
+    padding: .75rem .85rem;
+    background-color: rgba(226, 214, 195, .22);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-chico);
+}
+
+.notas-grupo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+}
+
+.notas-titulo {
+    flex: 0 0 5.5rem;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--texto-suave);
+    font-weight: 600;
+}
+
+.nota {
+    font-family: var(--sans);
+    font-size: .8rem;
+    color: var(--texto);
+    background-color: var(--crema);
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    padding: .18rem .6rem;
+    cursor: pointer;
+}
+
+.nota:hover {
+    border-color: var(--tostado);
+    color: var(--espresso);
+    background-color: rgba(111, 78, 55, .07);
+}
+
+.nota.nota-puesta {
+    background-color: rgba(74, 103, 65, .14);
+    border-color: rgba(74, 103, 65, .4);
+    color: #35502D;
+    font-weight: 600;
+}
+
+/* Las del grupo "Defectos" avisan con el color de rechazo. */
+.notas-grupo:last-child .nota:hover {
+    border-color: var(--cereza);
+    color: var(--cereza);
+    background-color: rgba(162, 59, 42, .07);
+}
+
+/* En la ventana de ayuda las notas solo se leen. */
+.nota.nota-fija { cursor: default; background-color: transparent; }
+.nota.nota-fija:hover { border-color: var(--borde); color: var(--texto); background: transparent; }
+
+@media (max-width: 600px) {
+    .notas-titulo { flex: 1 1 100%; }
+}
+
+/* El rango de puntaje y la altitud se leen mejor en una sola línea. */
+.dialogo-texto td.rango { white-space: nowrap; }
+
+/* Vista previa de lo que se guardará en el perfil sensorial. */
+.vista-perfil {
+    display: flex;
+    gap: .6rem;
+    align-items: baseline;
+    margin: .5rem 0 0;
+    padding: .55rem .7rem;
+    background-color: rgba(74, 103, 65, .07);
+    border-left: 3px solid rgba(74, 103, 65, .45);
+    border-radius: var(--radio-chico);
+}
+
+.vista-titulo {
+    flex: 0 0 auto;
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-weight: 600;
+    color: var(--texto-suave);
+}
+
+.vista-texto {
+    font-size: .88rem;
+    color: var(--texto);
+}

@@ -137,7 +137,8 @@
         @* 3. Etapas del beneficiado --------------------------------------- *@
         @foreach (var etapa in d.Etapas)
         {
-            <li class="hito @(etapa.EnCurso ? "alerta" : etapa.Ocurrio ? "cumplido" : "pendiente")">
+            @* Cada etapa lleva su color y, si esta en curso, el punto late. *@
+            <li class="hito etapa-@etapa.Orden @(etapa.EnCurso ? "encurso" : etapa.Ocurrio ? "cumplido" : "pendiente")">
                 <div class="hito-titulo">
                     @await Html.PartialAsync("_Icono", "reloj:18")
                     @etapa.Orden. @Formato.Enum(etapa.Nombre)

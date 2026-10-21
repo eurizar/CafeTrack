@@ -32,8 +32,8 @@ public class RegistrarModel : PageModel
 
     public string? ErrorBase { get; private set; }
 
-    [TempData]
-    public string? Exito { get; set; }
+    [TempData] public string? Exito { get; set; }
+    [TempData] public string? ExitoDetalle { get; set; }
 
     /// <summary>Valores del ENUM forma_pago, tal como estan en la base (sin tildes).</summary>
     public static readonly string[] FormasPago = ["Contado", "Credito 30 dias", "Credito 60 dias"];
@@ -51,11 +51,24 @@ public class RegistrarModel : PageModel
             return Page();
         }
 
+        await CargarAsync(ct);
+        var elegido = Lotes.FirstOrDefault(l => l.IdLote == Datos.IdLote);
+        var comprador = Compradores.FirstOrDefault(c => c.IdComprador == Datos.IdComprador);
+
         try
         {
             var idVenta = await _repositorio.RegistrarVentaAsync(Datos, _usuario.Nombre, ct);
-            Exito = $"Venta {idVenta} registrada. Se generó la salida de bodega y el lote " +
-                    "quedó actualizado.";
+
+            var lote = elegido?.CodigoLote ?? "seleccionado";
+            var peso = Datos.Peso ?? 0;
+            var total = peso * (Datos.Precio ?? 0);
+
+            Exito = $"Vendidos {Formato.Quintales(peso)} quintales del lote {lote} a " +
+                    $"{comprador?.Nombre ?? "el comprador"} por {Formato.Moneda(total)}.";
+            ExitoDetalle = $"Es la venta número {idVenta}. El café salió de la bodega solo, " +
+                           "así que las existencias ya están al día. Falta registrarle el pago " +
+                           "al productor.";
+
             return RedirectToPage();
         }
         catch (MySqlException ex)

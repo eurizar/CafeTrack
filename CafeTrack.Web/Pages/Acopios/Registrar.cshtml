@@ -15,10 +15,12 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.Exito))
 {
-    <div class="aviso exito" role="status">
-        <span class="aviso-icono">@await Html.PartialAsync("_Icono", "aprobado:20")</span>
-        <div>@Model.Exito</div>
-    </div>
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
 }
 
 @if (!string.IsNullOrWhiteSpace(Model.ErrorBase))

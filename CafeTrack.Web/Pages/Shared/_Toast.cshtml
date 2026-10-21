@@ -1,0 +1,33 @@
+@*
+    Aviso flotante en la esquina. Se usa para confirmar lo que salió bien:
+    aparece, se lee y se va solo a los pocos segundos.
+
+    Para los rechazos de la base se usa _Dialogo, que sí exige atención.
+
+    Sin JavaScript el aviso se queda en pantalla con su botón de cerrar,
+    así que el mensaje nunca se pierde.
+*@
+@model CafeTrack.Web.Models.ViewModels.Dialogo
+
+<div class="toast-zona" aria-live="polite" aria-atomic="true">
+    <div class="toast @(Model.EsError ? "toast-error" : "toast-exito")" role="status"
+         data-duracion="7000">
+        <span class="toast-icono">
+            @await Html.PartialAsync("_Icono", (Model.EsError ? "rechazado" : "aprobado") + ":20")
+        </span>
+
+        <div class="toast-cuerpo">
+            <p class="toast-mensaje">@Model.Mensaje</p>
+            @if (!string.IsNullOrWhiteSpace(Model.Detalle))
+            {
+                <p class="toast-detalle">@Model.Detalle</p>
+            }
+        </div>
+
+        <button type="button" class="toast-cerrar" aria-label="Cerrar aviso">
+            @await Html.PartialAsync("_Icono", "rechazado:16")
+        </button>
+
+        <span class="toast-barra" aria-hidden="true"></span>
+    </div>
+</div>

@@ -10,7 +10,8 @@
     var puedeVender = User.IsInRole("admin") || User.IsInRole("gerente");
     var puedeAuditar = User.IsInRole("admin") || User.IsInRole("auditor");
     var esAdmin = User.IsInRole("admin");
-    var registra = puedeAcopiar || puedeVender;
+    var puedeCatar = User.IsInRole("admin") || User.IsInRole("catador");
+    var registra = puedeAcopiar || puedeVender || puedeCatar;
 }
 <!DOCTYPE html>
 <html lang="es-GT">
@@ -94,7 +95,28 @@
                     {
                         <li>
                             <a class="@Activo("acopios")" asp-page="/Acopios/Registrar" title="Registrar acopio">
-                                @await Html.PartialAsync("_Icono", "camion") <span>Registrar acopio</span>
+                                @await Html.PartialAsync("_Icono", "camion") <span>Acopio</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="@Activo("procesos")" asp-page="/Procesos/Registrar" title="Etapa del beneficiado">
+                                @await Html.PartialAsync("_Icono", "beneficio") <span>Beneficiado</span>
+                            </a>
+                        </li>
+                    }
+                    @if (puedeCatar)
+                    {
+                        <li>
+                            <a class="@Activo("calidad")" asp-page="/Calidad/Registrar" title="Registrar catación">
+                                @await Html.PartialAsync("_Icono", "taza") <span>Catación</span>
+                            </a>
+                        </li>
+                    }
+                    @if (puedeAcopiar)
+                    {
+                        <li>
+                            <a class="@Activo("bodega")" asp-page="/Bodegas/Ingresar" title="Ingreso a bodega">
+                                @await Html.PartialAsync("_Icono", "bodega") <span>Ingreso a bodega</span>
                             </a>
                         </li>
                     }
@@ -102,7 +124,12 @@
                     {
                         <li>
                             <a class="@Activo("ventas")" asp-page="/Ventas/Registrar" title="Registrar venta">
-                                @await Html.PartialAsync("_Icono", "pago") <span>Registrar venta</span>
+                                @await Html.PartialAsync("_Icono", "quetzal") <span>Venta</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="@Activo("pagos")" asp-page="/Pagos/Registrar" title="Pago al productor">
+                                @await Html.PartialAsync("_Icono", "pago") <span>Pago al productor</span>
                             </a>
                         </li>
                     }
@@ -114,7 +141,7 @@
                 <p class="menu-titulo">Auditoría</p>
                 <ul class="menu">
                     <li>
-                        <a class="@Activo("bitacora")" asp-page="/Bitacora" title="Bitácora">
+                        <a class="@Activo("bitacora")" asp-page="/Bitacora/Index" title="Bitácora">
                             @await Html.PartialAsync("_Icono", "certificado") <span>Bitácora</span>
                         </a>
                     </li>
@@ -183,6 +210,7 @@
     <script src="~/js/barra.js" asp-append-version="true" defer></script>
     <script src="~/js/confirmar.js" asp-append-version="true" defer></script>
     <script src="~/js/dialogo.js" asp-append-version="true" defer></script>
+    <script src="~/js/toast.js" asp-append-version="true" defer></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

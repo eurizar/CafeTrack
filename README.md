@@ -64,7 +64,8 @@ CafeTrack/
 │   ├── 06_seguridad.sql         usuarios de la app, sp_login y un usuario MySQL por rol
 │   ├── 07_vistas.sql            las 11 consultas del proyecto, como vistas
 │   ├── 08_usuarios.sql          gestión de usuarios y contraseñas temporales
-│   └── 09_recuperar_acceso.sql  recuperación cuando nadie puede entrar
+│   ├── 09_recuperar_acceso.sql  recuperación cuando nadie puede entrar
+│   └── 10_operacion.sql         beneficiado, catación, bodega y pagos por rol
 └── CafeTrack.Web/
     ├── Program.cs
     ├── appsettings.json                     sin credenciales
@@ -99,6 +100,7 @@ CafeTrack/
    mysql -u root -p < sql/06_seguridad.sql
    mysql -u root -p < sql/07_vistas.sql
    mysql -u root -p < sql/08_usuarios.sql
+   mysql -u root -p < sql/10_operacion.sql
    ```
 
    El primero crea la base con sus **18 tablas** (incluye `DROP DATABASE IF EXISTS`).
@@ -165,8 +167,12 @@ CafeTrack/
 | `/Lotes` | Listado con filtros por estado y temporada |
 | `/Lotes/Detalle/{codigo}` | Trazabilidad completa del lote, por ejemplo `/Lotes/Detalle/CAF-2026-001` |
 | `/Existencias` | Kardex resumido por bodega y lote |
-| `/Acopios/Registrar` | Formulario de recepción en acopio; llama a `sp_registrar_acopio` |
-| `/Ventas/Registrar` | Formulario de venta; llama a `sp_registrar_venta` |
+| `/Acopios/Registrar` | Recepción en acopio (acopiador) |
+| `/Procesos/Registrar` | Etapa del beneficiado (acopiador) |
+| `/Calidad/Registrar` | Catación (catador) |
+| `/Bodegas/Ingresar` | Ingreso a bodega (acopiador) |
+| `/Ventas/Registrar` | Venta (gerente) |
+| `/Pagos/Registrar` | Pago al productor (gerente) |
 | `/Reportes` | Las 11 consultas del proyecto, una por vista |
 | `/Bitacora` | Auditoría: lo que escriben los triggers y los procedimientos |
 | `/Bitacora/Detalle/{id}` | Desglose de un registro: estado anterior, nuevo y el JSON crudo |
@@ -228,6 +234,52 @@ y el `ERROR 1142` de permisos.
 **Recarga de datos.** `02_datos_prueba.sql` trae los pesos y estados ya calculados, así
 que levanta la bandera `@cafetrack_carga` mientras inserta y los triggers se saltan el
 cuerpo. Por eso los scripts se pueden volver a ejecutar en cualquier orden.
+
+## La cadena completa, rol por rol
+
+Cada paso del proceso tiene su pantalla y su procedimiento, y cada rol solo ve —y solo
+puede ejecutar— lo que le toca:
+
+| Paso | Rol | Pantalla | Procedimiento |
+|---|---|---|---|
+| Acopio | acopiador | `/Acopios/Registrar` | `sp_registrar_acopio` |
+| Beneficiado | acopiador | `/Procesos/Registrar` | `sp_registrar_proceso` |
+| Catación | catador | `/Calidad/Registrar` | `sp_registrar_calidad` |
+| Ingreso a bodega | acopiador | `/Bodegas/Ingresar` | `sp_registrar_ingreso_bodega` |
+| Venta | gerente | `/Ventas/Registrar` | `sp_registrar_venta` |
+| Pago | gerente | `/Pagos/Registrar` | `sp_registrar_pago` |
+
+**El lote avanza solo cuando corresponde.** Las reglas están en `sql/10_operacion.sql`:
+
+- No se puede saltar una etapa del beneficiado: la anterior tiene que estar cerrada.
+- **Las fechas solo avanzan**: una etapa no puede empezar antes de que cierre la anterior,
+  ni antes de que el lote llegara al centro de acopio, ni en el futuro. Sin esto se podía
+  registrar un secado el 21 de junio cuando el lavado cerró el 23.
+
+### Modo demostración
+
+Un secado dura entre 100 y 240 horas: para mostrarlo en una presentación hay que poder
+cerrar la etapa con una fecha que todavía no llega. Ese tope —y solo ese— se levanta con:
+
+```bash
+dotnet user-secrets set "CafeTrack:PermitirFechasFuturas" "true"
+```
+
+Con el ajuste encendido, `sp_registrar_proceso` recibe `p_permitir_futuras = TRUE` y acepta
+fechas futuras; la pantalla lo avisa en un recuadro para que nadie crea que es el
+comportamiento normal. **El orden entre etapas se sigue exigiendo igual**: eso no se apaga.
+Sin el ajuste (lo que viene en el repositorio), rige la regla estricta.
+- De una etapa no sale más café del que entró, y la diferencia se anota sola como merma.
+- Si una etapa quedó abierta, la misma pantalla la cierra en lugar de duplicarla.
+- Solo se cata lo que terminó las siete etapas, una sola vez por lote, y no se puede
+  aprobar con menos de 80 puntos SCA. Si no aprueba, el lote queda `'Rechazado'`.
+- A bodega entra solo lo aprobado, nunca más de lo que el lote tiene ni más de lo que
+  cabe en la bodega.
+- Una venta se paga una sola vez, y las deducciones no pueden superar el monto.
+
+**La separación la hace MySQL, no la interfaz.** Si un rol intenta un procedimiento
+ajeno, el motor responde `ERROR 1370`; si intenta escribir en una tabla que no le
+corresponde, `ERROR 1142`. La pantalla solo traduce el mensaje.
 
 ## Reportes y errores (Fase 4)
 

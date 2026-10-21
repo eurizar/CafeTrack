@@ -30,8 +30,8 @@ public class RegistrarModel : PageModel
     /// <summary>Mensaje de error devuelto por la base (SIGNAL o CHECK).</summary>
     public string? ErrorBase { get; private set; }
 
-    [TempData]
-    public string? Exito { get; set; }
+    [TempData] public string? Exito { get; set; }
+    [TempData] public string? ExitoDetalle { get; set; }
 
     public static readonly string[] Condiciones = ["Buena", "Regular", "Mala"];
 
@@ -48,11 +48,32 @@ public class RegistrarModel : PageModel
             return Page();
         }
 
+        // Se carga antes de guardar para redactar el aviso con datos reales.
+        await CargarAsync(ct);
+        var elegido = Lotes.FirstOrDefault(l => l.IdLote == Datos.IdLote);
+
         try
         {
-            var idAcopio = await _repositorio.RegistrarAcopioAsync(Datos, _usuario.Nombre, ct);
-            Exito = $"Acopio registrado con el número {idAcopio}. " +
-                    "La merma de transporte quedó registrada automáticamente.";
+            await _repositorio.RegistrarAcopioAsync(Datos, _usuario.Nombre, ct);
+
+            var lote = elegido?.CodigoLote ?? "seleccionado";
+            var recibido = Datos.PesoRecibido ?? 0;
+
+            Exito = $"Quedó registrada la entrada del lote {lote} con " +
+                    $"{Formato.Quintales(recibido)} quintales.";
+
+            if (elegido is not null && elegido.PesoReferencia > recibido)
+            {
+                var perdida = elegido.PesoReferencia - recibido;
+                var pct = Math.Round(perdida / elegido.PesoReferencia * 100, 2);
+
+                ExitoDetalle =
+                    $"En la parcela se cosecharon {Formato.Quintales(elegido.PesoReferencia)} qq " +
+                    $"y aquí llegaron {Formato.Quintales(recibido)} qq. El sistema anotó esos " +
+                    $"{Formato.Quintales(perdida)} qq de diferencia ({Formato.Porcentaje(pct, 2)}) " +
+                    "como pérdida del traslado, para que quede explicada en el historial del lote.";
+            }
+
             return RedirectToPage();
         }
         catch (MySqlException ex)
