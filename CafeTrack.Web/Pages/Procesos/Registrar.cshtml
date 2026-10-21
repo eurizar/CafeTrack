@@ -29,7 +29,7 @@
     {
         Titulo = "La base rechazó la etapa",
         Mensaje = Model.ErrorBase,
-        Detalle = "La regla vive en sp_registrar_proceso, no en la pantalla."
+        Detalle = "Revise las fechas y los pesos de la etapa."
     })
 }
 
@@ -171,17 +171,15 @@ else
     @if (Model.PermiteFuturas)
     {
         <p class="resumen-filtro">
-            <strong>Modo demostración:</strong> este equipo acepta fechas futuras para poder
-            simular en minutos un beneficiado que dura días. El orden entre etapas se sigue
-            exigiendo. Se apaga quitando
-            <span class="mono">CafeTrack:PermitirFechasFuturas</span> de la configuración.
+            <strong>Modo demostración:</strong> este equipo acepta fechas futuras, para
+            simular en minutos un beneficiado que dura días. El orden entre etapas se
+            sigue respetando.
         </p>
     }
 
     <p class="resumen-filtro">
-        <span class="mono">sp_registrar_proceso</span> exige que la etapa anterior esté
-        cerrada, que el peso de salida no supere al de entrada y que el lote ya haya pasado
-        por acopio. Si la etapa estaba abierta, esta misma pantalla la cierra.
+        No se puede saltar una etapa ni sacar más café del que entró. Si la etapa ya
+        estaba abierta, aquí mismo se cierra.
     </p>
 }
 

@@ -29,7 +29,7 @@
     {
         Titulo = "La base rechazó el acopio",
         Mensaje = Model.ErrorBase,
-        Detalle = "La regla vive en sp_registrar_acopio, no en la pantalla."
+        Detalle = "Corrija el dato y vuelva a intentarlo."
     })
 }
 
@@ -96,9 +96,8 @@ else
     </form>
 
     <p class="resumen-filtro">
-        Las validaciones viven en <span class="mono">sp_registrar_acopio</span>:
-        el peso no puede superar lo cosechado, el lote no puede tener dos acopios
-        y el responsable es obligatorio.
+        El peso recibido no puede pasar de lo cosechado y cada lote se acopia una
+        sola vez.
     </p>
 }
 

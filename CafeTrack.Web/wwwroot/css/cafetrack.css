@@ -21,7 +21,7 @@
     --ancho-barra: 248px;
     --ancho-barra-compacta: 68px;
     /* Marron de la barra lateral: mas claro que --espresso, sigue cumpliendo AA. */
-    --barra-fondo: #574231;
+    --barra-fondo: #4A3628;
 
     --serif: "Fraunces", Georgia, "Times New Roman", serif;
     --sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
@@ -225,7 +225,7 @@ a:focus-visible {
     padding-top: 1rem;
     border-top: 1px solid rgba(244, 238, 227, .16);
     font-size: .78rem;
-    color: rgba(244, 238, 227, .6);
+    color: rgba(244, 238, 227, .72);
     line-height: 1.45;
 }
 
@@ -247,11 +247,54 @@ a:focus-visible {
 }
 
 .pie-pagina {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 1.5rem;
     margin-top: 2.5rem;
-    padding-top: 1rem;
+    padding-top: 1.25rem;
     border-top: 1px solid var(--borde);
     font-size: .82rem;
     color: var(--texto-suave);
+}
+
+.pie-columna p { margin: 0 0 .25rem; }
+
+.pie-marca {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--espresso);
+}
+
+.pie-titulo {
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.pie-pagina a {
+    color: var(--tostado);
+    border-bottom: 1px solid transparent;
+}
+
+.pie-pagina a:hover {
+    color: var(--espresso);
+    border-bottom-color: var(--tostado);
+}
+
+/* La linea de derechos cruza las tres columnas. */
+.pie-derechos {
+    grid-column: 1 / -1;
+    margin: .5rem 0 0;
+    padding-top: .85rem;
+    border-top: 1px solid var(--borde);
+    font-size: .78rem;
+}
+
+@media (max-width: 700px) {
+    .pie-pagina { grid-template-columns: 1fr; gap: 1.1rem; }
 }
 
 /* ------------------------------------------- barra lateral contraida */
@@ -1063,7 +1106,7 @@ a.boton { border-bottom: 1px solid transparent; display: inline-block; }
     font-size: .68rem;
     text-transform: uppercase;
     letter-spacing: .1em;
-    color: rgba(244, 238, 227, .45);
+    color: rgba(244, 238, 227, .58);
     font-weight: 600;
 }
 
@@ -2191,3 +2234,128 @@ td.json .etiqueta {
     font-size: .88rem;
     color: var(--texto);
 }
+
+/* ----------------------------------- ficha del lote y cuenta de la venta */
+
+.ficha-lote {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    padding: .8rem .95rem;
+    background-color: rgba(226, 214, 195, .22);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-chico);
+}
+
+.ficha-dato {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    min-width: 7rem;
+}
+
+.ficha-titulo {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--texto-suave);
+}
+
+.ficha-valor {
+    font-size: .92rem;
+    color: var(--texto);
+    font-weight: 600;
+}
+
+/* La cuenta se lee como un recibo: líneas sueltas y un total destacado. */
+.cuenta-venta {
+    padding: .8rem .95rem;
+    background-color: rgba(74, 103, 65, .07);
+    border-left: 3px solid rgba(74, 103, 65, .45);
+    border-radius: var(--radio-chico);
+}
+
+.cuenta-fila,
+.cuenta-linea {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+.cuenta-fila { padding: .12rem 0; }
+
+.cuenta-linea {
+    margin-top: .35rem;
+    padding-top: .45rem;
+    border-top: 1px solid var(--borde);
+}
+
+.cuenta-etiqueta {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--texto-suave);
+}
+
+.cuenta-cifra {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: .95rem;
+    color: var(--texto);
+}
+
+.cuenta-total {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--espresso);
+}
+
+.cuenta-detalle {
+    margin: .4rem 0 0;
+    font-size: .85rem;
+    color: var(--texto-suave);
+}
+
+@media (max-width: 600px) {
+    .ficha-lote { gap: .9rem; }
+    .cuenta-total { font-size: 1.2rem; }
+}
+
+/* ------------------------- medidor con el traslado pendiente encima */
+
+.medidor { position: relative; }
+
+/* Tramo que cambiaría si se guarda el traslado: sale (oro) o entra (verde). */
+.medidor-fantasma {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border-radius: 5px;
+}
+
+.medidor-fantasma.sale {
+    background-image: repeating-linear-gradient(
+        45deg, rgba(192, 138, 62, .85) 0 4px, rgba(192, 138, 62, .45) 4px 8px);
+}
+
+.medidor-fantasma.entra {
+    background-image: repeating-linear-gradient(
+        45deg, rgba(74, 103, 65, .85) 0 4px, rgba(74, 103, 65, .45) 4px 8px);
+}
+
+.bodega-cambio {
+    margin-left: .5rem;
+    font-family: var(--sans);
+    font-size: .85rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.bodega-cambio.sale  { color: var(--oro); }
+.bodega-cambio.entra { color: var(--cafetal); }
+
+.bodega-tarjeta .tarjeta-nota { margin-top: .4rem; }
+.bodega-tarjeta .tarjeta-nota.suave { margin-top: .15rem; font-size: .8rem; }

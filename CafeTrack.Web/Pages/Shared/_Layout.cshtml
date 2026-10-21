@@ -115,6 +115,11 @@
                     @if (puedeAcopiar)
                     {
                         <li>
+                            <a class="@Activo("traslado")" asp-page="/Bodegas/Trasladar" title="Traslado entre bodegas">
+                                @await Html.PartialAsync("_Icono", "traslado") <span>Traslado</span>
+                            </a>
+                        </li>
+                        <li>
                             <a class="@Activo("bodega")" asp-page="/Bodegas/Ingresar" title="Ingreso a bodega">
                                 @await Html.PartialAsync("_Icono", "bodega") <span>Ingreso a bodega</span>
                             </a>
@@ -128,8 +133,13 @@
                             </a>
                         </li>
                         <li>
-                            <a class="@Activo("pagos")" asp-page="/Pagos/Registrar" title="Pago al productor">
-                                @await Html.PartialAsync("_Icono", "pago") <span>Pago al productor</span>
+                            <a class="@Activo("compradores")" asp-page="/Compradores/Index" title="Compradores">
+                                @await Html.PartialAsync("_Icono", "productores") <span>Compradores</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="@Activo("pagos")" asp-page="/Pagos/Index" title="Pagos al productor">
+                                @await Html.PartialAsync("_Icono", "pago") <span>Pagos al productor</span>
                             </a>
                         </li>
                     }
@@ -187,7 +197,26 @@
             @RenderBody()
 
             <footer class="pie-pagina">
-                CaféTrack · Base de Datos I · Universidad Mariano Gálvez de Guatemala
+                <div class="pie-columna">
+                    <p class="pie-marca">CaféTrack</p>
+                    <p>Trazabilidad y control de existencias de café</p>
+                </div>
+
+                <div class="pie-columna">
+                    <p class="pie-titulo">Contacto</p>
+                    <p><a href="mailto:contacto@cafetrack.gt">contacto@cafetrack.gt</a></p>
+                    <p>Cobán, Alta Verapaz, Guatemala</p>
+                </div>
+
+                <div class="pie-columna">
+                    <p class="pie-titulo">Sistema</p>
+                    <p>Versión @(typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0")</p>
+                    <p><a asp-page="/Catalogo">Café y proceso</a></p>
+                </div>
+
+                <p class="pie-derechos">
+                    © @DateTime.Now.Year CaféTrack. Todos los derechos reservados.
+                </p>
             </footer>
         </main>
     </div>

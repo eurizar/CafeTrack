@@ -182,8 +182,8 @@ else if (!string.IsNullOrWhiteSpace(Model.Exito))
             }
         </ul>
         <p class="ayuda" style="margin-top:.8rem">
-            Los cinco usuarios de MySQL los crea <span class="mono">sql/06_seguridad.sql</span>.
-            Desde aquí se asigna el rol; los privilegios de cada uno se definen allá.
+            El rol decide qué pantallas ve la persona y qué puede registrar. El cambio
+            toma efecto en su próximo ingreso.
         </p>
 
         @if (Model.UnicoAdmin)
@@ -192,10 +192,9 @@ else if (!string.IsNullOrWhiteSpace(Model.Exito))
                 <span class="aviso-icono">@await Html.PartialAsync("_Icono", "certificado:20")</span>
                 <div>
                     <strong>Usted es el único administrador.</strong>
-                    Conviene crear un segundo con rol <span class="mono">admin</span>: si
-                    pierde su contraseña, esa otra cuenta puede devolvérsela desde aquí
-                    mismo. Si no, la recuperación se hace con
-                    <span class="mono">sql/09_recuperar_acceso.sql</span> desde MySQL.
+                    Conviene crear otro usuario con rol administrador: si pierde su
+                    contraseña, esa cuenta puede devolvérsela desde aquí mismo. Si no,
+                    habrá que pedirle la recuperación a quien administra la base.
                 </div>
             </div>
         }

@@ -65,7 +65,9 @@ CafeTrack/
 │   ├── 07_vistas.sql            las 11 consultas del proyecto, como vistas
 │   ├── 08_usuarios.sql          gestión de usuarios y contraseñas temporales
 │   ├── 09_recuperar_acceso.sql  recuperación cuando nadie puede entrar
-│   └── 10_operacion.sql         beneficiado, catación, bodega y pagos por rol
+│   ├── 10_operacion.sql         beneficiado, catación, bodega y pagos por rol
+│   ├── 11_ventas_pagos.sql      existencia por bodega, venta corregida, compradores
+│   └── 12_traslados.sql         traslado de café entre bodegas
 └── CafeTrack.Web/
     ├── Program.cs
     ├── appsettings.json                     sin credenciales
@@ -171,6 +173,9 @@ CafeTrack/
 | `/Procesos/Registrar` | Etapa del beneficiado (acopiador) |
 | `/Calidad/Registrar` | Catación (catador) |
 | `/Bodegas/Ingresar` | Ingreso a bodega (acopiador) |
+| `/Bodegas/Trasladar` | Traslado entre bodegas (acopiador) |
+| `/Compradores` | Compradores y altas (gerente) |
+| `/Pagos` | Pendientes de pago y pagos hechos (gerente) |
 | `/Ventas/Registrar` | Venta (gerente) |
 | `/Pagos/Registrar` | Pago al productor (gerente) |
 | `/Reportes` | Las 11 consultas del proyecto, una por vista |
@@ -246,8 +251,37 @@ puede ejecutar— lo que le toca:
 | Beneficiado | acopiador | `/Procesos/Registrar` | `sp_registrar_proceso` |
 | Catación | catador | `/Calidad/Registrar` | `sp_registrar_calidad` |
 | Ingreso a bodega | acopiador | `/Bodegas/Ingresar` | `sp_registrar_ingreso_bodega` |
+| Traslado entre bodegas | acopiador | `/Bodegas/Trasladar` | `sp_trasladar_lote` |
 | Venta | gerente | `/Ventas/Registrar` | `sp_registrar_venta` |
+| Alta de compradores | gerente | `/Compradores` | `sp_crear_comprador` |
 | Pago | gerente | `/Pagos/Registrar` | `sp_registrar_pago` |
+
+### Por qué no hay un rol "vendedor"
+
+`Usuarios.rol` es un `ENUM('admin','gerente','acopiador','catador','auditor')`: agregar
+un rol sería alterar la tabla, y el esquema sale solo del script. En esta cooperativa
+**el gerente es el vendedor**, que además liquida al productor. Queda dicho que concentrar
+venta y pago en un mismo rol es una debilidad de control: quien fija el precio de venta
+también fija lo que se le paga al productor. Separarlo no exige un rol nuevo —basta mover
+`/Pagos` a `admin`— y se deja anotado como decisión consciente, no como olvido.
+
+### Traslado entre bodegas
+
+`MovimientosBodega.tipo_movimiento` no tiene un valor `'Traslado'`, y la tabla no se toca.
+`sp_trasladar_lote` (sql/12_traslados.sql) escribe **dos movimientos en una transacción**:
+un `'Ajuste'` que resta en la bodega de origen y una `'Entrada'` que suma en la de destino.
+Si la bodega de destino no tiene capacidad, el trigger rechaza la entrada y no queda
+ninguno de los dos. **Traslada quien custodia el café**: acopiador y admin. El gerente
+vende, pero no mueve existencias.
+
+### La existencia se mide por bodega
+
+`fn_existencia_lote_bodega(lote, bodega)` (sql/11_ventas_pagos.sql) corrigió un hueco de
+la primera versión: la salida por venta se validaba contra la existencia del lote en toda
+la cooperativa, así que se podía despachar desde una bodega café guardado en otra —la
+bodega de salida quedaba en negativo y la otra con café que ya no existía. Hoy lo revisan
+tanto `sp_registrar_venta` como el trigger `trg_movimientos_validar`, y la pantalla solo
+ofrece las bodegas que tienen ese lote.
 
 **El lote avanza solo cuando corresponde.** Las reglas están en `sql/10_operacion.sql`:
 

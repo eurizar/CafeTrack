@@ -54,14 +54,14 @@ public static class CatalogoReportes
 
         new("variedades", "Rendimiento por variedad",
             "¿Qué variedad rinde mejor y cuál se cotiza más alto?",
-            "vw_rendimiento_variedad", "planta3"),
+            "vw_rendimiento_variedad", "brote"),
 
         new("tiempos", "Tiempos del beneficiado",
             "¿Cada etapa se cumplió dentro del rango esperado?",
             "vw_tiempos_beneficiado", "beneficio"),
 
         new("alertas", "Alertas de auditoría",
-            "Las alertas que levantan los triggers: mermas altas y precios bajos.",
+            "¿Qué se salió de lo normal? Mermas altas y ventas bajo el precio base.",
             "vw_alertas_auditoria", "certificado")
     ];
 
