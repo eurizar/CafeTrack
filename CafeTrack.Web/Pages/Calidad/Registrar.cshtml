@@ -35,7 +35,7 @@
     {
         Titulo = "La base rechazó la catación",
         Mensaje = Model.ErrorBase,
-        Detalle = "La regla vive en sp_registrar_calidad, no en la pantalla."
+        Detalle = "Corrija el dato y vuelva a intentarlo."
     })
 }
 
@@ -163,9 +163,8 @@ else
     </form>
 
     <p class="resumen-filtro">
-        <span class="mono">sp_registrar_calidad</span> exige que el beneficiado esté
-        completo, no permite catar dos veces el mismo lote y bloquea aprobar con menos
-        de 80 puntos.
+        Cada lote se cata una sola vez, y con menos de 80 puntos no se puede aprobar
+        para venta.
     </p>
 
     @* ---------------- Ventanas de consulta ---------------- *@

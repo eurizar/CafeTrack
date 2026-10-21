@@ -13,6 +13,12 @@ public class LoteOpcion
     public int? IdBodega { get; set; }
     public string? Bodega { get; set; }
 
+    /// <summary>Datos de la catacion y de la temporada; solo los trae la venta.</summary>
+    public decimal? PuntajeSca { get; set; }
+    public string? AlturaTaza { get; set; }
+    public decimal? PrecioBase { get; set; }
+    public int? Anio { get; set; }
+
     /// <summary>Texto que se muestra en el &lt;option&gt;.</summary>
     public string Etiqueta => $"{CodigoLote} · {Productor} · {Variedad}";
 }
@@ -128,6 +134,8 @@ public class VentaSinPago
     public decimal PesoVendido { get; set; }
     public decimal PrecioVenta { get; set; }
     public decimal TotalVenta { get; set; }
+    public string FormaPago { get; set; } = string.Empty;
+    public string? Bodega { get; set; }
 
     public string Etiqueta => $"Venta {IdVenta} · {CodigoLote} · {Productor}";
 }
@@ -233,8 +241,111 @@ public class PagoForm
     public decimal? Deducciones { get; set; } = 0;
 
     /// <summary>ENUM: 'Efectivo', 'Transferencia' o 'Cheque'.</summary>
-    public string Metodo { get; set; } = "Transferencia";
+    [Required(ErrorMessage = "Indique cómo se le entrega el dinero.")]
+    public string Metodo { get; set; } = string.Empty;
 
     [StringLength(50)]
     public string? Comprobante { get; set; }
+}
+
+/// <summary>Cuanto hay de un lote en una bodega concreta.</summary>
+public class ExistenciaEnBodega
+{
+    public int IdLote { get; set; }
+    public string CodigoLote { get; set; } = string.Empty;
+    public string Productor { get; set; } = string.Empty;
+    public int IdBodega { get; set; }
+    public string Bodega { get; set; } = string.Empty;
+    public decimal Cantidad { get; set; }
+}
+
+/// <summary>Comprador con lo que lleva comprado; es para la lista.</summary>
+public class CompradorResumen
+{
+    public int IdComprador { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Tipo { get; set; } = string.Empty;
+    public string? PaisDestino { get; set; }
+    public string? Contacto { get; set; }
+    public string? Telefono { get; set; }
+    public bool Activo { get; set; }
+    public int Ventas { get; set; }
+    public decimal TotalComprado { get; set; }
+}
+
+/// <summary>Alta de un comprador; la valida sp_crear_comprador.</summary>
+public class CompradorForm
+{
+    [Required(ErrorMessage = "Escriba el nombre del comprador.")]
+    [StringLength(100)]
+    public string Nombre { get; set; } = string.Empty;
+
+    /// <summary>ENUM: 'Exportador', 'Tostador', 'Intermediario' o 'Cooperativa'.</summary>
+    [Required(ErrorMessage = "Indique qué tipo de comprador es.")]
+    public string Tipo { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    public string? PaisDestino { get; set; }
+
+    [StringLength(100)]
+    public string? Contacto { get; set; }
+
+    [StringLength(20)]
+    public string? Telefono { get; set; }
+}
+
+/// <summary>Pago ya registrado; alimenta la lista de pagos.</summary>
+public class PagoHecho
+{
+    public int IdPago { get; set; }
+    public int IdVenta { get; set; }
+    public string CodigoLote { get; set; } = string.Empty;
+    public string Productor { get; set; } = string.Empty;
+    public string Comprador { get; set; } = string.Empty;
+    public DateTime FechaPago { get; set; }
+    public decimal MontoPagado { get; set; }
+    public decimal Deducciones { get; set; }
+    public decimal MontoNeto { get; set; }
+    public string Metodo { get; set; } = string.Empty;
+    public string? Comprobante { get; set; }
+}
+
+/// <summary>Bodega con lo que tiene guardado y lo que le cabe.</summary>
+public class BodegaConEspacio
+{
+    public int IdBodega { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string? Ubicacion { get; set; }
+    public decimal? CapacidadQuintales { get; set; }
+    public decimal Guardado { get; set; }
+
+    /// <summary>Lo que todavia cabe; nulo si la bodega no declara capacidad.</summary>
+    public decimal? Libre => CapacidadQuintales is null ? null : CapacidadQuintales - Guardado;
+}
+
+/// <summary>Traslado de cafe entre bodegas; lo valida sp_trasladar_lote.</summary>
+public class TrasladoForm
+{
+    [Required(ErrorMessage = "Seleccione el lote que se traslada.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccione el lote que se traslada.")]
+    public int? IdLote { get; set; }
+
+    [Required(ErrorMessage = "Indique de qué bodega sale.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Indique de qué bodega sale.")]
+    public int? Origen { get; set; }
+
+    [Required(ErrorMessage = "Indique a qué bodega entra.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Indique a qué bodega entra.")]
+    public int? Destino { get; set; }
+
+    [Required(ErrorMessage = "Indique cuántos quintales se trasladan.")]
+    [Range(0.01, 99999999.99, ErrorMessage = "La cantidad debe ser mayor que cero.")]
+    public decimal? Cantidad { get; set; }
+
+    [Required(ErrorMessage = "Indique quién traslada el café.")]
+    [StringLength(100)]
+    public string Responsable { get; set; } = string.Empty;
+
+    [StringLength(200)]
+    public string? Motivo { get; set; }
 }

@@ -5,6 +5,20 @@
 (function () {
     'use strict';
 
+    // Botones de consulta: data-abre lleva el id de la ventana que abren.
+    document.querySelectorAll('[data-abre]').forEach(function (boton) {
+        boton.addEventListener('click', function () {
+            var ventana = document.getElementById(boton.dataset.abre);
+            if (!ventana || typeof ventana.showModal !== 'function' || ventana.open) { return; }
+
+            ventana.showModal();
+
+            ventana.addEventListener('click', function (evento) {
+                if (evento.target === ventana) { ventana.close(); }
+            }, { once: true });
+        });
+    });
+
     document.querySelectorAll('dialog[data-auto]').forEach(function (dialogo) {
         if (typeof dialogo.showModal !== 'function') { return; }
 

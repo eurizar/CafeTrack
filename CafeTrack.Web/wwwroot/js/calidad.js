@@ -1,25 +1,11 @@
 // Formulario de catación. Tres ayudas para el catador:
-//   1. Las ventanas de consulta de la escala SCA y de la altura de taza.
-//   2. El puntaje dice en vivo en qué categoría cae, y ajusta el resultado.
-//   3. Las notas de la rueda de sabores se agregan al perfil con un toque.
+//   1. El puntaje dice en vivo en qué categoría cae, y ajusta el resultado.
+//   2. La altura se sugiere con la altitud de la parcela.
+//   3. Las notas de la rueda de sabores marcan el perfil sin escribirlo.
 (function () {
     'use strict';
 
-    // ---------------------------------------------- ventanas de consulta
-
-    document.querySelectorAll('[data-abre]').forEach(function (boton) {
-        boton.addEventListener('click', function () {
-            var ventana = document.getElementById(boton.dataset.abre);
-            if (!ventana || typeof ventana.showModal !== 'function') { return; }
-
-            ventana.showModal();
-
-            // Un clic fuera la cierra.
-            ventana.addEventListener('click', function (evento) {
-                if (evento.target === ventana) { ventana.close(); }
-            }, { once: true });
-        });
-    });
+    // Las ventanas de consulta las abre dialogo.js, que es general.
 
     // ------------------------------------------------- puntaje y resultado
 

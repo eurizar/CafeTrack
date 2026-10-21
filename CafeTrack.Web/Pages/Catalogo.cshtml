@@ -170,14 +170,16 @@
             <rect class="caja aviso-oro" x="230" y="164" width="230" height="52" rx="6" />
             <text class="tit chico" x="345" y="187">Merma</text>
             <text class="tabla" x="345" y="205">Mermas</text>
-            <path class="via punteada" d="M 214 92 L 214 142 Q 214 160 246 161" marker-end="url(#punta-suave)" />
-            <path class="via punteada" d="M 476 92 L 476 142 Q 476 160 444 161" marker-end="url(#punta-suave)" />
+            <path class="via punteada" d="M 300 92 L 300 128 Q 300 140 315 140 L 345 140" />
+            <path class="via punteada" d="M 390 92 L 390 128 Q 390 140 375 140 L 345 140" />
+            <path class="via punteada" d="M 345 140 L 345 160" marker-end="url(#punta-suave)" />
 
             @* --- Salida: lote rechazado --- *@
             <rect class="caja aviso-cereza" x="530" y="164" width="140" height="52" rx="6" />
             <text class="tit chico" x="600" y="188">Rechazado</text>
             <text class="tabla" x="600" y="206">no entra a bodega</text>
-            <path class="via punteada" d="M 656 92 L 656 138 Q 656 160 626 161" marker-end="url(#punta-suave)" />
+            <path class="via punteada" d="M 645 92 L 645 128 Q 645 140 630 140 L 600 140" />
+            <path class="via punteada" d="M 600 140 L 600 160" marker-end="url(#punta-suave)" />
         </svg>
     </div>
 
@@ -238,7 +240,11 @@
 @* ================= Certificaciones y estados ================= *@
 <div class="dos-columnas" style="margin-top:1.5rem">
     <section class="panel" aria-labelledby="titulo-cert">
-        <h2 id="titulo-cert">Certificaciones</h2>
+        <h2 id="titulo-cert">
+            Certificaciones
+            <button type="button" class="ayuda-enlace" data-abre="ayuda-certificaciones"
+                    aria-label="Ver qué significa cada certificación">¿qué son?</button>
+        </h2>
         <table class="datos" style="background:transparent">
             <thead>
                 <tr>
@@ -267,6 +273,98 @@
                 }
             </tbody>
         </table>
+
+        @* Ficha de consulta: que pide cada sello y que gana el productor. *@
+        <dialog class="dialogo dialogo-ancho" id="ayuda-certificaciones"
+                aria-labelledby="titulo-ayuda-cert">
+            <form method="dialog" class="dialogo-barra">
+                <button class="dialogo-cerrar" value="cerrar" aria-label="Cerrar">
+                    @await Html.PartialAsync("_Icono", "rechazado:18")
+                </button>
+            </form>
+
+            <div class="dialogo-cuerpo dialogo-texto">
+                <h2 id="titulo-ayuda-cert">Los sellos del café</h2>
+                <p>
+                    Una certificación es un sello que una entidad externa le da a la parcela
+                    después de inspeccionarla. No cambia el sabor del café: cambia a quién se
+                    le puede vender y a qué precio.
+                </p>
+
+                <table class="datos" style="background:transparent">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sello</th>
+                            <th scope="col">Qué exige</th>
+                            <th scope="col">Qué gana el productor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="etiqueta neutro">Ninguna</span></td>
+                            <td class="suave">
+                                Nada: es café convencional, sin inspección de un tercero.
+                            </td>
+                            <td class="suave">Se paga al precio corriente del mercado.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="etiqueta certificada">Orgánico</span></td>
+                            <td class="suave">
+                                Nada de agroquímicos de síntesis, abonos propios y registro de
+                                todo lo que se aplica. La parcela pasa unos tres años de
+                                transición antes del sello, con inspección cada año.
+                            </td>
+                            <td class="suave">
+                                Premio sobre el precio base y entrada a compradores que solo
+                                compran orgánico.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="etiqueta certificada">Fair Trade</span></td>
+                            <td class="suave">
+                                Que los productores estén organizados en cooperativa, con
+                                cuentas claras y decisiones en asamblea.
+                            </td>
+                            <td class="suave">
+                                Precio mínimo garantizado aunque el mercado baje, más una prima
+                                social que la cooperativa invierte en proyectos comunes.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="etiqueta certificada">Rainforest</span></td>
+                            <td class="suave">
+                                Cuidar bosque, agua y suelo, y cumplir condiciones laborales
+                                dignas. Es el sello de la ranita.
+                            </td>
+                            <td class="suave">
+                                Acceso a marcas que exigen sostenibilidad, normalmente con
+                                premio sobre el precio.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="etiqueta certificada">UTZ</span></td>
+                            <td class="suave">
+                                Buenas prácticas agrícolas y trazabilidad: saber de qué parcela
+                                salió cada saco.
+                            </td>
+                            <td class="suave">
+                                Mejor precio por grano trazable. Desde 2018 UTZ se unió con
+                                Rainforest Alliance, pero el sello sigue en registros viejos.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="ayuda">
+                    En CaféTrack la certificación vive en la parcela, no en el lote: por eso la
+                    hereda todo el café cosechado ahí.
+                </p>
+            </div>
+
+            <form method="dialog" class="dialogo-acciones">
+                <button class="boton" value="cerrar">Entendido</button>
+            </form>
+        </dialog>
     </section>
 
     <section class="panel" aria-labelledby="titulo-estados-lote">
