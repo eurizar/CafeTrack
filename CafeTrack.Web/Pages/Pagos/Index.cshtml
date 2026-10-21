@@ -1,0 +1,152 @@
+@page
+@model CafeTrack.Web.Pages.Pagos.IndexModel
+@{
+    ViewData["Title"] = "Pagos al productor";
+    ViewData["Pagina"] = "pagos";
+}
+
+<header class="encabezado-pagina">
+    <h1>Pagos al productor</h1>
+    <p>
+        Qué ventas falta liquidarle al productor y qué se ha pagado. Una venta sale de
+        esta lista en cuanto se registra su pago.
+    </p>
+</header>
+
+<div class="rejilla">
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">Pendiente de pagar</h2>
+        <p class="cifra">@Formato.Moneda(Model.TotalPendiente)</p>
+        <p class="tarjeta-nota">
+            @Model.Pendientes.Count @(Model.Pendientes.Count == 1 ? "venta" : "ventas") sin pago
+        </p>
+    </article>
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">Pagado a productores</h2>
+        <p class="cifra">@Formato.Moneda(Model.TotalPagado)</p>
+        <p class="tarjeta-nota">neto, después de deducciones</p>
+    </article>
+    <article class="tarjeta">
+        <h2 class="tarjeta-titulo">Deducciones</h2>
+        <p class="cifra">@Formato.Moneda(Model.TotalDeducciones)</p>
+        <p class="tarjeta-nota">insumos, anticipos, transporte</p>
+    </article>
+</div>
+
+<h2>Esperando pago</h2>
+
+@if (Model.Pendientes.Count == 0)
+{
+    <p class="sin-datos">Ninguna venta está esperando pago.</p>
+}
+else
+{
+    <div class="tabla-envoltura">
+        <table class="datos">
+            <thead>
+                <tr>
+                    <th scope="col">Venta</th>
+                    <th scope="col">Lote</th>
+                    <th scope="col">Productor</th>
+                    <th scope="col">Comprador</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Quintales</th>
+                    <th scope="col">Total vendido</th>
+                    <th scope="col">Forma de pago</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var v in Model.Pendientes)
+                {
+                    <tr>
+                        <th scope="row" class="mono">@v.IdVenta</th>
+                        <td class="mono">@v.CodigoLote</td>
+                        <td>@v.Productor</td>
+                        <td>@v.Comprador</td>
+                        <td>@Formato.Fecha(v.FechaVenta)</td>
+                        <td class="num">@Formato.Quintales(v.PesoVendido)</td>
+                        <td class="num">@Formato.Moneda(v.TotalVenta)</td>
+                        <td>
+                            <span class="etiqueta acopio">@Formato.Enum(v.FormaPago)</span>
+                        </td>
+                        <td>
+                            <a class="boton secundario" asp-page="/Pagos/Registrar"
+                               asp-route-venta="@v.IdVenta">Pagar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="6">Total pendiente</th>
+                    <td class="num">@Formato.Moneda(Model.TotalPendiente)</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+
+<h2>Pagos registrados</h2>
+
+@if (Model.Pagados.Count == 0)
+{
+    <p class="sin-datos">Todavía no se ha registrado ningún pago.</p>
+}
+else
+{
+    <div class="tabla-envoltura">
+        <table class="datos">
+            <thead>
+                <tr>
+                    <th scope="col">Pago</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Lote</th>
+                    <th scope="col">Productor</th>
+                    <th scope="col">Monto</th>
+                    <th scope="col">Deducciones</th>
+                    <th scope="col">Neto</th>
+                    <th scope="col">Método</th>
+                    <th scope="col">Comprobante</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Pagados)
+                {
+                    <tr>
+                        <th scope="row" class="mono">@p.IdPago</th>
+                        <td>@Formato.Fecha(p.FechaPago)</td>
+                        <td class="mono">@p.CodigoLote</td>
+                        <td>@p.Productor</td>
+                        <td class="num">@Formato.Moneda(p.MontoPagado)</td>
+                        <td class="num">
+                            @(p.Deducciones == 0
+                                ? Html.Raw("<span class=\"suave\">—</span>")
+                                : Html.Raw(Formato.Moneda(p.Deducciones)))
+                        </td>
+                        <td class="num"><strong>@Formato.Moneda(p.MontoNeto)</strong></td>
+                        <td>@Formato.Enum(p.Metodo)</td>
+                        <td class="mono">
+                            @(string.IsNullOrWhiteSpace(p.Comprobante) ? "—" : p.Comprobante)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="4">Total pagado</th>
+                    <td class="num">@Formato.Moneda(Model.TotalMonto)</td>
+                    <td class="num">@Formato.Moneda(Model.TotalDeducciones)</td>
+                    <td class="num">@Formato.Moneda(Model.TotalPagado)</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+
+<p class="resumen-filtro">
+    El neto es lo que recibe el productor: el monto del pago menos las deducciones.
+    Cada venta se paga una sola vez.
+</p>

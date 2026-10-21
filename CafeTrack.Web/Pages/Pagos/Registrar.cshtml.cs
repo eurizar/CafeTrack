@@ -30,15 +30,31 @@ public class RegistrarModel : PageModel
 
     public IReadOnlyList<VentaSinPago> Ventas { get; private set; } = [];
 
+    /// <summary>Lo que pagaron los compradores por las ventas sin liquidar.</summary>
+    public decimal TotalPendiente => Ventas.Sum(v => v.TotalVenta);
+
+    /// <summary>Dias que lleva esperando la venta sin pagar mas antigua.</summary>
+    public int DiasEsperando => Ventas.Count == 0
+        ? 0
+        : (int)Math.Round((DateTime.Now - Ventas.Min(v => v.FechaVenta)).TotalDays);
+
     public string? ErrorBase { get; private set; }
 
     [TempData] public string? Exito { get; set; }
     [TempData] public string? ExitoDetalle { get; set; }
 
-    public async Task OnGetAsync(CancellationToken ct)
+    /// <param name="venta">
+    /// Id que manda la lista de pendientes al tocar "Pagar"; deja la venta
+    /// ya elegida. Sin el, el formulario arranca vacio.
+    /// </param>
+    public async Task OnGetAsync(int? venta, CancellationToken ct)
     {
-        // Vacio: el precio se propone al elegir la venta.
         await CargarAsync(ct);
+
+        if (venta is > 0 && Ventas.Any(v => v.IdVenta == venta))
+        {
+            Datos.IdVenta = venta;
+        }
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken ct)
