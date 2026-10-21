@@ -60,6 +60,8 @@ builder.Services.AddRazorPages(opciones =>
     opciones.Conventions.AuthorizeFolder("/Bodegas", "RegistraProcesos");
     opciones.Conventions.AuthorizeFolder("/Calidad", "RegistraCalidad");
     opciones.Conventions.AuthorizeFolder("/Pagos", "RegistraPagos");
+    // Quien vende es quien da de alta a los compradores.
+    opciones.Conventions.AuthorizeFolder("/Compradores", "RegistraVentas");
 })
 .AddMvcOptions(opciones =>
 {

@@ -96,7 +96,12 @@ public sealed partial class OperacionesRepository
                ve.fecha_venta            AS fecha_venta,
                ve.peso_vendido_quintales AS peso_vendido,
                ve.precio_quintal         AS precio_venta,
-               ve.total_venta            AS total_venta
+               ve.total_venta            AS total_venta,
+               ve.forma_pago             AS forma_pago,
+               (SELECT b.nombre
+                  FROM MovimientosBodega mb
+                  JOIN Bodegas b ON b.id_bodega = mb.id_bodega
+                 WHERE mb.id_venta = ve.id_venta LIMIT 1) AS bodega
           FROM VentasLotes ve
           JOIN Lotes       l  ON l.id_lote       = ve.id_lote
           JOIN Compradores co ON co.id_comprador = ve.id_comprador

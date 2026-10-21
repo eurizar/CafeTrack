@@ -30,6 +30,9 @@ public class RegistrarModel : PageModel
     public IReadOnlyList<Comprador> Compradores { get; private set; } = [];
     public IReadOnlyList<Bodega> Bodegas { get; private set; } = [];
 
+    /// <summary>Lo que hay de cada lote en cada bodega; manda el desplegable.</summary>
+    public IReadOnlyList<ExistenciaEnBodega> Existencias { get; private set; } = [];
+
     public string? ErrorBase { get; private set; }
 
     [TempData] public string? Exito { get; set; }
@@ -65,9 +68,11 @@ public class RegistrarModel : PageModel
 
             Exito = $"Vendidos {Formato.Quintales(peso)} quintales del lote {lote} a " +
                     $"{comprador?.Nombre ?? "el comprador"} por {Formato.Moneda(total)}.";
-            ExitoDetalle = $"Es la venta número {idVenta}. El café salió de la bodega solo, " +
-                           "así que las existencias ya están al día. Falta registrarle el pago " +
-                           "al productor.";
+            var bodega = Existencias.FirstOrDefault(e => e.IdBodega == Datos.IdBodega)?.Bodega;
+
+            ExitoDetalle = $"Es la venta número {idVenta}. El café salió de " +
+                           $"{bodega ?? "la bodega"}, así que las existencias ya están al día. " +
+                           "Falta registrarle el pago al productor.";
 
             return RedirectToPage();
         }
@@ -84,5 +89,6 @@ public class RegistrarModel : PageModel
         Lotes = await _repositorio.ListarLotesVendiblesAsync(ct);
         Compradores = await _repositorio.ListarCompradoresAsync(ct);
         Bodegas = await _repositorio.ListarBodegasAsync(ct);
+        Existencias = await _repositorio.ListarExistenciasPorBodegaAsync(ct);
     }
 }

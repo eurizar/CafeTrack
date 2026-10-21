@@ -1,0 +1,152 @@
+@page
+@model CafeTrack.Web.Pages.Compradores.IndexModel
+@{
+    ViewData["Title"] = "Compradores";
+    ViewData["Pagina"] = "compradores";
+}
+
+<header class="encabezado-pagina">
+    <h1>Compradores</h1>
+    <p>
+        Quiénes le compran a la cooperativa. Un comprador no se borra: si deja de
+        trabajar con la cooperativa se marca inactivo, porque sus ventas siguen
+        guardadas y el histórico no se toca.
+    </p>
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.Exito))
+{
+    @await Html.PartialAsync("_Toast", new Dialogo
+    {
+        Tipo = "exito",
+        Mensaje = Model.Exito,
+        Detalle = Model.ExitoDetalle
+    })
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorBase))
+{
+    @await Html.PartialAsync("_Dialogo", new Dialogo
+    {
+        Titulo = "La base rechazó el alta",
+        Mensaje = Model.ErrorBase,
+        Detalle = "Revise el nombre y el tipo de comprador."
+    })
+}
+
+<div class="tabla-envoltura">
+    <table class="datos">
+        <thead>
+            <tr>
+                <th scope="col">Comprador</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Destino</th>
+                <th scope="col">Contacto</th>
+                <th scope="col">Ventas</th>
+                <th scope="col">Comprado</th>
+                <th scope="col">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model.Compradores)
+            {
+                <tr>
+                    <th scope="row">@c.Nombre</th>
+                    <td>@Formato.Enum(c.Tipo)</td>
+                    <td>@(string.IsNullOrWhiteSpace(c.PaisDestino) ? "Mercado local" : c.PaisDestino)</td>
+                    <td>
+                        @if (string.IsNullOrWhiteSpace(c.Contacto) && string.IsNullOrWhiteSpace(c.Telefono))
+                        {
+                            <span class="suave">Sin contacto</span>
+                        }
+                        else
+                        {
+                            @c.Contacto
+                            @if (!string.IsNullOrWhiteSpace(c.Telefono))
+                            {
+                                <span class="suave mono"> · @c.Telefono</span>
+                            }
+                        }
+                    </td>
+                    <td class="num">@c.Ventas</td>
+                    <td class="num">@Formato.Moneda(c.TotalComprado)</td>
+                    <td>
+                        <span class="etiqueta @(c.Activo ? "bodega" : "neutro")">
+                            @(c.Activo ? "Activo" : "Inactivo")
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        @if (Model.Compradores.Count > 0)
+        {
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="5">Total comprado</th>
+                    <td class="num">@Formato.Moneda(Model.TotalComprado)</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        }
+    </table>
+</div>
+
+@if (Model.Compradores.Count == 0)
+{
+    <p class="sin-datos">Todavía no hay compradores registrados.</p>
+}
+
+<h2>Dar de alta un comprador</h2>
+
+<form method="post" class="panel formulario" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="aviso error"></div>
+
+    <div class="campo">
+        <label asp-for="Datos.Nombre">Nombre o razón social</label>
+        <input asp-for="Datos.Nombre" maxlength="100" placeholder="Tostaduría, exportadora…" />
+        <span class="ayuda">No puede repetirse: la base lo revisa.</span>
+        <span asp-validation-for="Datos.Nombre" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Datos.Tipo">Tipo</label>
+        <select asp-for="Datos.Tipo">
+            <option value="">Seleccione…</option>
+            @foreach (var t in CafeTrack.Web.Pages.Compradores.IndexModel.Tipos)
+            {
+                <option value="@t">@t</option>
+            }
+        </select>
+        <span class="ayuda">Exportador, tostador, intermediario o cooperativa.</span>
+        <span asp-validation-for="Datos.Tipo" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Datos.PaisDestino">País de destino</label>
+        <input asp-for="Datos.PaisDestino" maxlength="50" placeholder="Si se exporta" />
+        <span class="ayuda">Déjelo vacío si el café se queda en el país.</span>
+        <span asp-validation-for="Datos.PaisDestino" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Datos.Contacto">Persona de contacto</label>
+        <input asp-for="Datos.Contacto" maxlength="100" placeholder="Con quién se negocia" />
+        <span asp-validation-for="Datos.Contacto" class="error-campo"></span>
+    </div>
+
+    <div class="campo">
+        <label asp-for="Datos.Telefono">Teléfono</label>
+        <input asp-for="Datos.Telefono" maxlength="20" placeholder="0000-0000" />
+        <span asp-validation-for="Datos.Telefono" class="error-campo"></span>
+    </div>
+
+    <div class="acciones-formulario">
+        <button class="boton" type="submit">Guardar comprador</button>
+        <a class="boton secundario" asp-page="/Ventas/Registrar">Ir a registrar una venta</a>
+    </div>
+</form>
+
+<p class="resumen-filtro">
+    El nombre no se puede repetir, y cada alta queda registrada con la fecha y el
+    usuario que la hizo.
+</p>

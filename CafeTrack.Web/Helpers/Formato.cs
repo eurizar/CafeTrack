@@ -271,6 +271,14 @@ public static class Formato
         };
     }
 
+    /// <summary>
+    /// Numero con punto decimal, para los atributos data-* que lee el
+    /// navegador. En pantalla se usa es-GT; aqui no, porque parseFloat
+    /// no entiende la coma.
+    /// </summary>
+    public static string Invariante(decimal? valor) =>
+        valor?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "";
+
     /// <summary>Sufijo de clase CSS para la etiqueta de certificacion.</summary>
     public static string ClaseCertificacion(string? certificacion) =>
         certificacion is null or "Ninguna" ? "neutro" : "certificada";

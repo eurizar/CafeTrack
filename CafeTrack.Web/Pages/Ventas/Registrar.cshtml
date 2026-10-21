@@ -9,7 +9,7 @@
     <h1>Registrar venta</h1>
     <p>
         Solo se listan los lotes aprobados en catación y con existencia en bodega.
-        La salida de bodega se genera sola.
+        El café sale de la bodega donde está guardado; la salida se genera sola.
     </p>
 </header>
 
@@ -29,7 +29,7 @@
     {
         Titulo = "La base rechazó la venta",
         Mensaje = Model.ErrorBase,
-        Detalle = "La regla vive en sp_registrar_venta, no en la pantalla."
+        Detalle = "No se registró la venta: revise la bodega, la cantidad y el precio."
     })
 }
 
@@ -44,7 +44,7 @@
 }
 else
 {
-    <form method="post" class="panel formulario">
+    <form method="post" class="panel formulario" autocomplete="off">
         <div asp-validation-summary="ModelOnly" class="aviso error"></div>
 
         <div class="campo ancho">
@@ -54,14 +54,44 @@ else
                 @foreach (var l in Model.Lotes)
                 {
                     <option value="@l.IdLote"
-                            data-peso="@l.PesoReferencia.ToString(System.Globalization.CultureInfo.InvariantCulture)"
-                            data-bodega="@l.IdBodega">
-                        @l.Etiqueta — disponible: @Formato.Quintales(l.PesoReferencia) qq
-                        @(string.IsNullOrWhiteSpace(l.Bodega) ? "" : $"({l.Bodega})")
+                            data-peso="@Formato.Invariante(l.PesoReferencia)"
+                            data-productor="@l.Productor"
+                            data-variedad="@l.Variedad"
+                            data-puntaje="@Formato.Invariante(l.PuntajeSca)"
+                            data-altura="@l.AlturaTaza"
+                            data-anio="@l.Anio"
+                            data-base="@Formato.Invariante(l.PrecioBase)">
+                        @l.CodigoLote · @l.Productor — @Formato.Quintales(l.PesoReferencia) qq
                     </option>
                 }
             </select>
             <span asp-validation-for="Datos.IdLote" class="error-campo"></span>
+        </div>
+
+        @* Ficha del lote: lo que el gerente necesita saber antes de poner precio. *@
+        <div class="campo ancho">
+            <div class="ficha-lote" id="ficha" hidden>
+                <div class="ficha-dato">
+                    <span class="ficha-titulo">Productor</span>
+                    <span class="ficha-valor" id="ficha-productor">—</span>
+                </div>
+                <div class="ficha-dato">
+                    <span class="ficha-titulo">Variedad</span>
+                    <span class="ficha-valor" id="ficha-variedad">—</span>
+                </div>
+                <div class="ficha-dato">
+                    <span class="ficha-titulo">Catación</span>
+                    <span class="ficha-valor" id="ficha-catacion">—</span>
+                </div>
+                <div class="ficha-dato">
+                    <span class="ficha-titulo">Precio base</span>
+                    <span class="ficha-valor" id="ficha-base">—</span>
+                </div>
+                <div class="ficha-dato">
+                    <span class="ficha-titulo">En bodega</span>
+                    <span class="ficha-valor" id="ficha-bodegas">—</span>
+                </div>
+            </div>
         </div>
 
         <div class="campo">
@@ -70,21 +100,31 @@ else
                 <option value="">Seleccione…</option>
                 @foreach (var c in Model.Compradores)
                 {
-                    <option value="@c.IdComprador">@c.Nombre · @c.Tipo</option>
+                    <option value="@c.IdComprador">
+                        @c.Nombre · @c.Tipo@(string.IsNullOrWhiteSpace(c.PaisDestino) ? "" : $" · {c.PaisDestino}")
+                    </option>
                 }
             </select>
+            <span class="ayuda">
+                ¿Falta alguno? <a asp-page="/Compradores/Index">Dar de alta un comprador</a>.
+            </span>
             <span asp-validation-for="Datos.IdComprador" class="error-campo"></span>
         </div>
 
+        @* Solo se ofrecen las bodegas donde ese lote tiene cafe guardado. *@
         <div class="campo">
             <label asp-for="Datos.IdBodega">Sale de la bodega</label>
             <select asp-for="Datos.IdBodega" id="bodega">
-                <option value="">Seleccione…</option>
-                @foreach (var b in Model.Bodegas)
+                <option value="">Elija primero el lote…</option>
+                @foreach (var e in Model.Existencias)
                 {
-                    <option value="@b.IdBodega">@b.Nombre</option>
+                    <option value="@e.IdBodega" data-lote="@e.IdLote"
+                            data-cantidad="@Formato.Invariante(e.Cantidad)">
+                        @e.Bodega — @Formato.Quintales(e.Cantidad) qq
+                    </option>
                 }
             </select>
+            <span class="ayuda" id="ayuda-bodega">Solo aparecen las bodegas que tienen ese lote.</span>
             <span asp-validation-for="Datos.IdBodega" class="error-campo"></span>
         </div>
 
@@ -92,25 +132,27 @@ else
             <label asp-for="Datos.Peso">Cantidad (qq)</label>
             <input asp-for="Datos.Peso" id="peso" type="number" step="0.01" min="0.01"
                    inputmode="decimal" autocomplete="off" />
-            <span class="ayuda" id="ayuda-peso">No puede superar la existencia del lote.</span>
+            <span class="ayuda" id="ayuda-peso">No puede superar lo que hay en esa bodega.</span>
             <span asp-validation-for="Datos.Peso" class="error-campo"></span>
         </div>
 
         <div class="campo">
             <label asp-for="Datos.Precio">Precio por quintal (Q)</label>
-            <input asp-for="Datos.Precio" type="number" step="0.01" min="0.01"
+            <input asp-for="Datos.Precio" id="precio" type="number" step="0.01" min="0.01"
                    inputmode="decimal" autocomplete="off" />
+            <span class="ayuda" id="ayuda-precio">Lo pactado con el comprador.</span>
             <span asp-validation-for="Datos.Precio" class="error-campo"></span>
         </div>
 
         <div class="campo">
             <label asp-for="Datos.FormaPago">Forma de pago</label>
-            <select asp-for="Datos.FormaPago">
+            <select asp-for="Datos.FormaPago" id="forma">
                 @foreach (var f in CafeTrack.Web.Pages.Ventas.RegistrarModel.FormasPago)
                 {
                     <option value="@f">@Formato.Enum(f)</option>
                 }
             </select>
+            <span class="ayuda" id="ayuda-forma">Define cuándo entra el dinero.</span>
         </div>
 
         <div class="campo">
@@ -120,6 +162,19 @@ else
             <span asp-validation-for="Datos.Responsable" class="error-campo"></span>
         </div>
 
+        @* Lo que se va a guardar, en Quetzales y en quintales. *@
+        <div class="campo ancho">
+            <div class="cuenta-venta" id="cuenta">
+                <div class="cuenta-linea">
+                    <span class="cuenta-etiqueta">Total de la venta</span>
+                    <span class="cuenta-total" id="cuenta-total">Q 0.00</span>
+                </div>
+                <p class="cuenta-detalle" id="cuenta-detalle">
+                    Elija el lote, la cantidad y el precio.
+                </p>
+            </div>
+        </div>
+
         <div class="acciones-formulario">
             <button class="boton" type="submit">Registrar venta</button>
             <a class="boton secundario" asp-page="/Existencias">Cancelar</a>
@@ -127,10 +182,9 @@ else
     </form>
 
     <p class="resumen-filtro">
-        <span class="mono">sp_registrar_venta</span> comprueba la existencia con
-        <span class="mono">fn_existencia_lote</span>, exige catación aprobada y deja el lote
-        en <em>Vendido</em> cuando la bodega queda en cero. Si el precio baja del precio base
-        de la temporada, el trigger escribe una alerta en la bitácora.
+        Solo se puede vender lo que hay en la bodega elegida. Cuando ya no queda café,
+        el lote pasa a <em>Vendido</em>; si el precio queda por debajo del precio base de
+        la temporada, el sistema deja constancia.
     </p>
 }
 

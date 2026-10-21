@@ -46,6 +46,26 @@ public interface IOperacionesRepository
     Task<int> RegistrarCalidadAsync(CalidadForm datos, string usuario, CancellationToken ct = default);
     Task<int> RegistrarIngresoBodegaAsync(IngresoBodegaForm datos, string usuario, CancellationToken ct = default);
     Task<int> RegistrarPagoAsync(PagoForm datos, string usuario, CancellationToken ct = default);
+
+    // --- Ventas, compradores y pagos ---
+
+    /// <summary>Cuanto hay de cada lote en cada bodega, solo lo que queda.</summary>
+    Task<IReadOnlyList<ExistenciaEnBodega>> ListarExistenciasPorBodegaAsync(CancellationToken ct = default);
+
+    /// <summary>Compradores con lo que llevan comprado, activos e inactivos.</summary>
+    Task<IReadOnlyList<CompradorResumen>> ListarCompradoresResumenAsync(CancellationToken ct = default);
+
+    /// <summary>Llama a sp_crear_comprador y devuelve el id del comprador nuevo.</summary>
+    Task<int> CrearCompradorAsync(CompradorForm datos, string usuario, CancellationToken ct = default);
+
+    /// <summary>Pagos ya registrados, del mas reciente al mas viejo.</summary>
+    Task<IReadOnlyList<PagoHecho>> ListarPagosAsync(CancellationToken ct = default);
+
+    /// <summary>Bodegas activas con lo que tienen guardado y lo que les cabe.</summary>
+    Task<IReadOnlyList<BodegaConEspacio>> ListarBodegasConEspacioAsync(CancellationToken ct = default);
+
+    /// <summary>Llama a sp_trasladar_lote y devuelve el id del movimiento de entrada.</summary>
+    Task<int> TrasladarLoteAsync(TrasladoForm datos, string usuario, CancellationToken ct = default);
 }
 
 /// <inheritdoc cref="IOperacionesRepository"/>
@@ -87,6 +107,10 @@ public sealed partial class OperacionesRepository : IOperacionesRepository
                p.nombre                      AS productor,
                v.nombre                      AS variedad,
                fn_existencia_lote(l.id_lote) AS peso_referencia,
+               ca.puntaje_sca                AS puntaje_sca,
+               ca.altura_taza                AS altura_taza,
+               t.precio_base_quintal         AS precio_base,
+               t.anio                        AS anio,
                (SELECT mb.id_bodega
                   FROM MovimientosBodega mb
                  WHERE mb.id_lote = l.id_lote AND mb.tipo_movimiento = 'Entrada'
@@ -101,8 +125,9 @@ public sealed partial class OperacionesRepository : IOperacionesRepository
           JOIN Parcelas    pa ON pa.id_parcela  = c.id_parcela
           JOIN Productores p  ON p.id_productor = pa.id_productor
           JOIN Variedades  v  ON v.id_variedad  = pa.id_variedad
-         WHERE EXISTS (SELECT 1 FROM Calidad ca
-                        WHERE ca.id_lote = l.id_lote AND ca.aprobado_venta = TRUE)
+          JOIN Temporadas  t  ON t.id_temporada = c.id_temporada
+          JOIN Calidad     ca ON ca.id_lote     = l.id_lote
+         WHERE ca.aprobado_venta = TRUE
            AND fn_existencia_lote(l.id_lote) > 0
          ORDER BY l.codigo_lote;
         """;
