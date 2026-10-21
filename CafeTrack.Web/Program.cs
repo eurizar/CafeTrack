@@ -38,7 +38,12 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RegistraAcopios", p => p.RequireRole("admin", "acopiador"))
     .AddPolicy("RegistraVentas", p => p.RequireRole("admin", "gerente"))
     .AddPolicy("VeBitacora", p => p.RequireRole("admin", "auditor"))
-    .AddPolicy("GestionaUsuarios", p => p.RequireRole("admin"));
+    .AddPolicy("GestionaUsuarios", p => p.RequireRole("admin"))
+    // El acopiador mueve el beneficiado y la bodega; el catador cata;
+    // el gerente vende y paga.
+    .AddPolicy("RegistraProcesos", p => p.RequireRole("admin", "acopiador"))
+    .AddPolicy("RegistraCalidad", p => p.RequireRole("admin", "catador"))
+    .AddPolicy("RegistraPagos", p => p.RequireRole("admin", "gerente"));
 
 builder.Services.AddRazorPages(opciones =>
 {
@@ -51,9 +56,31 @@ builder.Services.AddRazorPages(opciones =>
     opciones.Conventions.AuthorizeFolder("/Ventas", "RegistraVentas");
     opciones.Conventions.AuthorizeFolder("/Bitacora", "VeBitacora");
     opciones.Conventions.AuthorizeFolder("/Usuarios", "GestionaUsuarios");
+    opciones.Conventions.AuthorizeFolder("/Procesos", "RegistraProcesos");
+    opciones.Conventions.AuthorizeFolder("/Bodegas", "RegistraProcesos");
+    opciones.Conventions.AuthorizeFolder("/Calidad", "RegistraCalidad");
+    opciones.Conventions.AuthorizeFolder("/Pagos", "RegistraPagos");
+})
+.AddMvcOptions(opciones =>
+{
+    // Sin esto, un campo numerico vacio responde "The value '' is invalid".
+    var mensajes = opciones.ModelBindingMessageProvider;
+
+    mensajes.SetValueIsInvalidAccessor(_ => "El valor no es válido.");
+    mensajes.SetAttemptedValueIsInvalidAccessor((valor, _) =>
+        string.IsNullOrWhiteSpace(valor) ? "Este dato es obligatorio." : $"«{valor}» no es válido.");
+    mensajes.SetNonPropertyAttemptedValueIsInvalidAccessor(valor => $"«{valor}» no es válido.");
+    mensajes.SetValueMustNotBeNullAccessor(_ => "Este dato es obligatorio.");
+    mensajes.SetMissingBindRequiredValueAccessor(_ => "Este dato es obligatorio.");
+    mensajes.SetMissingKeyOrValueAccessor(() => "Este dato es obligatorio.");
+    mensajes.SetValueMustBeANumberAccessor(_ => "Escriba un número.");
+    mensajes.SetNonPropertyValueMustBeANumberAccessor(() => "Escriba un número.");
+    mensajes.SetUnknownValueIsInvalidAccessor(_ => "El valor no es válido.");
+    mensajes.SetNonPropertyUnknownValueIsInvalidAccessor(() => "El valor no es válido.");
 });
 
 // --- Acceso a datos -----------------------------------------------------
+builder.Services.AddSingleton(Ajustes.Leer(builder.Configuration));
 builder.Services.AddScoped<IUsuarioActual, UsuarioDeSesion>();
 builder.Services.AddScoped<IDbConnectionFactory, MySqlConnectionFactory>();
 builder.Services.AddScoped<IPanelRepository, PanelRepository>();

@@ -22,6 +22,26 @@ public interface IUsuarioActual
     bool Autenticado { get; }
 }
 
+/// <summary>
+/// Ajustes del sistema que se leen de la configuracion (User Secrets o
+/// appsettings). Hoy solo uno, pero deja el lugar para los que vengan.
+/// </summary>
+public sealed class Ajustes
+{
+    /// <summary>
+    /// Permite registrar etapas con fecha futura. Sirve para demostrar en
+    /// minutos un beneficiado que dura dias; en produccion va apagado.
+    /// El orden entre etapas se sigue exigiendo siempre.
+    /// </summary>
+    public bool PermitirFechasFuturas { get; init; }
+
+    public static Ajustes Leer(IConfiguration configuracion) => new()
+    {
+        PermitirFechasFuturas =
+            configuracion.GetValue("CafeTrack:PermitirFechasFuturas", false)
+    };
+}
+
 /// <summary>Lee la identidad de la cookie de sesion.</summary>
 public sealed class UsuarioDeSesion : IUsuarioActual
 {

@@ -27,18 +27,40 @@ public interface IOperacionesRepository
 
     /// <summary>Llama a sp_registrar_venta y devuelve el id de la venta creada.</summary>
     Task<int> RegistrarVentaAsync(VentaForm datos, string usuario, CancellationToken ct = default);
+
+    // --- Fase 2 ampliada: la cadena completa por rol ---
+
+    /// <summary>Lotes esperando su proxima etapa del beneficiado.</summary>
+    Task<IReadOnlyList<LoteEnProceso>> ListarLotesEnProcesoAsync(CancellationToken ct = default);
+
+    /// <summary>Lotes que terminaron el beneficiado y no tienen catacion.</summary>
+    Task<IReadOnlyList<LoteParaCatar>> ListarLotesParaCatarAsync(CancellationToken ct = default);
+
+    /// <summary>Lotes aprobados con cafe pendiente de ingresar a bodega.</summary>
+    Task<IReadOnlyList<LoteParaBodega>> ListarLotesParaBodegaAsync(CancellationToken ct = default);
+
+    /// <summary>Ventas sin pago registrado.</summary>
+    Task<IReadOnlyList<VentaSinPago>> ListarVentasSinPagoAsync(CancellationToken ct = default);
+
+    Task<int> RegistrarProcesoAsync(ProcesoForm datos, string usuario, CancellationToken ct = default);
+    Task<int> RegistrarCalidadAsync(CalidadForm datos, string usuario, CancellationToken ct = default);
+    Task<int> RegistrarIngresoBodegaAsync(IngresoBodegaForm datos, string usuario, CancellationToken ct = default);
+    Task<int> RegistrarPagoAsync(PagoForm datos, string usuario, CancellationToken ct = default);
 }
 
 /// <inheritdoc cref="IOperacionesRepository"/>
-public sealed class OperacionesRepository : IOperacionesRepository
+public sealed partial class OperacionesRepository : IOperacionesRepository
 {
     private readonly IDbConnectionFactory _fabrica;
     private readonly IUsuarioActual _usuario;
+    private readonly Ajustes _ajustes;
 
-    public OperacionesRepository(IDbConnectionFactory fabrica, IUsuarioActual usuario)
+    public OperacionesRepository(
+        IDbConnectionFactory fabrica, IUsuarioActual usuario, Ajustes ajustes)
     {
         _fabrica = fabrica;
         _usuario = usuario;
+        _ajustes = ajustes;
     }
 
     // Lotes cosechados que aun no pasan por el centro de acopio.
