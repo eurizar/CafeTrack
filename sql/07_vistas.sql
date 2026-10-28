@@ -1,5 +1,5 @@
 -- =====================================================================
--- CafeTrack - FASE 4: las 11 consultas del proyecto, como VISTAS
+-- CafeTrack - Las 11 consultas de reporte, como VISTAS
 -- Ejecutar DESPUES de 04_rutinas.sql.
 --
 -- El esquema no cambia: una vista no es una tabla, asi que la base

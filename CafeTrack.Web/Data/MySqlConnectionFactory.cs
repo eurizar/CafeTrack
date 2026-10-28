@@ -9,7 +9,7 @@ namespace CafeTrack.Web.Data;
 /// Las cadenas viven en User Secrets, nunca en archivos versionados.
 /// </summary>
 /// <remarks>
-/// Desde la Fase 3 la conexion depende del rol de quien inicio sesion: busca la
+/// La conexion depende del rol de quien inicio sesion: busca la
 /// cadena <c>ConnectionStrings:CafeTrack:&lt;rol&gt;</c> y, si no existe, usa la de
 /// omision. Asi los permisos los decide MySQL y no solo la interfaz: un rol sin
 /// privilegios recibe ERROR 1142 del motor.

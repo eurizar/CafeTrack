@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <!-- Fase 1: se compila con el SDK disponible en el equipo (net9.0).
-         Para .NET 10 basta con cambiar este valor a net10.0. -->
+    <!-- Se compila con el SDK net9.0. Para .NET 10 basta con cambiar este
+         valor a net10.0. -->
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

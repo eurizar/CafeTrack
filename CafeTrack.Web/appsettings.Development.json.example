@@ -12,7 +12,7 @@
   "ConnectionStrings": {
     "CafeTrack": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_dev;Password=CAMBIAR;",
 
-    "//_fase3": "A partir de la Fase 3 cada rol usara su propio usuario de MySQL:",
+    "//_roles": "Cada rol usa su propio usuario de MySQL:",
     "CafeTrack:admin": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_admin;Password=CAMBIAR;",
     "CafeTrack:gerente": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_gerente;Password=CAMBIAR;",
     "CafeTrack:acopiador": "Server=localhost;Port=3306;Database=trazabilidad_cafe;User=cafetrack_acopiador;Password=CAMBIAR;",

@@ -1,5 +1,5 @@
 -- =====================================================================
--- CafeTrack - FASE 2: funcion, procedimientos y triggers
+-- CafeTrack - Funcion, procedimientos y triggers
 -- Ejecutar DESPUES de 01_estructura.sql y 02_datos_prueba.sql
 --
 -- El esquema no cambia: no se crea ni se altera ninguna tabla.

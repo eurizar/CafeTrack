@@ -14,7 +14,7 @@ CultureInfo.DefaultThreadCurrentUICulture = Formato.CulturaGt;
 // Mapeo id_productor -> IdProductor y manejadores de DateOnly.
 DapperConfiguracion.Aplicar();
 
-// --- Seguridad (Fase 3) -------------------------------------------------
+// --- Seguridad -----------------------------------------------------------
 // La identidad viaja en una cookie firmada; las credenciales las valida
 // sp_login dentro de MySQL y el rol decide con que usuario de la base se
 // abre cada conexion.

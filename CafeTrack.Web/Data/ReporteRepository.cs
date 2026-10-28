@@ -12,7 +12,7 @@ public sealed class ResultadoReporte
 }
 
 /// <summary>
-/// Lee los reportes de la Fase 4. Cada uno es un SELECT sobre una vista:
+/// Lee los reportes. Cada uno es un SELECT sobre una vista:
 /// el SQL vive en la base (sql/07_vistas.sql), no en C#.
 /// </summary>
 public interface IReporteRepository

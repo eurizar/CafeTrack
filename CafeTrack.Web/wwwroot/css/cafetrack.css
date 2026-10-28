@@ -1098,7 +1098,7 @@ a.boton { border-bottom: 1px solid transparent; display: inline-block; }
     .encabezado-ilustrado .marca-agua { display: none; }
 }
 
-/* ------------------------------------------------- formularios (Fase 2) */
+/* ---------------------------------------------------------- formularios */
 
 .menu-titulo {
     margin: 1.4rem 0 .4rem;
@@ -1206,7 +1206,7 @@ html.barra-compacta .menu-titulo::before {
 .aviso.error:empty,
 .aviso.exito:empty { display: none; }
 
-/* ------------------------------------------------- sesion (Fase 3) */
+/* --------------------------------------------------------------- sesion */
 
 .barra-sesion {
     margin-top: 1.75rem;
@@ -1476,7 +1476,7 @@ body.sin-barra { background-image: none; }
 
 body.sin-barra { overflow-x: hidden; }
 
-/* --------------------------------------------------- reportes (Fase 4) */
+/* ------------------------------------------------------------- reportes */
 
 .rejilla-reportes {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -1685,7 +1685,7 @@ pre.codigo {
     .dialogo::backdrop { animation: none; }
 }
 
-/* ------------------------------------- vista de reporte (Fase 4) */
+/* ----------------------------------------------------- vista de reporte */
 
 .titulo-reporte {
     display: flex;

@@ -1,7 +1,7 @@
 -- =====================================================================
--- CafeTrack - Datos OPCIONALES para demostrar los formularios de la Fase 2
+-- CafeTrack - Datos OPCIONALES para demostrar el formulario de acopio
 --
--- 02_datos_prueba.sql deja los 12 lotes que pide el enunciado, todos con su
+-- 02_datos_prueba.sql deja 12 lotes de ejemplo, todos con su
 -- acopio registrado. Para poder mostrar en vivo el formulario de acopio hace
 -- falta un lote recien cosechado que todavia no haya sido recibido: eso es lo
 -- unico que agrega este archivo.

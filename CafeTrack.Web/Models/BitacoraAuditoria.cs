@@ -1,6 +1,6 @@
 namespace CafeTrack.Web.Models;
 
-/// <summary>Tabla <c>BitacoraAuditoria</c>. Se consulta a partir de la Fase 3.</summary>
+/// <summary>Tabla <c>BitacoraAuditoria</c>.</summary>
 public class BitacoraAuditoria
 {
     public int IdBitacora { get; set; }

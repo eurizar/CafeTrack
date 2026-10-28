@@ -1,5 +1,5 @@
 -- =====================================================================
--- CafeTrack - FASE 3: seguridad
+-- CafeTrack - Seguridad
 --   * Usuarios de la aplicacion en la tabla Usuarios (SHA2 + salt)
 --   * sp_login para validar las credenciales dentro de la base
 --   * Un usuario de MySQL por rol, cada uno con sus propios GRANT

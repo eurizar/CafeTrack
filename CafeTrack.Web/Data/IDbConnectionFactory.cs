@@ -7,10 +7,9 @@ namespace CafeTrack.Web.Data;
 /// conozca la cadena de conexion ni el ciclo de vida de la conexion.
 /// </summary>
 /// <remarks>
-/// El parametro <c>rol</c> esta previsto para la Fase 3: cada rol de la aplicacion
-/// (admin, gerente, acopiador, catador, auditor) se conectara con un usuario MySQL
-/// distinto, con sus propios GRANT. En la Fase 1 todos los roles resuelven a la
-/// misma cadena (<c>cafetrack_dev</c>) porque las pantallas son de solo lectura.
+/// Cada rol de la aplicacion (admin, gerente, acopiador, catador, auditor) se
+/// conecta con un usuario MySQL distinto, con sus propios GRANT. Sin sesion se
+/// usa la cadena por omision (<c>cafetrack_dev</c>), la que valida el login.
 /// </remarks>
 public interface IDbConnectionFactory
 {

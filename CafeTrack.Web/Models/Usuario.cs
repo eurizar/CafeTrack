@@ -1,8 +1,8 @@
 namespace CafeTrack.Web.Models;
 
 /// <summary>
-/// Tabla <c>Usuarios</c>. Se utiliza a partir de la Fase 3 (login SHA2 + salt).
-/// <c>password_hash</c> no se mapea: ninguna pantalla de la Fase 1 lo necesita.
+/// Tabla <c>Usuarios</c> (login SHA2 + salt).
+/// <c>password_hash</c> no se mapea: la validacion ocurre dentro de sp_login.
 /// </summary>
 public class Usuario
 {

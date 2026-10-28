@@ -7,7 +7,7 @@ using Dapper;
 namespace CafeTrack.Web.Data;
 
 /// <summary>
-/// Operaciones de escritura de la Fase 2. Todas pasan por un procedimiento
+/// Operaciones de escritura. Todas pasan por un procedimiento
 /// almacenado: la aplicacion no arma INSERT propios para acopios ni ventas,
 /// porque las reglas de negocio viven en la base.
 /// </summary>
@@ -28,7 +28,7 @@ public interface IOperacionesRepository
     /// <summary>Llama a sp_registrar_venta y devuelve el id de la venta creada.</summary>
     Task<int> RegistrarVentaAsync(VentaForm datos, string usuario, CancellationToken ct = default);
 
-    // --- Fase 2 ampliada: la cadena completa por rol ---
+    // --- La cadena completa por rol ---
 
     /// <summary>Lotes esperando su proxima etapa del beneficiado.</summary>
     Task<IReadOnlyList<LoteEnProceso>> ListarLotesEnProcesoAsync(CancellationToken ct = default);
@@ -100,7 +100,7 @@ public sealed partial class OperacionesRepository : IOperacionesRepository
         """;
 
     // Lotes vendibles: catacion aprobada y existencia > 0.
-    // La existencia se pide a la funcion fn_existencia_lote de la Fase 2.
+    // La existencia se pide a la funcion fn_existencia_lote.
     private const string SqlLotesVendibles = """
         SELECT l.id_lote                     AS id_lote,
                l.codigo_lote                 AS codigo_lote,

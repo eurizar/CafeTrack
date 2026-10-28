@@ -1,5 +1,5 @@
 -- =====================================================================
--- CafeTrack - DATOS DE PRUEBA (Fase 1)
+-- CafeTrack - DATOS DE PRUEBA
 -- Ejecutar DESPUES de sql/01_estructura.sql
 --
 -- Todos los datos son FICTICIOS. Los nombres, telefonos y documentos no
@@ -10,14 +10,14 @@
 -- estructura, sin tildes ('Organico', 'Credito 30 dias').
 -- Las columnas GENERATED (peso_bruto_kg, total_venta, monto_neto) nunca se
 -- incluyen en los INSERT.
--- Como en esta fase todavia no existen los triggers, peso_actual_quintales
--- y estado_lote se cargan a mano, coherentes con cada caso.
+-- peso_actual_quintales y estado_lote se cargan ya calculados, coherentes
+-- con cada caso.
 -- =====================================================================
 
 USE trazabilidad_cafe;
 
 -- Los pesos y estados de este archivo ya vienen calculados. Esta bandera le
--- avisa a los triggers de la Fase 2 (sql/04_rutinas.sql) que no vuelvan a
+-- avisa a los triggers (sql/04_rutinas.sql) que no vuelvan a
 -- descontar ni a recalcular nada mientras dura la carga; asi el script se
 -- puede volver a ejecutar aunque las rutinas ya esten creadas.
 SET @cafetrack_carga = 1;
@@ -150,8 +150,8 @@ INSERT INTO Cosechas
 
 
 -- ---------------------------------------------------------------------
--- 9. Lotes (12) - peso_actual_quintales y estado_lote puestos a mano
---    porque los triggers se crean hasta la Fase 2.
+-- 9. Lotes (12) - peso_actual_quintales y estado_lote puestos a mano,
+--    ya calculados (los triggers no corren durante la carga).
 -- ---------------------------------------------------------------------
 INSERT INTO Lotes
  (id_lote, id_cosecha, codigo_lote, fecha_creacion, peso_inicial_quintales,

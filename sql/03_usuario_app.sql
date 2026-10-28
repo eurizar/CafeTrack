@@ -21,9 +21,8 @@ FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'cafetrack_dev'@'localhost';
 
 -- ---------------------------------------------------------------------
--- Fase 3: cada rol de la aplicacion tendra su propio usuario de MySQL
--- con permisos distintos. Se deja el esquema previsto como referencia;
--- NO se crean todavia.
+-- Cada rol de la aplicacion tiene su propio usuario de MySQL con permisos
+-- distintos. Los crea sql/06_seguridad.sql; este es el resumen:
 --
 --   cafetrack_admin      -> todo sobre trazabilidad_cafe
 --   cafetrack_gerente    -> SELECT en todo; INSERT/UPDATE en VentasLotes y Pagos

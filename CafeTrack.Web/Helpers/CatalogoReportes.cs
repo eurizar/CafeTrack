@@ -1,7 +1,7 @@
 namespace CafeTrack.Web.Helpers;
 
 /// <summary>
-/// Un reporte de la Fase 4: la pregunta que responde y la vista de MySQL
+/// Un reporte: la pregunta que responde y la vista de MySQL
 /// que la resuelve.
 /// </summary>
 /// <param name="Clave">Identificador en la URL, por ejemplo "existencias".</param>

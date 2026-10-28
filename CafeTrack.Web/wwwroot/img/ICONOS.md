@@ -18,12 +18,11 @@ Texto de la licencia ISC: <https://github.com/lucide-icons/lucide/blob/main/LICE
 `plantas/planta1.svg` … `plantas/planta6.svg` son ilustraciones propias del proyecto
 (granos, hojas, planta de café y rama con cerezas).
 
-**Origen y corrección.** Los archivos originales están en esta misma carpeta
-(`planta1.svg` … `planta6.svg`). Vienen de un trazado con *potrace* y quedaron **en
-negativo**: un cuadro negro de 512 × 512 con la figura recortada como hueco, así que al
-mostrarlos directamente se ve un cuadrado negro. Las versiones de `plantas/` corrigen eso
-con una **máscara interna** —cuadro blanco menos los trazos originales— sin modificar
-ni una coordenada del dibujo. Use siempre las de `plantas/`.
+**Origen y corrección.** Los dibujos vienen de un trazado con *potrace* que quedó **en
+negativo**: un cuadro negro de 512 × 512 con la figura recortada como hueco. Los archivos
+de `plantas/` corrigen eso con una **máscara interna** —cuadro blanco menos los trazos
+originales— sin modificar ni una coordenada del dibujo: los trazos originales siguen
+dentro de cada archivo.
 
 **Cómo se usan.** Se pintan como máscara CSS, no como `<img>`, para que tomen el color
 del texto (`currentColor`) y el mismo archivo sirva sobre la barra oscura y sobre las
@@ -43,7 +42,3 @@ tarjetas claras. El ayudante es `Pages/Shared/_Planta.cshtml`:
 | `planta4` | Tarjeta de la variedad Caturra |
 | `planta5` | Tarjeta de la variedad Catuaí |
 | `planta6` | Tarjeta de la variedad Typica y marca de agua del encabezado de `/Catalogo` |
-
-**`granoCafe.svg`**: el archivo no contiene dibujo, solo el cuadro negro de fondo; el
-trazado salió vacío. No se usa. Si se vuelve a exportar, reemplaza a `planta1` como grano
-del logotipo.

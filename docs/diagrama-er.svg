@@ -1,0 +1,530 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2342" height="1519" viewBox="0 0 2342 1519" font-family="Source Sans 3, Segoe UI, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#FFFBF5"/>
+<text x="40" y="26" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="600" fill="#3B2A20">Modelo entidad-relación · trazabilidad_cafe</text>
+<text x="40" y="1505" font-size="12" fill="#7A6A5C">18 tablas · 17 relaciones · PK = clave primaria · FK = clave foránea</text>
+<path d="M 1498.0 108.5 C 1573.0 108.5 1573.0 125.5 1648.0 125.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="125.5" r="3" fill="#6F4E37"/>
+<path d="M 1498.0 108.5 C 1573.0 108.5 1573.0 310.5 1648.0 310.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="310.5" r="3" fill="#6F4E37"/>
+<path d="M 694.0 108.5 C 769.0 108.5 769.0 125.5 844.0 125.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="844.0" cy="125.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 478.5 C 568.0 478.5 568.0 142.5 844.0 142.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="844.0" cy="142.5" r="3" fill="#6F4E37"/>
+<path d="M 1096.0 108.5 C 1171.0 108.5 1171.0 125.5 1246.0 125.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1246.0" cy="125.5" r="3" fill="#6F4E37"/>
+<path d="M 1498.0 108.5 C 1573.0 108.5 1573.0 529.5 1648.0 529.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="529.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 310.5 C 1171.0 310.5 1171.0 125.5 2050.0 125.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="2050.0" cy="125.5" r="3" fill="#6F4E37"/>
+<path d="M 1498.0 108.5 C 1774.0 108.5 1774.0 142.5 2050.0 142.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="2050.0" cy="142.5" r="3" fill="#6F4E37"/>
+<path d="M 1900.0 731.5 C 1975.0 731.5 1975.0 210.5 2050.0 210.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="2050.0" cy="210.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 780.5 C 1171.0 780.5 1171.0 361.5 2050.0 361.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="2050.0" cy="361.5" r="3" fill="#6F4E37"/>
+<path d="M 1900.0 731.5 C 1975.0 731.5 1975.0 378.5 2050.0 378.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="2050.0" cy="378.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 780.5 C 367.0 780.5 367.0 125.5 442.0 125.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="442.0" cy="125.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 646.5 C 367.0 646.5 367.0 142.5 442.0 142.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="442.0" cy="142.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 1150.5 C 970.0 1150.5 970.0 1001.5 1648.0 1001.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="1001.5" r="3" fill="#6F4E37"/>
+<path d="M 1498.0 108.5 C 1573.0 108.5 1573.0 984.5 1648.0 984.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="984.5" r="3" fill="#6F4E37"/>
+<path d="M 292.0 965.5 C 970.0 965.5 970.0 765.5 1648.0 765.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="765.5" r="3" fill="#6F4E37"/>
+<path d="M 1498.0 108.5 C 1573.0 108.5 1573.0 748.5 1648.0 748.5" fill="none" stroke="#6F4E37" stroke-width="1.3" opacity="0.75"/>
+<circle cx="1648.0" cy="748.5" r="3" fill="#6F4E37"/>
+<g>
+<rect x="1648.0" y="70.0" width="252" height="159" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 1648.0 100.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="1648.0" y="70.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="1658.0" y="90.0" font-size="13" font-weight="700" fill="#FFFFFF">Acopios</text>
+<text x="1656.0" y="113.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="1680.0" y="113.0" font-size="11" font-weight="700" fill="#2A1F18">id_acopio</text>
+<text x="1892.0" y="113.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="117.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1656.0" y="130.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="130.0" font-size="11"  fill="#2A1F18">id_lote</text>
+<text x="1892.0" y="130.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="1680.0" y="147.0" font-size="11"  fill="#2A1F18">fecha_recepcion</text>
+<text x="1892.0" y="147.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<rect x="1649.0" y="151.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="164.0" font-size="11"  fill="#2A1F18">peso_recibido_quintales</text>
+<text x="1892.0" y="164.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="1680.0" y="181.0" font-size="11"  fill="#2A1F18">responsable_recepcion</text>
+<text x="1892.0" y="181.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<rect x="1649.0" y="185.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="198.0" font-size="11"  fill="#2A1F18">condicion_transporte</text>
+<text x="1892.0" y="198.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<text x="1680.0" y="215.0" font-size="11"  fill="#2A1F18">observaciones</text>
+<text x="1892.0" y="215.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">text</text>
+</g>
+<g>
+<rect x="40.0" y="70.0" width="252" height="176" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 100.0 h 252 v 0 h -252 z" fill="#4A6741"/>
+<rect x="40.0" y="70.0" width="252" height="30" rx="6" fill="#4A6741"/>
+<text x="50.0" y="90.0" font-size="13" font-weight="700" fill="#FFFFFF">BitacoraAuditoria</text>
+<text x="48.0" y="113.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="113.0" font-size="11" font-weight="700" fill="#2A1F18">id_bitacora</text>
+<text x="284.0" y="113.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="117.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="130.0" font-size="11"  fill="#2A1F18">tabla_afectada</text>
+<text x="284.0" y="130.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<text x="72.0" y="147.0" font-size="11"  fill="#2A1F18">operacion</text>
+<text x="284.0" y="147.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="41.0" y="151.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="164.0" font-size="11"  fill="#2A1F18">id_registro_afectado</text>
+<text x="284.0" y="164.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="72.0" y="181.0" font-size="11"  fill="#2A1F18">usuario</text>
+<text x="284.0" y="181.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<rect x="41.0" y="185.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="198.0" font-size="11"  fill="#2A1F18">fecha_hora</text>
+<text x="284.0" y="198.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<text x="72.0" y="215.0" font-size="11"  fill="#2A1F18">datos_anteriores</text>
+<text x="284.0" y="215.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">json</text>
+<rect x="41.0" y="219.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="232.0" font-size="11"  fill="#2A1F18">datos_nuevos</text>
+<text x="284.0" y="232.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">json</text>
+</g>
+<g>
+<rect x="40.0" y="272.0" width="252" height="142" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 302.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="272.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="292.0" font-size="13" font-weight="700" fill="#FFFFFF">Bodegas</text>
+<text x="48.0" y="315.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="315.0" font-size="11" font-weight="700" fill="#2A1F18">id_bodega</text>
+<text x="284.0" y="315.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="319.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="332.0" font-size="11"  fill="#2A1F18">nombre</text>
+<text x="284.0" y="332.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="72.0" y="349.0" font-size="11"  fill="#2A1F18">ubicacion</text>
+<text x="284.0" y="349.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(200)</text>
+<rect x="41.0" y="353.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="366.0" font-size="11"  fill="#2A1F18">capacidad_quintales</text>
+<text x="284.0" y="366.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="72.0" y="383.0" font-size="11"  fill="#2A1F18">responsable</text>
+<text x="284.0" y="383.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<rect x="41.0" y="387.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="400.0" font-size="11"  fill="#2A1F18">activa</text>
+<text x="284.0" y="400.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+</g>
+<g>
+<rect x="1648.0" y="255.0" width="252" height="193" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 1648.0 285.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="1648.0" y="255.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="1658.0" y="275.0" font-size="13" font-weight="700" fill="#FFFFFF">Calidad</text>
+<text x="1656.0" y="298.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="1680.0" y="298.0" font-size="11" font-weight="700" fill="#2A1F18">id_calidad</text>
+<text x="1892.0" y="298.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="302.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1656.0" y="315.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="315.0" font-size="11"  fill="#2A1F18">id_lote</text>
+<text x="1892.0" y="315.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="1680.0" y="332.0" font-size="11"  fill="#2A1F18">fecha_evaluacion</text>
+<text x="1892.0" y="332.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<rect x="1649.0" y="336.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="349.0" font-size="11"  fill="#2A1F18">evaluador</text>
+<text x="1892.0" y="349.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="1680.0" y="366.0" font-size="11"  fill="#2A1F18">puntaje_sca</text>
+<text x="1892.0" y="366.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(4,2)</text>
+<rect x="1649.0" y="370.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="383.0" font-size="11"  fill="#2A1F18">altura_taza</text>
+<text x="1892.0" y="383.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<text x="1680.0" y="400.0" font-size="11"  fill="#2A1F18">defectos_principales</text>
+<text x="1892.0" y="400.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(200)</text>
+<rect x="1649.0" y="404.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="417.0" font-size="11"  fill="#2A1F18">perfil_sensorial</text>
+<text x="1892.0" y="417.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">text</text>
+<text x="1680.0" y="434.0" font-size="11"  fill="#2A1F18">aprobado_venta</text>
+<text x="1892.0" y="434.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+</g>
+<g>
+<rect x="40.0" y="927.0" width="252" height="159" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 957.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="927.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="947.0" font-size="13" font-weight="700" fill="#FFFFFF">Compradores</text>
+<text x="48.0" y="970.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="970.0" font-size="11" font-weight="700" fill="#2A1F18">id_comprador</text>
+<text x="284.0" y="970.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="974.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="987.0" font-size="11"  fill="#2A1F18">nombre</text>
+<text x="284.0" y="987.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="72.0" y="1004.0" font-size="11"  fill="#2A1F18">tipo</text>
+<text x="284.0" y="1004.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="41.0" y="1008.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1021.0" font-size="11"  fill="#2A1F18">pais_destino</text>
+<text x="284.0" y="1021.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<text x="72.0" y="1038.0" font-size="11"  fill="#2A1F18">contacto</text>
+<text x="284.0" y="1038.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<rect x="41.0" y="1042.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1055.0" font-size="11"  fill="#2A1F18">telefono</text>
+<text x="284.0" y="1055.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(20)</text>
+<text x="72.0" y="1072.0" font-size="11"  fill="#2A1F18">activo</text>
+<text x="284.0" y="1072.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+</g>
+<g>
+<rect x="844.0" y="70.0" width="252" height="193" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 844.0 100.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="844.0" y="70.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="854.0" y="90.0" font-size="13" font-weight="700" fill="#FFFFFF">Cosechas</text>
+<text x="852.0" y="113.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="876.0" y="113.0" font-size="11" font-weight="700" fill="#2A1F18">id_cosecha</text>
+<text x="1088.0" y="113.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="845.0" y="117.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="852.0" y="130.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="876.0" y="130.0" font-size="11"  fill="#2A1F18">id_parcela</text>
+<text x="1088.0" y="130.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="852.0" y="147.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="876.0" y="147.0" font-size="11"  fill="#2A1F18">id_temporada</text>
+<text x="1088.0" y="147.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="845.0" y="151.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="876.0" y="164.0" font-size="11"  fill="#2A1F18">fecha_recoleccion</text>
+<text x="1088.0" y="164.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">date</text>
+<text x="876.0" y="181.0" font-size="11"  fill="#2A1F18">peso_bruto_quintales</text>
+<text x="1088.0" y="181.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<rect x="845.0" y="185.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="876.0" y="198.0" font-size="11"  fill="#2A1F18">peso_bruto_kg</text>
+<text x="1088.0" y="198.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="876.0" y="215.0" font-size="11"  fill="#2A1F18">humedad_porcentaje</text>
+<text x="1088.0" y="215.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(5,2)</text>
+<rect x="845.0" y="219.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="876.0" y="232.0" font-size="11"  fill="#2A1F18">recolector</text>
+<text x="1088.0" y="232.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="876.0" y="249.0" font-size="11"  fill="#2A1F18">observaciones</text>
+<text x="1088.0" y="249.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">text</text>
+</g>
+<g>
+<rect x="40.0" y="1112.0" width="252" height="142" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 1142.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="1112.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="1132.0" font-size="13" font-weight="700" fill="#FFFFFF">EtapasProceso</text>
+<text x="48.0" y="1155.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="1155.0" font-size="11" font-weight="700" fill="#2A1F18">id_etapa</text>
+<text x="284.0" y="1155.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="1159.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1172.0" font-size="11"  fill="#2A1F18">nombre</text>
+<text x="284.0" y="1172.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<text x="72.0" y="1189.0" font-size="11"  fill="#2A1F18">orden</text>
+<text x="284.0" y="1189.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="1193.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1206.0" font-size="11"  fill="#2A1F18">duracion_min_horas</text>
+<text x="284.0" y="1206.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(6,2)</text>
+<text x="72.0" y="1223.0" font-size="11"  fill="#2A1F18">duracion_max_horas</text>
+<text x="284.0" y="1223.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(6,2)</text>
+<rect x="41.0" y="1227.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1240.0" font-size="11"  fill="#2A1F18">descripcion</text>
+<text x="284.0" y="1240.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(200)</text>
+</g>
+<g>
+<rect x="1246.0" y="70.0" width="252" height="176" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 1246.0 100.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="1246.0" y="70.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="1256.0" y="90.0" font-size="13" font-weight="700" fill="#FFFFFF">Lotes</text>
+<text x="1254.0" y="113.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="1278.0" y="113.0" font-size="11" font-weight="700" fill="#2A1F18">id_lote</text>
+<text x="1490.0" y="113.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1247.0" y="117.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1254.0" y="130.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1278.0" y="130.0" font-size="11"  fill="#2A1F18">id_cosecha</text>
+<text x="1490.0" y="130.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="1278.0" y="147.0" font-size="11"  fill="#2A1F18">codigo_lote</text>
+<text x="1490.0" y="147.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(20)</text>
+<rect x="1247.0" y="151.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1278.0" y="164.0" font-size="11"  fill="#2A1F18">fecha_creacion</text>
+<text x="1490.0" y="164.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<text x="1278.0" y="181.0" font-size="11"  fill="#2A1F18">peso_inicial_quintales</text>
+<text x="1490.0" y="181.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<rect x="1247.0" y="185.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1278.0" y="198.0" font-size="11"  fill="#2A1F18">peso_actual_quintales</text>
+<text x="1490.0" y="198.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="1278.0" y="215.0" font-size="11"  fill="#2A1F18">estado_lote</text>
+<text x="1490.0" y="215.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="1247.0" y="219.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1278.0" y="232.0" font-size="11"  fill="#2A1F18">certificacion_aplicable</text>
+<text x="1490.0" y="232.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+</g>
+<g>
+<rect x="1648.0" y="474.0" width="252" height="193" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 1648.0 504.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="1648.0" y="474.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="1658.0" y="494.0" font-size="13" font-weight="700" fill="#FFFFFF">Mermas</text>
+<text x="1656.0" y="517.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="1680.0" y="517.0" font-size="11" font-weight="700" fill="#2A1F18">id_merma</text>
+<text x="1892.0" y="517.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="521.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1656.0" y="534.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="534.0" font-size="11"  fill="#2A1F18">id_lote</text>
+<text x="1892.0" y="534.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="1680.0" y="551.0" font-size="11"  fill="#2A1F18">tipo_merma</text>
+<text x="1892.0" y="551.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="1649.0" y="555.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="568.0" font-size="11"  fill="#2A1F18">etapa_origen</text>
+<text x="1892.0" y="568.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<text x="1680.0" y="585.0" font-size="11"  fill="#2A1F18">peso_perdido_quintales</text>
+<text x="1892.0" y="585.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<rect x="1649.0" y="589.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="602.0" font-size="11"  fill="#2A1F18">porcentaje_merma</text>
+<text x="1892.0" y="602.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(5,2)</text>
+<text x="1680.0" y="619.0" font-size="11"  fill="#2A1F18">fecha_registro</text>
+<text x="1892.0" y="619.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<rect x="1649.0" y="623.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="636.0" font-size="11"  fill="#2A1F18">responsable</text>
+<text x="1892.0" y="636.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="1680.0" y="653.0" font-size="11"  fill="#2A1F18">justificacion</text>
+<text x="1892.0" y="653.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">text</text>
+</g>
+<g>
+<rect x="2050.0" y="70.0" width="252" height="210" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 2050.0 100.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="2050.0" y="70.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="2060.0" y="90.0" font-size="13" font-weight="700" fill="#FFFFFF">MovimientosBodega</text>
+<text x="2058.0" y="113.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="2082.0" y="113.0" font-size="11" font-weight="700" fill="#2A1F18">id_movimiento</text>
+<text x="2294.0" y="113.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="2051.0" y="117.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2058.0" y="130.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="2082.0" y="130.0" font-size="11"  fill="#2A1F18">id_bodega</text>
+<text x="2294.0" y="130.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="2058.0" y="147.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="2082.0" y="147.0" font-size="11"  fill="#2A1F18">id_lote</text>
+<text x="2294.0" y="147.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="2051.0" y="151.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="164.0" font-size="11"  fill="#2A1F18">tipo_movimiento</text>
+<text x="2294.0" y="164.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<text x="2082.0" y="181.0" font-size="11"  fill="#2A1F18">fecha_movimiento</text>
+<text x="2294.0" y="181.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<rect x="2051.0" y="185.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="198.0" font-size="11"  fill="#2A1F18">cantidad_quintales</text>
+<text x="2294.0" y="198.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="2058.0" y="215.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="2082.0" y="215.0" font-size="11"  fill="#2A1F18">id_venta</text>
+<text x="2294.0" y="215.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="2051.0" y="219.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="232.0" font-size="11"  fill="#2A1F18">responsable</text>
+<text x="2294.0" y="232.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="2082.0" y="249.0" font-size="11"  fill="#2A1F18">usuario_registro</text>
+<text x="2294.0" y="249.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<rect x="2051.0" y="253.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="266.0" font-size="11"  fill="#2A1F18">observaciones</text>
+<text x="2294.0" y="266.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">text</text>
+</g>
+<g>
+<rect x="2050.0" y="306.0" width="252" height="227" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 2050.0 336.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="2050.0" y="306.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="2060.0" y="326.0" font-size="13" font-weight="700" fill="#FFFFFF">Pagos</text>
+<text x="2058.0" y="349.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="2082.0" y="349.0" font-size="11" font-weight="700" fill="#2A1F18">id_pago</text>
+<text x="2294.0" y="349.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="2051.0" y="353.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2058.0" y="366.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="2082.0" y="366.0" font-size="11"  fill="#2A1F18">id_productor</text>
+<text x="2294.0" y="366.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="2058.0" y="383.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="2082.0" y="383.0" font-size="11"  fill="#2A1F18">id_venta</text>
+<text x="2294.0" y="383.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="2051.0" y="387.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="400.0" font-size="11"  fill="#2A1F18">fecha_pago</text>
+<text x="2294.0" y="400.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<text x="2082.0" y="417.0" font-size="11"  fill="#2A1F18">monto_pagado</text>
+<text x="2294.0" y="417.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(12,2)</text>
+<rect x="2051.0" y="421.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="434.0" font-size="11"  fill="#2A1F18">precio_pagado_quintal</text>
+<text x="2294.0" y="434.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="2082.0" y="451.0" font-size="11"  fill="#2A1F18">deducciones</text>
+<text x="2294.0" y="451.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<rect x="2051.0" y="455.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="468.0" font-size="11"  fill="#2A1F18">monto_neto</text>
+<text x="2294.0" y="468.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(12,2)</text>
+<text x="2082.0" y="485.0" font-size="11"  fill="#2A1F18">metodo_pago</text>
+<text x="2294.0" y="485.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="2051.0" y="489.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="2082.0" y="502.0" font-size="11"  fill="#2A1F18">comprobante</text>
+<text x="2294.0" y="502.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<text x="2082.0" y="519.0" font-size="11"  fill="#2A1F18">usuario_registro</text>
+<text x="2294.0" y="519.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+</g>
+<g>
+<rect x="442.0" y="70.0" width="252" height="193" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 442.0 100.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="442.0" y="70.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="452.0" y="90.0" font-size="13" font-weight="700" fill="#FFFFFF">Parcelas</text>
+<text x="450.0" y="113.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="474.0" y="113.0" font-size="11" font-weight="700" fill="#2A1F18">id_parcela</text>
+<text x="686.0" y="113.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="443.0" y="117.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="450.0" y="130.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="474.0" y="130.0" font-size="11"  fill="#2A1F18">id_productor</text>
+<text x="686.0" y="130.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="450.0" y="147.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="474.0" y="147.0" font-size="11"  fill="#2A1F18">id_variedad</text>
+<text x="686.0" y="147.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="443.0" y="151.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="474.0" y="164.0" font-size="11"  fill="#2A1F18">nombre</text>
+<text x="686.0" y="164.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="474.0" y="181.0" font-size="11"  fill="#2A1F18">ubicacion</text>
+<text x="686.0" y="181.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(200)</text>
+<rect x="443.0" y="185.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="474.0" y="198.0" font-size="11"  fill="#2A1F18">area_manzanas</text>
+<text x="686.0" y="198.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(8,2)</text>
+<text x="474.0" y="215.0" font-size="11"  fill="#2A1F18">altitud_metros</text>
+<text x="686.0" y="215.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="443.0" y="219.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="474.0" y="232.0" font-size="11"  fill="#2A1F18">certificacion</text>
+<text x="686.0" y="232.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<text x="474.0" y="249.0" font-size="11"  fill="#2A1F18">activa</text>
+<text x="686.0" y="249.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+</g>
+<g>
+<rect x="1648.0" y="929.0" width="252" height="176" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 1648.0 959.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="1648.0" y="929.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="1658.0" y="949.0" font-size="13" font-weight="700" fill="#FFFFFF">Procesos</text>
+<text x="1656.0" y="972.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="1680.0" y="972.0" font-size="11" font-weight="700" fill="#2A1F18">id_proceso</text>
+<text x="1892.0" y="972.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="976.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1656.0" y="989.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="989.0" font-size="11"  fill="#2A1F18">id_lote</text>
+<text x="1892.0" y="989.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="1656.0" y="1006.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="1006.0" font-size="11"  fill="#2A1F18">id_etapa</text>
+<text x="1892.0" y="1006.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="1010.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="1023.0" font-size="11"  fill="#2A1F18">fecha_inicio</text>
+<text x="1892.0" y="1023.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<text x="1680.0" y="1040.0" font-size="11"  fill="#2A1F18">fecha_fin</text>
+<text x="1892.0" y="1040.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<rect x="1649.0" y="1044.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="1057.0" font-size="11"  fill="#2A1F18">peso_entrada_quintales</text>
+<text x="1892.0" y="1057.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="1680.0" y="1074.0" font-size="11"  fill="#2A1F18">peso_salida_quintales</text>
+<text x="1892.0" y="1074.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<rect x="1649.0" y="1078.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="1091.0" font-size="11"  fill="#2A1F18">responsable</text>
+<text x="1892.0" y="1091.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+</g>
+<g>
+<rect x="40.0" y="742.0" width="252" height="159" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 772.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="742.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="762.0" font-size="13" font-weight="700" fill="#FFFFFF">Productores</text>
+<text x="48.0" y="785.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="785.0" font-size="11" font-weight="700" fill="#2A1F18">id_productor</text>
+<text x="284.0" y="785.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="789.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="802.0" font-size="11"  fill="#2A1F18">nombre</text>
+<text x="284.0" y="802.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="72.0" y="819.0" font-size="11"  fill="#2A1F18">documento_identidad</text>
+<text x="284.0" y="819.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(20)</text>
+<rect x="41.0" y="823.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="836.0" font-size="11"  fill="#2A1F18">telefono</text>
+<text x="284.0" y="836.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(20)</text>
+<text x="72.0" y="853.0" font-size="11"  fill="#2A1F18">comunidad</text>
+<text x="284.0" y="853.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<rect x="41.0" y="857.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="870.0" font-size="11"  fill="#2A1F18">fecha_ingreso_coop</text>
+<text x="284.0" y="870.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">date</text>
+<text x="72.0" y="887.0" font-size="11"  fill="#2A1F18">activo</text>
+<text x="284.0" y="887.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+</g>
+<g>
+<rect x="40.0" y="440.0" width="252" height="142" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 470.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="440.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="460.0" font-size="13" font-weight="700" fill="#FFFFFF">Temporadas</text>
+<text x="48.0" y="483.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="483.0" font-size="11" font-weight="700" fill="#2A1F18">id_temporada</text>
+<text x="284.0" y="483.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="487.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="500.0" font-size="11"  fill="#2A1F18">anio</text>
+<text x="284.0" y="500.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="72.0" y="517.0" font-size="11"  fill="#2A1F18">fecha_inicio</text>
+<text x="284.0" y="517.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">date</text>
+<rect x="41.0" y="521.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="534.0" font-size="11"  fill="#2A1F18">fecha_cierre</text>
+<text x="284.0" y="534.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">date</text>
+<text x="72.0" y="551.0" font-size="11"  fill="#2A1F18">estado</text>
+<text x="284.0" y="551.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="41.0" y="555.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="568.0" font-size="11"  fill="#2A1F18">precio_base_quintal</text>
+<text x="284.0" y="568.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+</g>
+<g>
+<rect x="40.0" y="1280.0" width="252" height="159" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 1310.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="1280.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="1300.0" font-size="13" font-weight="700" fill="#FFFFFF">Usuarios</text>
+<text x="48.0" y="1323.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="1323.0" font-size="11" font-weight="700" fill="#2A1F18">id_usuario</text>
+<text x="284.0" y="1323.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="1327.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1340.0" font-size="11"  fill="#2A1F18">username</text>
+<text x="284.0" y="1340.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<text x="72.0" y="1357.0" font-size="11"  fill="#2A1F18">password_hash</text>
+<text x="284.0" y="1357.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(255)</text>
+<rect x="41.0" y="1361.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1374.0" font-size="11"  fill="#2A1F18">nombre_completo</text>
+<text x="284.0" y="1374.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(100)</text>
+<text x="72.0" y="1391.0" font-size="11"  fill="#2A1F18">rol</text>
+<text x="284.0" y="1391.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="41.0" y="1395.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="1408.0" font-size="11"  fill="#2A1F18">activo</text>
+<text x="284.0" y="1408.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+<text x="72.0" y="1425.0" font-size="11"  fill="#2A1F18">ultimo_acceso</text>
+<text x="284.0" y="1425.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+</g>
+<g>
+<rect x="40.0" y="608.0" width="252" height="108" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 40.0 638.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="40.0" y="608.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="50.0" y="628.0" font-size="13" font-weight="700" fill="#FFFFFF">Variedades</text>
+<text x="48.0" y="651.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="72.0" y="651.0" font-size="11" font-weight="700" fill="#2A1F18">id_variedad</text>
+<text x="284.0" y="651.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="41.0" y="655.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="668.0" font-size="11"  fill="#2A1F18">nombre</text>
+<text x="284.0" y="668.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+<text x="72.0" y="685.0" font-size="11"  fill="#2A1F18">descripcion</text>
+<text x="284.0" y="685.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(200)</text>
+<rect x="41.0" y="689.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="72.0" y="702.0" font-size="11"  fill="#2A1F18">activa</text>
+<text x="284.0" y="702.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">bool</text>
+</g>
+<g>
+<rect x="1648.0" y="693.0" width="252" height="210" rx="6" fill="#FFFFFF" stroke="#E2D6C3" stroke-width="1.2"/>
+<path d="M 1648.0 723.0 h 252 v 0 h -252 z" fill="#3B2A20"/>
+<rect x="1648.0" y="693.0" width="252" height="30" rx="6" fill="#3B2A20"/>
+<text x="1658.0" y="713.0" font-size="13" font-weight="700" fill="#FFFFFF">VentasLotes</text>
+<text x="1656.0" y="736.0" font-size="9" font-weight="700" fill="#C08A3E">PK</text>
+<text x="1680.0" y="736.0" font-size="11" font-weight="700" fill="#2A1F18">id_venta</text>
+<text x="1892.0" y="736.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="740.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1656.0" y="753.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="753.0" font-size="11"  fill="#2A1F18">id_lote</text>
+<text x="1892.0" y="753.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<text x="1656.0" y="770.0" font-size="9" font-weight="700" fill="#4A6741">FK</text>
+<text x="1680.0" y="770.0" font-size="11"  fill="#2A1F18">id_comprador</text>
+<text x="1892.0" y="770.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">int</text>
+<rect x="1649.0" y="774.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="787.0" font-size="11"  fill="#2A1F18">fecha_venta</text>
+<text x="1892.0" y="787.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">datetime</text>
+<text x="1680.0" y="804.0" font-size="11"  fill="#2A1F18">peso_vendido_quintales</text>
+<text x="1892.0" y="804.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<rect x="1649.0" y="808.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="821.0" font-size="11"  fill="#2A1F18">precio_quintal</text>
+<text x="1892.0" y="821.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(10,2)</text>
+<text x="1680.0" y="838.0" font-size="11"  fill="#2A1F18">total_venta</text>
+<text x="1892.0" y="838.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">dec(12,2)</text>
+<rect x="1649.0" y="842.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="855.0" font-size="11"  fill="#2A1F18">forma_pago</text>
+<text x="1892.0" y="855.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<text x="1680.0" y="872.0" font-size="11"  fill="#2A1F18">estado_pago</text>
+<text x="1892.0" y="872.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">enum</text>
+<rect x="1649.0" y="876.0" width="250" height="17" fill="#F4EEE3"/>
+<text x="1680.0" y="889.0" font-size="11"  fill="#2A1F18">usuario_registro</text>
+<text x="1892.0" y="889.0" font-size="10" fill="#7A6A5C" text-anchor="end" font-family="IBM Plex Mono, Consolas, monospace">var(50)</text>
+</g>
+</svg>
